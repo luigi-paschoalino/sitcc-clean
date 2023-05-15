@@ -8,11 +8,11 @@ Aceito
 
 ## Context
 
-Atualmente, o front-end da aplicação possui dependências dentro dos diversos casos de uso da aplicação (requisições POST/GET etc.) com a ferramenta atual Axios. No caso de uma necessidade futura de troca dessa ferramenta, muitos arquivos teriam de ser modificados, gerando duplicidade de código e, muito provavelmente, bugs. Junto a isso, foi observada a utilização do JavaScript dentro do React, o que torna a modularização muito trabalhosa. Com isso em mente, foi discutida a implementação algum padrão de arquitetura voltado para o front-end utilizando o TypeScript.
+Atualmente, o front-end da aplicação, codificado em React, possui dependências dentro dos diversos casos de uso da aplicação (requisições POST/GET etc.) com a ferramenta atual Axios. No caso de uma necessidade futura de troca dessa ferramenta, muitos arquivos teriam de ser modificados, gerando duplicidade de código e, muito provavelmente, bugs. Junto a isso, foi observada a utilização do JavaScript dentro do React, o que torna a modularização muito trabalhosa. Com isso em mente, foi discutida a implementação algum padrão de arquitetura voltado para o front-end utilizando o TypeScript.
 
 ## Decision
 
-Para maior padronização da aplicação como um todo, decidimos por implementar a Clean Architecture também no front-end, visto que, inicialmente, foi discutida, e aceita, a migração de arquitetura da aplicação server-side para a mesma.
+Para maior padronização da aplicação como um todo, decidimos por implementar a Clean Architecture dentro do React, visto que, inicialmente, foi discutida, e aceita, a migração de arquitetura limpa da aplicação server-side para a o client-side. Junto a essa alteração, decidimos por migrar o atual código de JavaScript para TypeScript, a fim de facilitar a codificação dos diferentes módulos.
 
 ## Consequences
 
