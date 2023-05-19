@@ -1,3 +1,6 @@
+import { CommandHandler, EventBus } from '@nestjs/cqrs'
+import { Tcc } from '../../domain/Tcc'
+
 export interface CadastrarTccUsecaseProps {
     id: string
     titulo: string
@@ -5,7 +8,11 @@ export interface CadastrarTccUsecaseProps {
 }
 
 export class CadastrarTccUsecase {
-    constructor() {}
+    constructor(private eventBus?: EventBus) {}
 
-    async execute(props: CadastrarTccUsecaseProps): Promise<void> {}
+    async execute(props: CadastrarTccUsecaseProps): Promise<Tcc> {
+        const tcc = Tcc.criar()
+        console.log('penis')
+        return tcc
+    }
 }
