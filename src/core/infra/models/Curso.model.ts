@@ -1,8 +1,14 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
+import {
+    BaseEntity,
+    Column,
+    Entity,
+    ManyToOne,
+    PrimaryGeneratedColumn,
+} from 'typeorm'
 import { InstitutoModel } from './Instituto.model'
 
 @Entity('curso')
-export class CursoModel {
+export class CursoModel extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string
 

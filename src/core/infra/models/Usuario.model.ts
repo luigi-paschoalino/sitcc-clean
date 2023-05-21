@@ -1,7 +1,8 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
+import { TIPO_USUARIO } from '../../domain/Usuario'
 
 @Entity({ name: 'usuario' })
-export class UsuarioModel {
+export class UsuarioModel extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string
 
@@ -14,6 +15,6 @@ export class UsuarioModel {
     @Column({ nullable: false, length: 256 })
     senha: string
 
-    @Column({ nullable: false, length: 256 })
-    tipo: string
+    @Column({ nullable: false, type: 'enum', enum: TIPO_USUARIO })
+    tipo: TIPO_USUARIO
 }

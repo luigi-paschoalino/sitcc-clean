@@ -1,5 +1,6 @@
-import { CadastrarTccUsecase } from "./CadastrarTcc.usecase"
+import { CadastrarTccUsecase } from './CadastrarTcc.usecase'
+import { CadastrarUsuarioUseCase } from './CadastrarUsuario.usecase'
 
-const UseCases = [CadastrarTccUsecase]
+const UseCases = [CadastrarTccUsecase, CadastrarUsuarioUseCase]
 
-export { UseCases }
+export default UseCases

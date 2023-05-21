@@ -1,14 +1,23 @@
-import { Entity, Column, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { InstitutoModel } from "./Instituto.model";
+import {
+    Entity,
+    Column,
+    ManyToOne,
+    OneToMany,
+    PrimaryGeneratedColumn,
+    BaseEntity,
+} from 'typeorm'
+import { InstitutoModel } from './Instituto.model'
 
 @Entity({ name: 'universidade' })
-export class UniversidadeModel {
+export class UniversidadeModel extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
-    id: string;
+    id: string
 
     @Column({ nullable: false, length: 256 })
-    nome: string;
+    nome: string
 
-    @OneToMany(() => InstitutoModel, instituto => instituto.universidade, { cascade: true })
+    @OneToMany(() => InstitutoModel, (instituto) => instituto.universidade, {
+        cascade: true,
+    })
     institutos: InstitutoModel[]
 }

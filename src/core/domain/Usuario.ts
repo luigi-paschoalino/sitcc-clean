@@ -1,3 +1,7 @@
+import { AggregateRoot } from '@nestjs/cqrs'
+import { PerfilProfessor } from './PerfilProfessor'
+import { UsuarioCadastradoEvent } from './events/UsuarioCadastrado.event'
+
 export enum TIPO_USUARIO {
     ALUNO = 'ALUNO',
     PROFESSOR = 'PROFESSOR',
@@ -5,8 +9,19 @@ export enum TIPO_USUARIO {
     ADMINISTRADOR = 'ADMINISTRADOR',
 }
 
-//TODO: transformar usuario em abstract class
-export abstract class Usuario {
+export interface CriarUsuarioProps {
+    nome: string
+    curso: string
+    email: string
+    senha: string
+    tipo: TIPO_USUARIO
+    numero: string
+}
+
+//TODO: usuario vai ser um só, com perfil professor criado pelo handler do evento usuarioCriadoEvent em caso do enum ser 'PROFESSOR'
+
+//TODO: métodos de atualização do perfilProfessor serão feitas apenas se o enum for 'PROFESSOR'
+export class Usuario extends AggregateRoot {
     private id: string // Matricula
     private curso: string
     private nome: string
@@ -14,6 +29,103 @@ export abstract class Usuario {
     private senha: string //TODO: hashear senha
     private tipo: TIPO_USUARIO
     private numero: string
+    private perfilProfessor?: PerfilProfessor
 
-    private constructor() {}
+    private constructor(id: string) {
+        super()
+    }
+
+    static criar(props: CriarUsuarioProps, id: string): Usuario {
+        try {
+            if (!props) throw new Error('Dados do usuário não informados')
+
+            const instance = new Usuario(id)
+
+            instance.setNome(props.nome)
+            instance.setCurso(props.curso)
+            instance.setEmail(props.email)
+            instance.setSenha(props.senha)
+            instance.setTipo(props.tipo)
+            instance.setNumero(props.numero)
+
+            instance.apply(
+                new UsuarioCadastradoEvent({
+                    id: instance.id,
+                    curso: instance.curso,
+                    nome: instance.nome,
+                    email: instance.email,
+                    senha: instance.senha,
+                    tipo: instance.tipo,
+                    numero: instance.numero,
+                }),
+            )
+
+            return instance
+        } catch (error) {
+            return error
+        }
+    }
+
+    private setNome(nome: string) {
+        if (!nome) throw new Error('Nome não informado')
+        this.nome = nome
+    }
+
+    private setCurso(curso: string) {
+        if (!curso) throw new Error('Curso não informado')
+        this.curso = curso
+    }
+
+    private setEmail(email: string) {
+        if (!email) throw new Error('Email não informado')
+        this.email = email
+    }
+
+    private setSenha(senha: string) {
+        if (!senha) throw new Error('Senha não informada')
+        this.senha = senha
+    }
+
+    private setTipo(tipo: TIPO_USUARIO) {
+        if (!tipo) throw new Error('Tipo não informado')
+        this.tipo = tipo
+    }
+
+    private setNumero(numero: string) {
+        if (!numero) throw new Error('Número não informado')
+        this.numero = numero
+    }
+
+    private setPerfilProfessor(perfilProfessor: PerfilProfessor) {
+        if (!perfilProfessor) throw new Error('Perfil professor não informado')
+        this.perfilProfessor = perfilProfessor
+    }
+
+    public getNome(): string {
+        return this.nome
+    }
+
+    public getCurso(): string {
+        return this.curso
+    }
+
+    public getEmail(): string {
+        return this.email
+    }
+
+    public getSenha(): string {
+        return this.senha
+    }
+
+    public getTipo(): TIPO_USUARIO {
+        return this.tipo
+    }
+
+    public getNumero(): string {
+        return this.numero
+    }
+
+    public getPerfilProfessor(): PerfilProfessor {
+        return this.perfilProfessor
+    }
 }

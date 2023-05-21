@@ -1,5 +1,5 @@
-import { BuscarTccQuery } from "./BuscarTcc.query";
+import { BuscarTccQuery } from './BuscarTcc.query'
 
 const Queries = [BuscarTccQuery]
 
-export { Queries }
+export default Queries

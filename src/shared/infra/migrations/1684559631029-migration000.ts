@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class Migration0001684470026985 implements MigrationInterface {
-    name = 'Migration0001684470026985'
+export class Migration0001684559631029 implements MigrationInterface {
+    name = 'Migration0001684559631029'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`
@@ -29,9 +29,34 @@ export class Migration0001684470026985 implements MigrationInterface {
             )
         `);
         await queryRunner.query(`
+            CREATE TYPE "public"."tcc_status_enum" AS ENUM(
+                'MATRICULA_REALIZADA',
+                'ORIENTACAO_ACEITA',
+                'ORIENTACAO_RECUSADA'
+            )
+        `);
+        await queryRunner.query(`
             CREATE TABLE "tcc" (
-                "id" character varying NOT NULL,
+                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
+                "status" "public"."tcc_status_enum" NOT NULL,
+                "titulo" character varying(256) NOT NULL,
+                "palavras_chave" text array NOT NULL,
+                "introducao" character varying(256) NOT NULL,
+                "objetivos" character varying(256) NOT NULL,
+                "bibliografia" character varying(256) NOT NULL,
+                "metodologia" character varying(256) NOT NULL,
+                "resultados" character varying(256) NOT NULL,
+                "nota_parcial" integer,
+                "nota_final" integer,
                 CONSTRAINT "PK_7924c7a03584f878d6aed2b88d4" PRIMARY KEY ("id")
+            )
+        `);
+        await queryRunner.query(`
+            CREATE TYPE "public"."usuario_tipo_enum" AS ENUM(
+                'ALUNO',
+                'PROFESSOR',
+                'COORDENADOR',
+                'ADMINISTRADOR'
             )
         `);
         await queryRunner.query(`
@@ -40,7 +65,7 @@ export class Migration0001684470026985 implements MigrationInterface {
                 "nome" character varying(256) NOT NULL,
                 "email" character varying(256) NOT NULL,
                 "senha" character varying(256) NOT NULL,
-                "tipo" character varying(256) NOT NULL,
+                "tipo" "public"."usuario_tipo_enum" NOT NULL,
                 CONSTRAINT "PK_a56c58e5cabaa04fb2c98d2d7e2" PRIMARY KEY ("id")
             )
         `);
@@ -65,7 +90,13 @@ export class Migration0001684470026985 implements MigrationInterface {
             DROP TABLE "usuario"
         `);
         await queryRunner.query(`
+            DROP TYPE "public"."usuario_tipo_enum"
+        `);
+        await queryRunner.query(`
             DROP TABLE "tcc"
+        `);
+        await queryRunner.query(`
+            DROP TYPE "public"."tcc_status_enum"
         `);
         await queryRunner.query(`
             DROP TABLE "curso"

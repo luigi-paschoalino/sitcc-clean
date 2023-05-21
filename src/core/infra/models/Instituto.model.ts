@@ -1,4 +1,5 @@
 import {
+    BaseEntity,
     Column,
     Entity,
     ManyToOne,
@@ -9,7 +10,7 @@ import { UniversidadeModel } from './Universidade.model'
 import { CursoModel } from './Curso.model'
 
 @Entity({ name: 'instituto' })
-export class InstitutoModel {
+export class InstitutoModel extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string
 
