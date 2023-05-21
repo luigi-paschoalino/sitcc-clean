@@ -34,7 +34,9 @@ export class CadastrarUsuarioUseCase {
             if (usuario instanceof Error)
                 throw new UsuarioException(usuario.message)
 
-            await this.usuarioRepository.salvarUsuario(usuario)
+            const salvarUsuario = await this.usuarioRepository.salvar(usuario)
+
+            if (salvarUsuario instanceof Error) throw salvarUsuario
 
             this.eventPublisher.mergeObjectContext(usuario)
             usuario.commit()

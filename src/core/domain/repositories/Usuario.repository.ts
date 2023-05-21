@@ -1,6 +1,6 @@
 import { Usuario } from '../Usuario'
 
 export interface UsuarioRepository {
-    salvarUsuario(usuario: Usuario): Promise<void>
-    buscarUsuarioPorId(id: string): Promise<Usuario>
+    salvar(usuario: Usuario): Promise<Error | void>
+    buscarPorId(id: string): Promise<Error | Usuario>
 }

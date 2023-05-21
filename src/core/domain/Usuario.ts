@@ -88,6 +88,8 @@ export class Usuario extends AggregateRoot {
 
     private setTipo(tipo: TIPO_USUARIO) {
         if (!tipo) throw new Error('Tipo não informado')
+        if (!Object.values(TIPO_USUARIO).includes(tipo))
+            throw new Error('Tipo inválido')
         this.tipo = tipo
     }
 
@@ -99,6 +101,10 @@ export class Usuario extends AggregateRoot {
     private setPerfilProfessor(perfilProfessor: PerfilProfessor) {
         if (!perfilProfessor) throw new Error('Perfil professor não informado')
         this.perfilProfessor = perfilProfessor
+    }
+
+    public getId(): string {
+        return this.id
     }
 
     public getNome(): string {

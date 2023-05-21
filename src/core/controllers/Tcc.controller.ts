@@ -1,10 +1,10 @@
 import { Controller, Get, Param, Post, Body } from '@nestjs/common'
-import { BuscarTccQuery } from './application/queries/BuscarTcc.query'
+import { BuscarTccQuery } from '../application/queries/BuscarTcc.query'
 import {
     CadastrarTccUsecase,
     CadastrarTccUsecaseProps,
-} from './application/usecases/CadastrarTcc.usecase'
-import { Tcc } from './domain/Tcc'
+} from '../application/usecases/CadastrarTcc.usecase'
+import { Tcc } from '../domain/Tcc'
 
 @Controller('tcc')
 export class TccController {

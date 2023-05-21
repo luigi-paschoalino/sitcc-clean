@@ -10,6 +10,9 @@ export class UsuarioModel extends BaseEntity {
     nome: string
 
     @Column({ nullable: false, length: 256 })
+    curso: string
+
+    @Column({ nullable: false, length: 256 })
     email: string
 
     @Column({ nullable: false, length: 256 })
@@ -17,4 +20,7 @@ export class UsuarioModel extends BaseEntity {
 
     @Column({ nullable: false, type: 'enum', enum: TIPO_USUARIO })
     tipo: TIPO_USUARIO
+
+    @Column({ nullable: false, length: 256 })
+    numero: string
 }
