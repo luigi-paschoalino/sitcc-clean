@@ -1,6 +1,7 @@
 import { AggregateRoot } from '@nestjs/cqrs'
 import { PerfilProfessor } from './PerfilProfessor'
 import { UsuarioCadastradoEvent } from './events/UsuarioCadastrado.event'
+import { InvalidPropsException } from './exceptions/InvalidProps.exception'
 
 export enum TIPO_USUARIO {
     ALUNO = 'ALUNO',
@@ -37,7 +38,11 @@ export class Usuario extends AggregateRoot {
 
     static criar(props: CriarUsuarioProps, id: string): Usuario {
         try {
-            if (!props) throw new Error('Dados do usuário não informados')
+            //TODO arrumar exceção
+            if (Object.keys(props).length === 0)
+                throw new InvalidPropsException(
+                    'Dados do usuário não informados',
+                )
 
             const instance = new Usuario(id)
 

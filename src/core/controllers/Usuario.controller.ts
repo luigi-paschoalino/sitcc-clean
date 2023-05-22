@@ -14,6 +14,8 @@ export class UsuarioController extends AbstractController {
         super({
             UsuarioException: 400,
             RepositoryException: 500,
+            RepositoryDataNotFoundException: 404,
+            InvalidPropsException: 400,
         })
     }
 
