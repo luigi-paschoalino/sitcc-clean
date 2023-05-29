@@ -2,8 +2,7 @@ import { EventPublisher } from '@nestjs/cqrs'
 import { TIPO_USUARIO, Usuario } from '../../domain/Usuario'
 import { UsuarioRepository } from '../../domain/repositories/Usuario.repository'
 import { UniqueIdService } from '../../domain/services/UniqueID.service'
-import { Logger, Inject } from '@nestjs/common'
-import { UsuarioException } from '../../domain/exceptions/Usuario.exception'
+import { Inject } from '@nestjs/common'
 
 export interface CadastrarUsuarioUseCaseProps {
     nome: string
@@ -15,8 +14,6 @@ export interface CadastrarUsuarioUseCaseProps {
 }
 
 export class CadastrarUsuarioUseCase {
-    private logger = new Logger()
-
     constructor(
         private readonly eventPublisher: EventPublisher,
         @Inject('UniqueIdService')
@@ -31,8 +28,7 @@ export class CadastrarUsuarioUseCase {
 
             const usuario = Usuario.criar(props, id)
 
-            if (usuario instanceof Error)
-                throw new UsuarioException(usuario.message)
+            if (usuario instanceof Error) throw usuario
 
             const salvarUsuario = await this.usuarioRepository.salvar(usuario)
 

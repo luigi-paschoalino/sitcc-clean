@@ -34,6 +34,8 @@ export class Usuario extends AggregateRoot {
 
     private constructor(id: string) {
         super()
+
+        this.id = id
     }
 
     static criar(props: CriarUsuarioProps, id: string): Usuario {

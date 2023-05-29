@@ -1,7 +1,7 @@
 import { Exception } from './Exception'
 
 export class RepositoryDataNotFoundException extends Exception {
-    constructor(message) {
+    constructor(message: string) {
         super(message)
         this.name = RepositoryDataNotFoundException.name
     }
