@@ -17,6 +17,7 @@ export class UniversidadeController extends AbstractController {
         super({
             RepositoryException: 500,
             UniversidadeException: 400,
+            InvalidPropsException: 400,
         })
     }
 

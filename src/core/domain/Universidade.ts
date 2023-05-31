@@ -1,6 +1,7 @@
 import { AggregateRoot } from '@nestjs/cqrs'
 import { UniversidadeException } from './exceptions/Universidade.exception'
 import { UniversidadeCriadaEvent } from './events/UniversidadeCriada.event'
+import { InvalidPropsException } from './exceptions/InvalidProps.exception'
 
 export interface CriarUniversidadeProps {
     nome: string
@@ -55,7 +56,7 @@ export class Universidade extends AggregateRoot {
 
     private setNome(nome: string) {
         if (!nome) {
-            throw new UniversidadeException('Nome não pode ser vazio')
+            throw new InvalidPropsException('Nome não pode ser vazio')
         }
 
         this.nome = nome

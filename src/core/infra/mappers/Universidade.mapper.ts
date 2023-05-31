@@ -24,8 +24,6 @@ export class UniversidadeMapper {
                 model.id,
             )
 
-            console.log(domain)
-
             if (domain instanceof Error) throw domain
 
             return domain
