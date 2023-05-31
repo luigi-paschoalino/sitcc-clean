@@ -7,6 +7,9 @@ import { EventPublisher } from '@nestjs/cqrs'
 
 export interface CadastrarUniversidadeUsecaseProps {
     nome: string
+    institutos: {
+        nome: string
+    }[]
 }
 
 export class CadastrarUniversidadeUsecase {
@@ -18,6 +21,7 @@ export class CadastrarUniversidadeUsecase {
         private readonly uniqueIdService: UniqueIdService,
     ) {}
 
+    //TODO: reavaliar se instituto será entidade ou agregado
     async execute(
         props: CadastrarUniversidadeUsecaseProps,
     ): Promise<Error | void> {
@@ -29,6 +33,9 @@ export class CadastrarUniversidadeUsecase {
                 throw new UniversidadeException(
                     'Já existe uma universidade com esse nome',
                 )
+
+            for (const instituto of props.institutos) {
+            }
 
             const uuid = this.uniqueIdService.gerarUuid()
 

@@ -2,6 +2,8 @@ import { AggregateRoot } from '@nestjs/cqrs'
 import { UniversidadeException } from './exceptions/Universidade.exception'
 import { UniversidadeCriadaEvent } from './events/UniversidadeCriada.event'
 import { InvalidPropsException } from './exceptions/InvalidProps.exception'
+import { Instituto } from './Instituto'
+import { InstitutoAdicionadoEvent } from './events/InstitutoAdicionado.event'
 
 export interface CriarUniversidadeProps {
     nome: string
@@ -10,6 +12,7 @@ export interface CriarUniversidadeProps {
 export class Universidade extends AggregateRoot {
     private id: string
     private nome: string
+    private institutos: Instituto[]
 
     private constructor(id: string) {
         super()
@@ -54,11 +57,36 @@ export class Universidade extends AggregateRoot {
         return this.id
     }
 
+    getInstitutos() {
+        return this.institutos
+    }
+
     private setNome(nome: string) {
         if (!nome) {
             throw new InvalidPropsException('Nome não pode ser vazio')
         }
 
         this.nome = nome
+    }
+
+    private setInstitutos(institutos: Instituto[]) {
+        if (!institutos) {
+            throw new InvalidPropsException(
+                'Uma universidade deve conter pelo menos um instituto!',
+            )
+        }
+        this.institutos = institutos
+    }
+
+    //TODO: validações da entidade Instituo devem constar na camada de domínio
+    public addInstituto(instituto: Instituto) {
+        this.institutos.push(instituto)
+
+        this.apply(
+            new InstitutoAdicionadoEvent({
+                universidadeId: this.id,
+                institutoId: instituto.getId(),
+            }),
+        )
     }
 }
