@@ -13,7 +13,7 @@ export class UniversidadeModel extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string
 
-    @Column({ nullable: false, length: 256 })
+    @Column({ nullable: false, length: 256, unique: true })
     nome: string
 
     @OneToMany(() => InstitutoModel, (instituto) => instituto.universidade, {

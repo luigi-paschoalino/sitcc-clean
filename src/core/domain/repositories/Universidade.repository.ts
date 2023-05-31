@@ -1,6 +1,8 @@
-import { Universidade } from "../Universidade";
+import { Universidade } from '../Universidade'
 
 export interface UniversidadeRepository {
-    buscarUniversidade(id: number): Promise<Universidade>;
-    salvarUniversidade(universidade: Universidade): Promise<void>;
+    buscarPorNome(nome: string): Promise<Error | Universidade>
+    buscarPorId(id: string): Promise<Error | Universidade>
+    listarUniversidades(ids?: string[]): Promise<Error | Universidade[]>
+    salvarUniversidade(universidade: Universidade): Promise<Error | void>
 }

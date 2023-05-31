@@ -1,8 +1,8 @@
 import { Exception } from './Exception'
 
-export class RepositoryException extends Exception {
+export class UniversidadeException extends Exception {
     constructor(message: string) {
         super(message)
-        this.name = RepositoryException.name
+        this.name = UniversidadeException.name
     }
 }

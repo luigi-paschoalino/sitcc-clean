@@ -34,6 +34,8 @@ export class Usuario extends AggregateRoot {
 
     private constructor(id: string) {
         super()
+
+        this.id = id
     }
 
     static criar(props: CriarUsuarioProps, id: string): Usuario {
@@ -72,39 +74,40 @@ export class Usuario extends AggregateRoot {
     }
 
     private setNome(nome: string) {
-        if (!nome) throw new Error('Nome não informado')
+        if (!nome) throw new InvalidPropsException('Nome não informado')
         this.nome = nome
     }
 
     private setCurso(curso: string) {
-        if (!curso) throw new Error('Curso não informado')
+        if (!curso) throw new InvalidPropsException('Curso não informado')
         this.curso = curso
     }
 
     private setEmail(email: string) {
-        if (!email) throw new Error('Email não informado')
+        if (!email) throw new InvalidPropsException('Email não informado')
         this.email = email
     }
 
     private setSenha(senha: string) {
-        if (!senha) throw new Error('Senha não informada')
+        if (!senha) throw new InvalidPropsException('Senha não informada')
         this.senha = senha
     }
 
     private setTipo(tipo: TIPO_USUARIO) {
-        if (!tipo) throw new Error('Tipo não informado')
+        if (!tipo) throw new InvalidPropsException('Tipo não informado')
         if (!Object.values(TIPO_USUARIO).includes(tipo))
-            throw new Error('Tipo inválido')
+            throw new InvalidPropsException('Tipo inválido')
         this.tipo = tipo
     }
 
     private setNumero(numero: string) {
-        if (!numero) throw new Error('Número não informado')
+        if (!numero) throw new InvalidPropsException('Número não informado')
         this.numero = numero
     }
 
     private setPerfilProfessor(perfilProfessor: PerfilProfessor) {
-        if (!perfilProfessor) throw new Error('Perfil professor não informado')
+        if (!perfilProfessor)
+            throw new InvalidPropsException('Perfil professor não informado')
         this.perfilProfessor = perfilProfessor
     }
 

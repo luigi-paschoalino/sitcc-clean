@@ -12,7 +12,6 @@ export class CadastrarTccUsecase {
 
     async execute(props: CadastrarTccUsecaseProps): Promise<Tcc> {
         const tcc = Tcc.criar()
-        console.log('penis')
         return tcc
     }
 }
