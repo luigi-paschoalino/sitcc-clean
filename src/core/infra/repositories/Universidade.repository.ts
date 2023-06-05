@@ -4,11 +4,12 @@ import { UniversidadeMapper } from '../mappers/Universidade.mapper'
 import { RepositoryException } from '../../domain/exceptions/Repository.exception'
 import { UniversidadeModel } from '../models/Universidade.model'
 import { RepositoryDataNotFoundException } from '../../domain/exceptions/RepositoryDataNotFound.exception'
-import { Injectable } from '@nestjs/common'
+import { Injectable, Logger } from '@nestjs/common'
 import { In } from 'typeorm'
 
 @Injectable()
 export class UniversidadeRepositoryImpl implements UniversidadeRepository {
+    private logger = new Logger(UniversidadeRepositoryImpl.name)
     constructor(private readonly universidadeMapper: UniversidadeMapper) {}
 
     async buscarPorId(id: string): Promise<Error | Universidade> {
@@ -38,6 +39,33 @@ export class UniversidadeRepositoryImpl implements UniversidadeRepository {
                 )
 
             const universidade = this.universidadeMapper.modelToDomain(model)
+
+            return universidade
+        } catch (error) {
+            return error
+        }
+    }
+
+    async buscarPorInstituto(
+        institutoId: string,
+    ): Promise<Universidade | Error> {
+        try {
+            const model = await UniversidadeModel.findOne({
+                where: {
+                    institutos: {
+                        id: institutoId,
+                    },
+                },
+            })
+
+            if (!model)
+                throw new RepositoryDataNotFoundException(
+                    `Não foi possível encontrar uma universidade com o instituto ${institutoId}`,
+                )
+
+            const universidade = this.universidadeMapper.modelToDomain(model)
+
+            if (universidade instanceof Error) throw universidade
 
             return universidade
         } catch (error) {

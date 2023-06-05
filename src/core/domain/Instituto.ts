@@ -1,14 +1,17 @@
 import { AggregateRoot } from '@nestjs/cqrs'
 import { Universidade } from './Universidade'
 import { InvalidPropsException } from './exceptions/InvalidProps.exception'
+import { Curso } from './Curso'
+import { CursoAdicionadoEvent } from './events/CursoAdicionado.event'
 
 export interface CriarInstitutoProps {
     nome: string
 }
 
 export class Instituto extends AggregateRoot {
-    id: string
-    nome: string
+    private id: string
+    private nome: string
+    private cursos?: Curso[]
 
     private constructor(id: string) {
         super()
@@ -19,7 +22,6 @@ export class Instituto extends AggregateRoot {
     static criar(props: CriarInstitutoProps, id: string): Instituto {
         const instituto = new Instituto(id)
 
-        instituto.id = id
         instituto.setNome(props.nome)
 
         return instituto
@@ -36,5 +38,21 @@ export class Instituto extends AggregateRoot {
 
     getId(): string {
         return this.id
+    }
+
+    getCursos(): Curso[] {
+        return this.cursos
+    }
+
+    //TODO: validar na camada de domínio
+    addCurso(curso: Curso) {
+        this.cursos.push(curso)
+
+        this.apply(
+            new CursoAdicionadoEvent({
+                institutoId: this.id,
+                cursoId: curso.getId(),
+            }),
+        )
     }
 }

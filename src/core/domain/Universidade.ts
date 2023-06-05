@@ -9,10 +9,15 @@ export interface CriarUniversidadeProps {
     nome: string
 }
 
+export interface CarregarUniversidadeProps {
+    nome: string
+    institutos?: Instituto[]
+}
+
 export class Universidade extends AggregateRoot {
     private id: string
     private nome: string
-    private institutos: Instituto[]
+    private institutos?: Instituto[]
 
     private constructor(id: string) {
         super()
@@ -49,6 +54,15 @@ export class Universidade extends AggregateRoot {
         }
     }
 
+    static carregar(props: CarregarUniversidadeProps, id: string) {
+        const instance = new Universidade(id)
+
+        instance.setNome(props.nome)
+        instance.setInstitutos(props.institutos)
+
+        return instance
+    }
+
     getNome() {
         return this.nome
     }
@@ -61,6 +75,11 @@ export class Universidade extends AggregateRoot {
         return this.institutos
     }
 
+    private setInstitutos(institutos: Instituto[]) {
+        if (!institutos) institutos = []
+        this.institutos = institutos
+    }
+
     private setNome(nome: string) {
         if (!nome) {
             throw new InvalidPropsException('Nome não pode ser vazio')
@@ -69,24 +88,28 @@ export class Universidade extends AggregateRoot {
         this.nome = nome
     }
 
-    private setInstitutos(institutos: Instituto[]) {
-        if (!institutos) {
-            throw new InvalidPropsException(
-                'Uma universidade deve conter pelo menos um instituto!',
-            )
-        }
-        this.institutos = institutos
-    }
-
     //TODO: validações da entidade Instituo devem constar na camada de domínio
-    public addInstituto(instituto: Instituto) {
-        this.institutos.push(instituto)
+    public addInstituto(instituto: Instituto): Error | void {
+        try {
+            if (!this.institutos) this.institutos = []
 
-        this.apply(
-            new InstitutoAdicionadoEvent({
-                universidadeId: this.id,
-                institutoId: instituto.getId(),
-            }),
-        )
+            if (
+                this.institutos.find((i) => i.getNome() === instituto.getNome())
+            )
+                throw new UniversidadeException(
+                    'Instituto já existe na universidade',
+                )
+
+            this.institutos.push(instituto)
+
+            this.apply(
+                new InstitutoAdicionadoEvent({
+                    universidadeId: this.id,
+                    institutoId: instituto.getId(),
+                }),
+            )
+        } catch (error) {
+            return error
+        }
     }
 }

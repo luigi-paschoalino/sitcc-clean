@@ -1,4 +1,4 @@
-import { Inject } from '@nestjs/common'
+import { Inject, Logger } from '@nestjs/common'
 import { UniqueIdService } from '../../domain/services/UniqueID.service'
 import { Instituto } from '../../domain/Instituto'
 import { UniversidadeRepository } from '../../domain/repositories/Universidade.repository'
@@ -10,6 +10,8 @@ export interface CadastrarInstitutoUsecaseProps {
 }
 
 export class CadastrarInstitutoUsecase {
+    private logger = new Logger(CadastrarInstitutoUsecase.name)
+
     constructor(
         private readonly eventPublisher: EventPublisher,
         @Inject('UniqueIdService')
@@ -43,7 +45,11 @@ export class CadastrarInstitutoUsecase {
                 throw universidade
             }
 
-            universidade.addInstituto(instituto)
+            const addInstituto = universidade.addInstituto(instituto)
+
+            if (addInstituto instanceof Error) {
+                throw addInstituto
+            }
 
             const salvar = await this.universidadeRepository.salvarUniversidade(
                 universidade,
