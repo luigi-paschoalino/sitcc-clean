@@ -1,9 +1,33 @@
 import { AggregateRoot } from '@nestjs/cqrs'
+import { TccCadastradoEvent } from './events/TccCadastrado.event'
 
 export enum STATUS_TCC {
     MATRICULA_REALIZADA = 'MATRICULA_REALIZADA',
     ORIENTACAO_ACEITA = 'ORIENTACAO_ACEITA',
     ORIENTACAO_RECUSADA = 'ORIENTACAO_RECUSADA',
+}
+
+export interface CriarTccProps {
+    titulo: string
+    palavras_chave: string[]
+    introducao: string
+    objetivos: string
+    bibliografia: string
+    metodologia: string
+    resultados: string
+}
+
+export interface CarregarTccProps {
+    titulo: string
+    palavras_chave: string[]
+    introducao: string
+    objetivos: string
+    bibliografia: string
+    metodologia: string
+    resultados: string
+    status: STATUS_TCC
+    nota_parcial: number
+    nota_final: number
 }
 
 export class Tcc extends AggregateRoot {
@@ -19,13 +43,49 @@ export class Tcc extends AggregateRoot {
     private nota_parcial: number
     private nota_final: number
 
-    private constructor() {
+    private constructor(id: string) {
         super()
+        this.id = id
     }
 
-    static criar(): Tcc {
-        const tcc = new Tcc()
+    static criar(props: CriarTccProps, id: string): Tcc {
+        const tcc = new Tcc(id)
+
         tcc.setStatus(STATUS_TCC.MATRICULA_REALIZADA)
+        tcc.setTitulo(props.titulo)
+        tcc.setPalavrasChave(props.palavras_chave)
+        tcc.setIntroducao(props.introducao)
+        tcc.setObjetivos(props.objetivos)
+        tcc.setBibliografia(props.bibliografia)
+        tcc.setMetodologia(props.metodologia)
+        tcc.setResultados(props.resultados)
+
+        tcc.apply(
+            new TccCadastradoEvent({
+                id: tcc.id,
+                titulo: tcc.titulo,
+            }),
+        )
+        return tcc
+    }
+
+    static carregar(
+        props: CarregarTccProps,
+        id: string,
+    ): Tcc {
+        const tcc = new Tcc(id)
+
+        tcc.setStatus(props.status)
+        tcc.setTitulo(props.titulo)
+        tcc.setPalavrasChave(props.palavras_chave)
+        tcc.setIntroducao(props.introducao)
+        tcc.setObjetivos(props.objetivos)
+        tcc.setBibliografia(props.bibliografia)
+        tcc.setMetodologia(props.metodologia)
+        tcc.setResultados(props.resultados)
+        tcc.setNotaParcial(props.nota_parcial)
+        tcc.setNotaFinal(props.nota_final)
+
         return tcc
     }
 
@@ -77,31 +137,47 @@ export class Tcc extends AggregateRoot {
         this.status = status
     }
 
-    public setTitulo(titulo: string): void {
+    private setTitulo(titulo: string): void {
         this.titulo = titulo
     }
 
-    public setPalavrasChave(palavras_chave: string[]): void {
+    private setPalavrasChave(palavras_chave: string[]): void {
         this.palavras_chave = palavras_chave
     }
 
-    public setIntroducao(introducao: string): void {
+    private setIntroducao(introducao: string): void {
         this.introducao = introducao
     }
 
-    public setObjetivos(objetivos: string): void {
+    private setObjetivos(objetivos: string): void {
         this.objetivos = objetivos
     }
 
-    public setBibliografia(bibliografia: string): void {
+    private setBibliografia(bibliografia: string): void {
         this.bibliografia = bibliografia
     }
 
-    public setMetodologia(metodologia: string): void {
+    private setMetodologia(metodologia: string): void {
         this.metodologia = metodologia
     }
 
-    public setResultados(resultados: string): void {
+    private setResultados(resultados: string): void {
         this.resultados = resultados
+    }
+
+    private setNotaParcial(nota_parcial: number): void {
+        this.nota_parcial = nota_parcial
+    }
+
+    private setNotaFinal(nota_final: number): void {
+        this.nota_final = nota_final
+    }
+
+    public aceitarOrientacao(): void {
+        this.setStatus(STATUS_TCC.ORIENTACAO_ACEITA)
+    }
+
+    public recusarOrientacao(): void {
+        this.setStatus(STATUS_TCC.ORIENTACAO_RECUSADA)
     }
 }
