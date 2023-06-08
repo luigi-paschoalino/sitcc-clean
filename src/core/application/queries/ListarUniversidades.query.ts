@@ -20,6 +20,12 @@ export class ListarUniversidadesQuery {
                     return {
                         id: universidade.getId(),
                         nome: universidade.getNome(),
+                        institutos: universidade.getInstitutos().map((i) => {
+                            return {
+                                id: i.getId(),
+                                nome: i.getNome(),
+                            }
+                        }),
                     }
                 },
             )

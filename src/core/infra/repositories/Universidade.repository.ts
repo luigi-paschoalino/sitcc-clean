@@ -21,6 +21,10 @@ export class UniversidadeRepositoryImpl implements UniversidadeRepository {
                     `Não foi possível encontrar a universidade com o ID ${id}`,
                 )
 
+            this.logger.debug(
+                'aaaaaaaaaaaaaaaaaaaaaaaaaaaaa' + JSON.stringify(model),
+            )
+
             const universidade = this.universidadeMapper.modelToDomain(model)
 
             return universidade
@@ -62,6 +66,10 @@ export class UniversidadeRepositoryImpl implements UniversidadeRepository {
                 throw new RepositoryDataNotFoundException(
                     `Não foi possível encontrar uma universidade com o instituto ${institutoId}`,
                 )
+
+            this.logger.debug(
+                'aaaaaaaaaaaaaaaaaaaaaaaaaaaaa' + JSON.stringify(model),
+            )
 
             const universidade = this.universidadeMapper.modelToDomain(model)
 

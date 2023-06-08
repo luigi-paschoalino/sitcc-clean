@@ -1,5 +1,4 @@
 import { AggregateRoot } from '@nestjs/cqrs'
-import { Universidade } from './Universidade'
 import { InvalidPropsException } from './exceptions/InvalidProps.exception'
 import { Curso } from './Curso'
 import { CursoAdicionadoEvent } from './events/CursoAdicionado.event'
