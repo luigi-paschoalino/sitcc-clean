@@ -22,6 +22,7 @@ export class CadastrarUsuarioUseCase {
         private readonly usuarioRepository: UsuarioRepository,
     ) {}
 
+    //TODO: validar se o usuário já existe (email, matricula)
     async execute(props: CadastrarUsuarioUseCaseProps): Promise<Error | void> {
         try {
             const id = this.uniqueIdService.gerarUuid()

@@ -2,10 +2,10 @@ import { AggregateRoot } from '@nestjs/cqrs'
 import { Instituto } from './Instituto'
 
 export class Curso extends AggregateRoot {
-    id: string
-    nome: string
-    codigo: string
-    instituto: Instituto
+    private id: string
+    private nome: string
+    private codigo: string
+    private instituto: Instituto
 
     private constructor() {
         super()
@@ -23,5 +23,9 @@ export class Curso extends AggregateRoot {
         curso.codigo = codigo
         curso.instituto = instituto
         return curso
+    }
+
+    getId(): string {
+        return this.id
     }
 }

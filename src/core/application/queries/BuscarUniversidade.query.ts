@@ -19,6 +19,12 @@ export class BuscarUniversidadeQuery {
             const universidadeDTO: UniversidadeDTO = {
                 id: universidade.getId(),
                 nome: universidade.getNome(),
+                institutos: universidade.getInstitutos().map((i) => {
+                    return {
+                        id: i.getId(),
+                        nome: i.getNome(),
+                    }
+                }),
             }
 
             return universidadeDTO
