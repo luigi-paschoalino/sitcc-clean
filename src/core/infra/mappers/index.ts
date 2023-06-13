@@ -1,7 +1,13 @@
+import { CursoMapper } from './Curso.mapper'
 import { InstitutoMapper } from './Instituto.mapper'
 import { UniversidadeMapper } from './Universidade.mapper'
 import { UsuarioMapper } from './Usuario.mapper'
 
-const Mappers = [UsuarioMapper, UniversidadeMapper, InstitutoMapper]
+const Mappers = [
+    UsuarioMapper,
+    UniversidadeMapper,
+    InstitutoMapper,
+    CursoMapper,
+]
 
 export default Mappers

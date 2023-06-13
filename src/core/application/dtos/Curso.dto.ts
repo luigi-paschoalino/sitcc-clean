@@ -1,13 +1,13 @@
-export interface UniversidadeDTO {
+export interface CursoDTO {
     id: string
     nome: string
-    institutos: {
+    codigo: string
+    instituto: {
         id: string
         nome: string
-        cursos: {
+        universidade: {
             id: string
             nome: string
-            codigo: string
-        }[]
-    }[]
+        }
+    }
 }

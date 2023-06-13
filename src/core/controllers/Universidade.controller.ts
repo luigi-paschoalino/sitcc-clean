@@ -11,15 +11,22 @@ import {
     CadastrarInstitutoUsecaseProps,
 } from '../application/usecases/CadastrarInstituto.usecase'
 import { BuscarInstitutoQuery } from '../application/queries/BuscarInstituto.query'
+import { BuscarCursoQuery } from '../application/queries/BuscarCurso.query'
+import {
+    CadastrarCursoUsecase,
+    CadastrarCursoUsecaseProps,
+} from '../application/usecases/CadastrarCurso.usecase'
 
-@Controller('universidade')
+@Controller('universidades')
 export class UniversidadeController extends AbstractController {
     constructor(
         private readonly cadastrarUniversidadeUsecase: CadastrarUniversidadeUsecase,
         private readonly buscarUniversidadeQuery: BuscarUniversidadeQuery,
         private readonly listarUniversidadesQuery: ListarUniversidadesQuery,
         private readonly cadastrarInstitutoUsecase: CadastrarInstitutoUsecase,
+        private readonly cadastrarCursoUsecase: CadastrarCursoUsecase,
         private readonly buscarInstitutoQuery: BuscarInstitutoQuery,
+        private readonly buscarCursoQuery: BuscarCursoQuery,
     ) {
         super({
             RepositoryException: 500,
@@ -64,6 +71,22 @@ export class UniversidadeController extends AbstractController {
     public async getInstituto(@Param('id') id: string) {
         const result = await this.buscarInstitutoQuery.execute({
             institutoId: id,
+        })
+
+        return this.handleResponse(result)
+    }
+
+    @Post('cursos')
+    public async cadastrarCurso(@Body() request: CadastrarCursoUsecaseProps) {
+        const result = await this.cadastrarCursoUsecase.execute(request)
+
+        return this.handleResponse(result)
+    }
+
+    @Get('cursos/:id')
+    public async buscarCurso(@Param('id') id: string) {
+        const result = await this.buscarCursoQuery.execute({
+            cursoId: id,
         })
 
         return this.handleResponse(result)
