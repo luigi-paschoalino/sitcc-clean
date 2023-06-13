@@ -24,6 +24,13 @@ export class ListarUniversidadesQuery {
                             return {
                                 id: i.getId(),
                                 nome: i.getNome(),
+                                cursos: i.getCursos().map((c) => {
+                                    return {
+                                        id: c.getId(),
+                                        nome: c.getNome(),
+                                        codigo: c.getCodigo(),
+                                    }
+                                }),
                             }
                         }),
                     }

@@ -5,6 +5,7 @@ import { CursoAdicionadoEvent } from './events/CursoAdicionado.event'
 
 export interface CriarInstitutoProps {
     nome: string
+    cursos?: Curso[]
 }
 
 export class Instituto extends AggregateRoot {
@@ -26,9 +27,22 @@ export class Instituto extends AggregateRoot {
         return instituto
     }
 
+    static carregar(props: CriarInstitutoProps, id: string): Instituto {
+        const instituto = new Instituto(id)
+
+        instituto.setNome(props.nome)
+        instituto.setCursos(props.cursos)
+
+        return instituto
+    }
+
     private setNome(nome: string) {
         if (!nome) throw new InvalidPropsException('Nome inválido!')
         this.nome = nome
+    }
+
+    private setCursos(cursos: Curso[]) {
+        this.cursos = cursos
     }
 
     getNome(): string {
@@ -44,7 +58,7 @@ export class Instituto extends AggregateRoot {
     }
 
     //TODO: validar na camada de domínio
-    addCurso(curso: Curso) {
+    addCurso(curso: Curso): void {
         this.cursos.push(curso)
 
         this.apply(

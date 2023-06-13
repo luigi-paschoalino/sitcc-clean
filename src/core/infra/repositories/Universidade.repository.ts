@@ -81,6 +81,31 @@ export class UniversidadeRepositoryImpl implements UniversidadeRepository {
         }
     }
 
+    async buscarPorCurso(cursoId: string): Promise<Error | Universidade> {
+        try {
+            const model = await UniversidadeModel.findOne({
+                where: {
+                    institutos: {
+                        cursos: {
+                            id: cursoId,
+                        },
+                    },
+                },
+            })
+
+            if (!model)
+                throw new RepositoryDataNotFoundException(
+                    `Não foi possível encontrar uma universidade com o curso ${cursoId}`,
+                )
+
+            const universidade = this.universidadeMapper.modelToDomain(model)
+
+            return universidade
+        } catch (error) {
+            return error
+        }
+    }
+
     async listarUniversidades(ids?: string[]): Promise<Error | Universidade[]> {
         try {
             const filter = {}

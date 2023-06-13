@@ -1,3 +1,4 @@
+import { BuscarCursoQuery } from './BuscarCurso.query'
 import { BuscarInstitutoQuery } from './BuscarInstituto.query'
 import { BuscarTccQuery } from './BuscarTcc.query'
 import { BuscarUniversidadeQuery } from './BuscarUniversidade.query'
@@ -10,6 +11,7 @@ const Queries = [
     BuscarUniversidadeQuery,
     ListarUniversidadesQuery,
     BuscarInstitutoQuery,
+    BuscarCursoQuery,
 ]
 
 export default Queries
