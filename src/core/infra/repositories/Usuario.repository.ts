@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, Logger } from '@nestjs/common'
 import { Usuario } from '../../domain/Usuario'
 import { RepositoryException } from '../../domain/exceptions/Repository.exception'
 import { UsuarioMapper } from '../mappers/Usuario.mapper'
@@ -8,6 +8,7 @@ import { RepositoryDataNotFoundException } from '../../domain/exceptions/Reposit
 
 @Injectable()
 export class UsuarioRepositoryImpl implements UsuarioRepository {
+    private logger = new Logger(UsuarioRepositoryImpl.name)
     constructor(private readonly usuarioMapper: UsuarioMapper) {}
 
     async buscarPorId(id: string): Promise<Error | Usuario> {
@@ -21,6 +22,7 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
                     `Usuário com o ID ${id} não existe!`,
                 )
 
+            this.logger.debug(JSON.stringify(model, null, 2))
             const usuario = this.usuarioMapper.modelToDomain(model)
 
             return usuario

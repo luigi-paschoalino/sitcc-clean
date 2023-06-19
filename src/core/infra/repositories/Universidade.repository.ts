@@ -6,6 +6,7 @@ import { UniversidadeModel } from '../models/Universidade.model'
 import { RepositoryDataNotFoundException } from '../../domain/exceptions/RepositoryDataNotFound.exception'
 import { Injectable, Logger } from '@nestjs/common'
 import { In } from 'typeorm'
+import { Curso } from '../../domain/Curso'
 
 @Injectable()
 export class UniversidadeRepositoryImpl implements UniversidadeRepository {
@@ -50,7 +51,7 @@ export class UniversidadeRepositoryImpl implements UniversidadeRepository {
         }
     }
 
-    async buscarPorInstituto(
+    async buscarPorInstitutoId(
         institutoId: string,
     ): Promise<Universidade | Error> {
         try {
@@ -81,7 +82,7 @@ export class UniversidadeRepositoryImpl implements UniversidadeRepository {
         }
     }
 
-    async buscarPorCurso(cursoId: string): Promise<Error | Universidade> {
+    async buscarPorCursoId(cursoId: string): Promise<Error | Universidade> {
         try {
             const model = await UniversidadeModel.findOne({
                 where: {
@@ -103,6 +104,47 @@ export class UniversidadeRepositoryImpl implements UniversidadeRepository {
             return universidade
         } catch (error) {
             return error
+        }
+    }
+
+    async buscarCurso(cursoId: string): Promise<Error | Curso> {
+        try {
+            const model = await UniversidadeModel.findOne({
+                where: {
+                    institutos: {
+                        cursos: {
+                            id: cursoId,
+                        },
+                    },
+                },
+            })
+
+            if (!model)
+                throw new RepositoryDataNotFoundException(
+                    `Não foi possível encontrar uma universidade com o curso ${cursoId}`,
+                )
+
+            this.logger.debug(JSON.stringify(model, null, 2))
+
+            const universidade = this.universidadeMapper.modelToDomain(model)
+
+            this.logger.debug(JSON.stringify(universidade, null, 2))
+
+            const instituto = universidade
+                .getInstitutos()
+                .find((instituto) =>
+                    instituto
+                        .getCursos()
+                        .find((curso) => curso.getId() === cursoId),
+                )
+
+            const curso = instituto
+                .getCursos()
+                .find((curso) => curso.getId() === cursoId)
+
+            return curso
+        } catch (error) {
+            return new RepositoryException(error.message)
         }
     }
 

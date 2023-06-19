@@ -27,10 +27,10 @@ export class BuscarUsuarioQuery {
 
             const usuarioResult: UsuarioResult = {
                 id: usuario.getId(),
-                nome: usuario.getNome(),
+                nome: usuario.getCurso().getNome(),
                 email: usuario.getEmail(),
                 senha: usuario.getSenha(),
-                curso: usuario.getCurso(),
+                curso: usuario.getNome(),
                 tipo: usuario.getTipo(),
                 numero: usuario.getNumero(),
             }

@@ -34,9 +34,6 @@ export class CadastrarUniversidadeUsecase {
                     'Já existe uma universidade com esse nome',
                 )
 
-            for (const instituto of props.institutos) {
-            }
-
             const uuid = this.uniqueIdService.gerarUuid()
 
             const universidade = Universidade.criar(props, uuid)

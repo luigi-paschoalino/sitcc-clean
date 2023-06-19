@@ -16,7 +16,9 @@ export class BuscarCursoQuery {
     async execute(props: BuscarCursoQueryProps): Promise<Error | CursoDTO> {
         try {
             const universidade =
-                await this.universidadeRepository.buscarPorCurso(props.cursoId)
+                await this.universidadeRepository.buscarPorCursoId(
+                    props.cursoId,
+                )
 
             if (universidade instanceof Error) throw universidade
 

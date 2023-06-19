@@ -2,6 +2,7 @@ import { AggregateRoot } from '@nestjs/cqrs'
 import { PerfilProfessor } from './PerfilProfessor'
 import { UsuarioCadastradoEvent } from './events/UsuarioCadastrado.event'
 import { InvalidPropsException } from './exceptions/InvalidProps.exception'
+import { Curso } from './Curso'
 
 export enum TIPO_USUARIO {
     ALUNO = 'ALUNO',
@@ -12,11 +13,21 @@ export enum TIPO_USUARIO {
 
 export interface CriarUsuarioProps {
     nome: string
-    curso: string
+    curso: Curso
     email: string
     senha: string
     tipo: TIPO_USUARIO
     numero: string
+}
+
+export interface CarregarUsuarioProps {
+    nome: string
+    curso: Curso
+    email: string
+    senha: string
+    tipo: TIPO_USUARIO
+    numero: string
+    perfilProfessor?: PerfilProfessor
 }
 
 //TODO: usuario vai ser um só, com perfil professor criado pelo handler do evento usuarioCriadoEvent em caso do enum ser 'PROFESSOR'
@@ -24,7 +35,7 @@ export interface CriarUsuarioProps {
 //TODO: métodos de atualização do perfilProfessor serão feitas apenas se o enum for 'PROFESSOR'
 export class Usuario extends AggregateRoot {
     private id: string // Matricula
-    private curso: string
+    private curso: Curso
     private nome: string
     private email: string
     private senha: string //TODO: hashear senha
@@ -58,7 +69,7 @@ export class Usuario extends AggregateRoot {
             instance.apply(
                 new UsuarioCadastradoEvent({
                     id: instance.id,
-                    curso: instance.curso,
+                    curso: instance.curso.getId(),
                     nome: instance.nome,
                     email: instance.email,
                     senha: instance.senha,
@@ -73,12 +84,26 @@ export class Usuario extends AggregateRoot {
         }
     }
 
+    static carregar(props: CarregarUsuarioProps, id: string): Usuario {
+        const instance = new Usuario(id)
+
+        instance.setNome(props.nome)
+        instance.setCurso(props.curso)
+        instance.setEmail(props.email)
+        instance.setSenha(props.senha)
+        instance.setTipo(props.tipo)
+        instance.setNumero(props.numero)
+        instance.setPerfilProfessor(props.perfilProfessor)
+
+        return instance
+    }
+
     private setNome(nome: string) {
         if (!nome) throw new InvalidPropsException('Nome não informado')
         this.nome = nome
     }
 
-    private setCurso(curso: string) {
+    private setCurso(curso: Curso) {
         if (!curso) throw new InvalidPropsException('Curso não informado')
         this.curso = curso
     }
@@ -106,7 +131,7 @@ export class Usuario extends AggregateRoot {
     }
 
     private setPerfilProfessor(perfilProfessor: PerfilProfessor) {
-        if (!perfilProfessor)
+        if (!perfilProfessor && this.tipo === TIPO_USUARIO.PROFESSOR)
             throw new InvalidPropsException('Perfil professor não informado')
         this.perfilProfessor = perfilProfessor
     }
@@ -119,7 +144,7 @@ export class Usuario extends AggregateRoot {
         return this.nome
     }
 
-    public getCurso(): string {
+    public getCurso(): Curso {
         return this.curso
     }
 

@@ -40,6 +40,7 @@ export class Universidade extends AggregateRoot {
             const instance = new Universidade(id)
 
             instance.setNome(props.nome)
+            instance.institutos = []
 
             instance.apply(
                 new UniversidadeCriadaEvent({

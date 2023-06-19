@@ -17,7 +17,7 @@ export class BuscarInstitutoQuery {
     ): Promise<Error | InstitutoDTO> {
         try {
             const universidade =
-                await this.universidadeRepository.buscarPorInstituto(
+                await this.universidadeRepository.buscarPorInstitutoId(
                     props.institutoId,
                 )
 
