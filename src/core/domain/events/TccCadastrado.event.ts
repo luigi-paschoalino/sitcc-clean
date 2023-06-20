@@ -1,5 +1,4 @@
-import { Logger } from '@nestjs/common'
-import { EventPublisher, IEvent } from '@nestjs/cqrs'
+import { IEvent } from '@nestjs/cqrs'
 
 interface TccCadastradoEventProps {
     id: string

@@ -1,12 +1,14 @@
-import { CadastrarUsuarioUseCase } from '../application/usecases/CadastrarUsuario.usecase'
-import { Controller, Get, Body, Param, Post, Logger, Res } from '@nestjs/common'
+import {
+    CadastrarUsuarioUseCase,
+    CadastrarUsuarioUseCaseProps,
+} from '../application/usecases/CadastrarUsuario.usecase'
+import { Controller, Get, Body, Param, Post, Res } from '@nestjs/common'
 import { CriarUsuarioProps } from '../domain/Usuario'
 import { AbstractController } from './AbstractController'
 import { BuscarUsuarioQuery } from '../application/queries/BuscarUsuario.query'
 
 @Controller('usuarios')
 export class UsuarioController extends AbstractController {
-    private logger = new Logger(UsuarioController.name)
     constructor(
         private readonly cadastrarUsuarioUseCase: CadastrarUsuarioUseCase,
         private readonly buscarUsuarioQuery: BuscarUsuarioQuery,
@@ -27,7 +29,7 @@ export class UsuarioController extends AbstractController {
     }
 
     @Post()
-    async cadastrar(@Body() body: CriarUsuarioProps) {
+    async cadastrar(@Body() body: CadastrarUsuarioUseCaseProps) {
         const result = await this.cadastrarUsuarioUseCase.execute(body)
 
         return this.handleResponse(result)

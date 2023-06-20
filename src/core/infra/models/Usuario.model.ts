@@ -1,5 +1,12 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
+import {
+    BaseEntity,
+    Column,
+    Entity,
+    ManyToOne,
+    PrimaryGeneratedColumn,
+} from 'typeorm'
 import { TIPO_USUARIO } from '../../domain/Usuario'
+import { CursoModel } from './Curso.model'
 
 @Entity({ name: 'usuario' })
 export class UsuarioModel extends BaseEntity {
@@ -9,8 +16,8 @@ export class UsuarioModel extends BaseEntity {
     @Column({ nullable: false, length: 256 })
     nome: string
 
-    @Column({ nullable: false, length: 256 })
-    curso: string
+    @ManyToOne(() => CursoModel, (curso) => curso.usuarios, { eager: true })
+    curso: CursoModel
 
     @Column({ nullable: false, length: 256 })
     email: string
