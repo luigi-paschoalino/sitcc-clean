@@ -1,5 +1,10 @@
-import { EventPublisher } from '@nestjs/cqrs'
+import { IEvent } from '@nestjs/cqrs'
 
-export class TccCadastradoEvent {
-    constructor() {}
+interface TccCadastradoEventProps {
+    id: string
+    titulo: string
+}
+
+export class TccCadastradoEvent implements IEvent {
+    constructor(props: TccCadastradoEventProps) {}
 }

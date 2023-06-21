@@ -9,6 +9,7 @@ import { UniqueIdServiceImpl } from './infra/services/UniqueID.service'
 import { UsuarioRepositoryImpl } from './infra/repositories/Usuario.repository'
 import Mappers from './infra/mappers'
 import { UniversidadeRepositoryImpl } from './infra/repositories/Universidade.repository'
+import { TccRepositoryImpl } from './infra/repositories/Tcc.repository'
 
 @Module({
     imports: [CqrsModule],
@@ -28,6 +29,10 @@ import { UniversidadeRepositoryImpl } from './infra/repositories/Universidade.re
         {
             provide: 'UniversidadeRepository',
             useClass: UniversidadeRepositoryImpl,
+        },
+        {
+            provide: 'TccRepository',
+            useClass: TccRepositoryImpl,
         },
     ],
     exports: [],

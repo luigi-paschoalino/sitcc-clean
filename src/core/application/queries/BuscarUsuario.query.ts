@@ -22,7 +22,6 @@ export class BuscarUsuarioQuery {
     async execute(id: string): Promise<Error | UsuarioResult> {
         try {
             const usuario = await this.usuarioRepository.buscarPorId(id)
-
             if (usuario instanceof Error) throw usuario
 
             const usuarioResult: UsuarioResult = {
