@@ -8,6 +8,7 @@ import {
 } from 'typeorm'
 import { InstitutoModel } from './Instituto.model'
 import { UsuarioModel } from './Usuario.model'
+import { CronogramaModel } from './Cronograma.model'
 
 @Entity('curso')
 export class CursoModel extends BaseEntity {
@@ -28,4 +29,10 @@ export class CursoModel extends BaseEntity {
 
     @OneToMany(() => UsuarioModel, (usuario) => usuario.curso)
     usuarios: UsuarioModel[]
+
+    @OneToMany(() => CronogramaModel, (cronograma) => cronograma.curso, {
+        eager: true,
+        cascade: true,
+    })
+    cronogramas: CronogramaModel[]
 }

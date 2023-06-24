@@ -1,19 +1,19 @@
 import { AggregateRoot } from '@nestjs/cqrs'
 import { InvalidPropsException } from './exceptions/InvalidProps.exception'
+import { Cronograma } from './Cronograma'
 
 export interface CriarCursoProps {
     nome: string
     codigo: string
 }
 
-export class Curso extends AggregateRoot {
+export class Curso {
     private id: string
     private nome: string
     private codigo: string
+    private cronogramas: Cronograma[]
 
     private constructor(id: string) {
-        super()
-
         this.id = id
     }
 
@@ -37,6 +37,10 @@ export class Curso extends AggregateRoot {
                 'Código do curso não pode ser vazio',
             )
         this.codigo = codigo
+    }
+
+    adicionarCronograma(cronograma: Cronograma) {
+        this.cronogramas.push(cronograma)
     }
 
     getNome() {
