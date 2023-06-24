@@ -1,5 +1,7 @@
 import { AggregateRoot } from '@nestjs/cqrs'
 import { InvalidPropsException } from './exceptions/InvalidProps.exception'
+import { Norma } from './Normas'
+import { NormaAdicionadaEvent } from './events/NormaAdicionada.event'
 
 export interface CriarCursoProps {
     nome: string
@@ -10,6 +12,7 @@ export class Curso extends AggregateRoot {
     private id: string
     private nome: string
     private codigo: string
+    private normas?: Norma []
 
     private constructor(id: string) {
         super()
@@ -49,5 +52,15 @@ export class Curso extends AggregateRoot {
 
     getId(): string {
         return this.id
+    }
+
+    addNorma (norma: Norma): void {
+        this.normas.push(norma)
+
+        this.apply( new NormaAdicionadaEvent({
+            cursoId: this.id,
+            norma: norma,
+            }),
+        )
     }
 }
