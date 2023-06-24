@@ -22,10 +22,6 @@ export class UniversidadeRepositoryImpl implements UniversidadeRepository {
                     `Não foi possível encontrar a universidade com o ID ${id}`,
                 )
 
-            this.logger.debug(
-                'aaaaaaaaaaaaaaaaaaaaaaaaaaaaa' + JSON.stringify(model),
-            )
-
             const universidade = this.universidadeMapper.modelToDomain(model)
 
             return universidade
