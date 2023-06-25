@@ -1,4 +1,3 @@
-import { AggregateRoot } from '@nestjs/cqrs'
 import { InvalidPropsException } from './exceptions/InvalidProps.exception'
 
 export interface CriarNormaProps {

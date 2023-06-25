@@ -1,12 +1,21 @@
+import { Atividade } from './Atividades'
+import { InvalidPropsException } from './exceptions/InvalidProps.exception'
+
 export interface CriarCronogramaProps {
     ano: number
     semestre: ENUM_SEMESTRE
+}
+
+export enum ENUM_SEMESTRE {
+    PRIMEIRO = '1',
+    SEGUNDO = '2',
 }
 
 export class Cronograma {
     private id: string
     private ano: number
     private semestre: ENUM_SEMESTRE
+    private atividades?: Atividade[]
 
     private constructor(id: string) {
         this.id = id
@@ -26,6 +35,9 @@ export class Cronograma {
     }
 
     private setSemestre(semestre: ENUM_SEMESTRE): void {
+        if (!semestre) throw new InvalidPropsException('Semestre não informado')
+        if (!Object.values(ENUM_SEMESTRE).includes(semestre))
+            throw new InvalidPropsException('Semestre inválido')
         this.semestre = semestre
     }
 
@@ -40,9 +52,8 @@ export class Cronograma {
     getSemestre(): ENUM_SEMESTRE {
         return this.semestre
     }
-}
 
-export enum ENUM_SEMESTRE {
-    PRIMEIRO = '1',
-    SEGUNDO = '2',
+    getAtividades(): Atividade[] {
+        return this.atividades
+    }
 }
