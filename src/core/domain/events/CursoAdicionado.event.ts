@@ -1,4 +1,5 @@
 export interface CursoAdicionadoEventProps {
+    universidadeId: string
     institutoId: string
     cursoId: string
 }
