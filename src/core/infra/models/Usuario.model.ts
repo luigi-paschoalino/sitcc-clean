@@ -3,10 +3,12 @@ import {
     Column,
     Entity,
     ManyToOne,
+    OneToOne,
     PrimaryGeneratedColumn,
 } from 'typeorm'
 import { TIPO_USUARIO } from '../../domain/Usuario'
 import { CursoModel } from './Curso.model'
+import { PerfilProfessorModel } from './PerfilProfessor.model'
 
 @Entity({ name: 'usuario' })
 export class UsuarioModel extends BaseEntity {
@@ -30,4 +32,9 @@ export class UsuarioModel extends BaseEntity {
 
     @Column({ nullable: false, length: 256 })
     numero: string
+
+    @OneToOne(() => PerfilProfessorModel, (perfil) => perfil.usuario, {
+        eager: true,
+    })
+    perfilProfessor: PerfilProfessorModel
 }
