@@ -8,14 +8,12 @@ export interface CriarInstitutoProps {
     cursos?: Curso[]
 }
 
-export class Instituto extends AggregateRoot {
+export class Instituto {
     private id: string
     private nome: string
     private cursos?: Curso[]
 
     private constructor(id: string) {
-        super()
-
         this.id = id
     }
 
@@ -55,17 +53,5 @@ export class Instituto extends AggregateRoot {
 
     getCursos(): Curso[] {
         return this.cursos
-    }
-
-    //TODO: validar na camada de domínio
-    addCurso(curso: Curso): void {
-        this.cursos.push(curso)
-
-        this.apply(
-            new CursoAdicionadoEvent({
-                institutoId: this.id,
-                cursoId: curso.getId(),
-            }),
-        )
     }
 }

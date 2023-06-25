@@ -6,14 +6,12 @@ export interface CriarCursoProps {
     codigo: string
 }
 
-export class Curso extends AggregateRoot {
+export class Curso {
     private id: string
     private nome: string
     private codigo: string
 
     private constructor(id: string) {
-        super()
-
         this.id = id
     }
 
