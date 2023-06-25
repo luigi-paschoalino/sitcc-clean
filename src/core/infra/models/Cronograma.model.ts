@@ -3,10 +3,12 @@ import {
     Column,
     Entity,
     ManyToOne,
+    OneToMany,
     PrimaryGeneratedColumn,
 } from 'typeorm'
 import { ENUM_SEMESTRE } from '../../domain/Cronograma'
 import { CursoModel } from './Curso.model'
+import { AtividadeModel } from './Atividade.model'
 
 @Entity({ name: 'cronograma' })
 export class CronogramaModel extends BaseEntity {
@@ -21,4 +23,10 @@ export class CronogramaModel extends BaseEntity {
 
     @ManyToOne(() => CursoModel, (curso) => curso.cronogramas)
     curso: CursoModel
+
+    @OneToMany(() => AtividadeModel, (atividade) => atividade.cronograma, {
+        cascade: true,
+        eager: true,
+    })
+    atividades: AtividadeModel[]
 }

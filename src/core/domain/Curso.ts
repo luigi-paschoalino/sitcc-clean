@@ -1,6 +1,5 @@
 import { InvalidPropsException } from './exceptions/InvalidProps.exception'
 import { Norma } from './Norma'
-import { NormaAdicionadaEvent } from './events/NormaAdicionada.event'
 import { Cronograma } from './Cronograma'
 
 export interface CriarCursoProps {
@@ -59,5 +58,9 @@ export class Curso {
 
     getNormas(): Norma[] {
         return this.normas
+    }
+
+    getCronogramas(): Cronograma[] {
+        return this.cronogramas
     }
 }
