@@ -1,19 +1,22 @@
 import { Instituto } from '../../domain/Instituto'
 import { InstitutoModel } from './../models/Instituto.model'
-import { Injectable } from '@nestjs/common'
+import { Injectable, Logger } from '@nestjs/common'
 import { CursoMapper } from './Curso.mapper'
 
 @Injectable()
 export class InstitutoMapper {
     constructor(private readonly cursoMapper: CursoMapper) {}
+    private logger = new Logger(InstitutoMapper.name)
 
     public domainToModel(domain: Instituto): InstitutoModel {
         const model = InstitutoModel.create({
             id: domain.getId(),
             nome: domain.getNome(),
-            cursos: domain
-                .getCursos()
-                .map((curso) => this.cursoMapper.domainToModel(curso)),
+            cursos: domain.getCursos()
+                ? domain
+                      .getCursos()
+                      .map((curso) => this.cursoMapper.domainToModel(curso))
+                : [],
         })
 
         return model
