@@ -4,6 +4,7 @@ import { CursoModel } from './Curso.model'
 import { InstitutoModel } from './Instituto.model'
 import { NormaModel } from './Norma.model'
 import { PerfilProfessorModel } from './PerfilProfessor.model'
+import { ProjetoModel } from './Projeto.model'
 import { TccModel } from './Tcc.model'
 import { UniversidadeModel } from './Universidade.model'
 import { UsuarioModel } from './Usuario.model'
@@ -17,6 +18,7 @@ const Models = [
     CronogramaModel,
     NormaModel,
     PerfilProfessorModel,
+    ProjetoModel,
     AtividadeModel,
 ]
 

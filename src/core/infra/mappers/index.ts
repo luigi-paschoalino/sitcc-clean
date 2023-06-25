@@ -6,6 +6,7 @@ import { TccMapper } from './Tcc.mapper'
 import { NormaMapper } from './Norma.mapper'
 import { PerfilProfessorMapper } from './PerfilProfessor.mapper'
 import { CronogramaMapper } from './Cronograma.mapper'
+import { ProjetoMapper } from './Projeto.mapper'
 import { AtividadeMapper } from './Atividade.mapper'
 
 const Mappers = [
@@ -17,6 +18,7 @@ const Mappers = [
     NormaMapper,
     PerfilProfessorMapper,
     CronogramaMapper,
+    ProjetoMapper,
     AtividadeMapper,
 ]
 

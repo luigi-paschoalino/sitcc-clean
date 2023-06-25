@@ -1,11 +1,15 @@
+import { Projeto } from './Projeto'
+
 export interface CriarPerfilProps {
     descricao: string
     link: string
+    projetos?: Projeto[]
 }
 export class PerfilProfessor {
     private id: string
     private descricao: string
     private link: string
+    private projetos?: Projeto[]
 
     private constructor(id: string) {
         this.id = id
@@ -30,5 +34,9 @@ export class PerfilProfessor {
 
     public getLink(): string {
         return this.link
+    }
+
+    public getProjetos(): Projeto[] {
+        return this.projetos
     }
 }
