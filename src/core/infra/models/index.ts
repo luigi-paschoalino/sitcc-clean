@@ -1,3 +1,4 @@
+import { CronogramaModel } from './Cronograma.model'
 import { CursoModel } from './Curso.model'
 import { InstitutoModel } from './Instituto.model'
 import { NormaModel } from './Norma.model'
@@ -12,6 +13,7 @@ const Models = [
     UniversidadeModel,
     UsuarioModel,
     CursoModel,
+    CronogramaModel,
     NormaModel,
     PerfilProfessorModel,
 ]

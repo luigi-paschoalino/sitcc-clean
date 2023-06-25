@@ -1,6 +1,7 @@
 import { InvalidPropsException } from './exceptions/InvalidProps.exception'
 import { Norma } from './Norma'
 import { NormaAdicionadaEvent } from './events/NormaAdicionada.event'
+import { Cronograma } from './Cronograma'
 
 export interface CriarCursoProps {
     nome: string
@@ -12,6 +13,7 @@ export class Curso {
     private nome: string
     private codigo: string
     private normas?: Norma[]
+    private cronogramas: Cronograma[]
 
     private constructor(id: string) {
         this.id = id
@@ -37,6 +39,10 @@ export class Curso {
                 'Código do curso não pode ser vazio',
             )
         this.codigo = codigo
+    }
+
+    adicionarCronograma(cronograma: Cronograma) {
+        this.cronogramas.push(cronograma)
     }
 
     getNome() {
