@@ -7,6 +7,7 @@ import { InstitutoAdicionadoEvent } from './events/InstitutoAdicionado.event'
 import { Curso } from './Curso'
 import { Norma } from './Norma'
 import { CursoAdicionadoEvent } from './events/CursoAdicionado.event'
+import { Atividade } from './Atividades'
 
 export interface CriarUniversidadeProps {
     nome: string
@@ -161,5 +162,42 @@ export class Universidade extends AggregateRoot {
             )
 
         curso.getNormas().push(norma)
+    }
+
+    addAtividade(cronogramaId: string, atividade: Atividade): void {
+        const instituto = this.institutos.find((i) =>
+            i
+                .getCursos()
+                .find((c) =>
+                    c.getCronogramas().find((f) => f.getId() === cronogramaId),
+                ),
+        )
+
+        if (!instituto)
+            throw new UniversidadeException(
+                'Não foi encontrado o curso na universidade',
+            )
+
+        const curso = instituto
+            .getCursos()
+            .find((c) =>
+                c.getCronogramas().find((f) => f.getId() === cronogramaId),
+            )
+
+        if (!curso)
+            throw new UniversidadeException(
+                'Não foi encontrado o curso no instituto',
+            )
+
+        const cronograma = curso
+            .getCronogramas()
+            .find((c) => c.getId() === cronogramaId)
+
+        if (!cronograma)
+            throw new UniversidadeException(
+                'Não foi encontrado o cronograma no curso',
+            )
+
+        cronograma.getAtividades().push(atividade)
     }
 }
