@@ -7,16 +7,20 @@ export interface CriarNormaProps {
     link: string
 }
 
-export class Norma{
+// TODO: criar CadastrarNormaUsecase
+export class Norma {
+    private id: string
     private titulo: string
     private descricao: string
     private link: string
 
-    private constructor() {
+    private constructor(id: string) {
+        this.id = id
     }
 
-    static criar(props: CriarNormaProps): Norma {
-        const norma = new Norma()
+    static criar(props: CriarNormaProps, id: string): Norma {
+        const norma = new Norma(id)
+
         norma.setTitulo(props.titulo)
         norma.setDescricao(props.descricao)
         norma.setLink(props.link)
@@ -26,13 +30,17 @@ export class Norma{
 
     private setTitulo(titulo: string) {
         if (!titulo)
-            throw new InvalidPropsException('Título da Norma não pode ser vazio')
+            throw new InvalidPropsException(
+                'Título da Norma não pode ser vazio',
+            )
         this.titulo = titulo
     }
 
     private setDescricao(descricao: string) {
         if (!descricao)
-            throw new InvalidPropsException('Descrição da Norma não pode ser vazio')
+            throw new InvalidPropsException(
+                'Descrição da Norma não pode ser vazio',
+            )
         this.descricao = descricao
     }
 
@@ -40,6 +48,10 @@ export class Norma{
         if (!link)
             throw new InvalidPropsException('Link da Norma não pode ser vazio')
         this.link = link
+    }
+
+    getId() {
+        return this.id
     }
 
     getTitulo() {

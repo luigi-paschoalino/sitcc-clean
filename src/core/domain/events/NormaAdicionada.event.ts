@@ -1,4 +1,4 @@
-import { Norma } from "../Normas"
+import { Norma } from '../Norma'
 
 export interface NormaAdicionadaEventProps {
     cursoId: string

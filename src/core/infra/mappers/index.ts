@@ -3,6 +3,7 @@ import { InstitutoMapper } from './Instituto.mapper'
 import { UniversidadeMapper } from './Universidade.mapper'
 import { UsuarioMapper } from './Usuario.mapper'
 import { TccMapper } from './Tcc.mapper'
+import { NormaMapper } from './Norma.mapper'
 
 const Mappers = [
     UsuarioMapper,
@@ -10,6 +11,7 @@ const Mappers = [
     InstitutoMapper,
     CursoMapper,
     TccMapper,
+    NormaMapper,
 ]
 
 export default Mappers
