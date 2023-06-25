@@ -4,6 +4,7 @@ import { UniversidadeMapper } from './Universidade.mapper'
 import { UsuarioMapper } from './Usuario.mapper'
 import { TccMapper } from './Tcc.mapper'
 import { NormaMapper } from './Norma.mapper'
+import { PerfilProfessorMapper } from './PerfilProfessor.mapper'
 
 const Mappers = [
     UsuarioMapper,
@@ -12,6 +13,7 @@ const Mappers = [
     CursoMapper,
     TccMapper,
     NormaMapper,
+    PerfilProfessorMapper,
 ]
 
 export default Mappers
