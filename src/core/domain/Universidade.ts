@@ -4,6 +4,9 @@ import { UniversidadeCriadaEvent } from './events/UniversidadeCriada.event'
 import { InvalidPropsException } from './exceptions/InvalidProps.exception'
 import { Instituto } from './Instituto'
 import { InstitutoAdicionadoEvent } from './events/InstitutoAdicionado.event'
+import { Curso } from './Curso'
+import { Norma } from './Norma'
+import { CursoAdicionadoEvent } from './events/CursoAdicionado.event'
 
 export interface CriarUniversidadeProps {
     nome: string
@@ -112,5 +115,51 @@ export class Universidade extends AggregateRoot {
         } catch (error) {
             return error
         }
+    }
+
+    public addCurso(institutoId: string, curso: Curso): Error | void {
+        try {
+            const instituto = this.institutos.find(
+                (i) => i.getId() === institutoId,
+            )
+
+            if (!instituto) {
+                throw new UniversidadeException(
+                    'Instituto não existe na universidade',
+                )
+            }
+
+            instituto.getCursos().push(curso)
+
+            this.apply(
+                new CursoAdicionadoEvent({
+                    cursoId: curso.getId(),
+                    institutoId: instituto.getId(),
+                    universidadeId: this.getId(),
+                }),
+            )
+        } catch (error) {
+            return error
+        }
+    }
+
+    addNorma(cursoId: string, norma: Norma): void {
+        const instituto = this.institutos.find((i) =>
+            i.getCursos().find((c) => c.getId() === cursoId),
+        )
+
+        if (!instituto)
+            throw new UniversidadeException(
+                'Não foi encontrado o curso na universidade',
+            )
+
+        const curso = instituto.getCursos().find((c) => c.getId() === cursoId)
+
+        if (!curso)
+            throw new UniversidadeException(
+                'Não foi encontrado o curso no instituto',
+            )
+
+        curso.getNormas().push(norma)
     }
 }

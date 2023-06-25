@@ -64,38 +64,18 @@ export class CadastrarCursoUsecase {
                 throw new UniversidadeException('Curso já cadastrado')
             }
 
-            instituto.addCurso(curso)
-
-            const newInstitutos = universidade.getInstitutos().splice(
-                universidade
-                    .getInstitutos()
-                    .findIndex(
-                        (instituto) => instituto.getId() === props.institutoId,
-                    ),
-                1,
-                instituto,
-            )
-
-            const newUniversidade = Universidade.carregar(
-                {
-                    nome: universidade.getNome(),
-                    institutos: newInstitutos,
-                },
-                universidade.getId(),
-            )
-
-            this.logger.debug(JSON.stringify(newUniversidade, null, 2))
+            universidade.addCurso(instituto.getId(), curso)
 
             const salvar = await this.universidadeRepository.salvarUniversidade(
-                newUniversidade,
+                universidade,
             )
 
             if (salvar instanceof Error) {
                 throw salvar
             }
 
-            this.eventPublisher.mergeObjectContext(instituto)
-            instituto.commit()
+            this.eventPublisher.mergeObjectContext(universidade)
+            universidade.commit()
         } catch (error) {
             return error
         }
