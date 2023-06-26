@@ -8,6 +8,7 @@ import { PerfilProfessorMapper } from './PerfilProfessor.mapper'
 import { CronogramaMapper } from './Cronograma.mapper'
 import { ProjetoMapper } from './Projeto.mapper'
 import { AtividadeMapper } from './Atividade.mapper'
+import { CodigoProfessorMapper } from './CodigoProfessor.mapper'
 
 const Mappers = [
     UsuarioMapper,
@@ -20,6 +21,7 @@ const Mappers = [
     CronogramaMapper,
     ProjetoMapper,
     AtividadeMapper,
+    CodigoProfessorMapper,
 ]
 
 export default Mappers
