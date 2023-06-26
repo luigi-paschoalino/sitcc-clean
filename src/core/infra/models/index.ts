@@ -1,4 +1,5 @@
 import { AtividadeModel } from './Atividade.model'
+import { BancaModel } from './Banca.model'
 import { CodigoProfessorModel } from './CodigoProfessor.model'
 import { CronogramaModel } from './Cronograma.model'
 import { CursoModel } from './Curso.model'
@@ -22,6 +23,7 @@ const Models = [
     ProjetoModel,
     AtividadeModel,
     CodigoProfessorModel,
+    BancaModel,
 ]
 
 export default Models

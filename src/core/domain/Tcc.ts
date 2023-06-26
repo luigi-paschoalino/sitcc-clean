@@ -1,5 +1,6 @@
 import { AggregateRoot } from '@nestjs/cqrs'
 import { TccCadastradoEvent } from './events/TccCadastrado.event'
+import { Banca } from './Banca'
 
 export enum STATUS_TCC {
     MATRICULA_REALIZADA = 'MATRICULA_REALIZADA',
@@ -28,6 +29,7 @@ export interface CarregarTccProps {
     status: STATUS_TCC
     nota_parcial: number
     nota_final: number
+    banca?: Banca[]
 }
 
 export class Tcc extends AggregateRoot {
@@ -42,6 +44,7 @@ export class Tcc extends AggregateRoot {
     private resultados: string
     private nota_parcial: number
     private nota_final: number
+    private banca?: Banca[]
 
     private constructor(id: string) {
         super()
@@ -69,10 +72,7 @@ export class Tcc extends AggregateRoot {
         return tcc
     }
 
-    static carregar(
-        props: CarregarTccProps,
-        id: string,
-    ): Tcc {
+    static carregar(props: CarregarTccProps, id: string): Tcc {
         const tcc = new Tcc(id)
 
         tcc.setStatus(props.status)
@@ -171,6 +171,11 @@ export class Tcc extends AggregateRoot {
 
     private setNotaFinal(nota_final: number): void {
         this.nota_final = nota_final
+    }
+
+    // TODO: adicionar evento TccBancaAtribuidaEvent
+    public atribuirBanca(banca: Banca): void {
+        this.banca.push(banca)
     }
 
     public aceitarOrientacao(): void {

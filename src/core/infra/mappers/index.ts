@@ -9,6 +9,7 @@ import { CronogramaMapper } from './Cronograma.mapper'
 import { ProjetoMapper } from './Projeto.mapper'
 import { AtividadeMapper } from './Atividade.mapper'
 import { CodigoProfessorMapper } from './CodigoProfessor.mapper'
+import { BancaMapper } from './Banca.mapper'
 
 const Mappers = [
     UsuarioMapper,
@@ -22,6 +23,7 @@ const Mappers = [
     ProjetoMapper,
     AtividadeMapper,
     CodigoProfessorMapper,
+    BancaMapper,
 ]
 
 export default Mappers
