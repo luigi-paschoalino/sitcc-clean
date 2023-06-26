@@ -1,9 +1,11 @@
 import { InvalidPropsException } from './exceptions/InvalidProps.exception'
 
 export interface CriarBancaProps {
-    id_professor: string
-    id_tcc: string
+    professorId: string
     dia_hora: Date
+    nota_final?: number
+    nota_apresentacao?: number
+    nota_trabalho?: number
 }
 
 export class Banca {
@@ -21,9 +23,9 @@ export class Banca {
 
     static criar(props: CriarBancaProps, id: string): Banca {
         const banca = new Banca(id)
-        banca.setIdProfessor(props.id_professor)
-        banca.setIdTcc(props.id_tcc)
-        banca.setDia(props.dia_hora)
+
+        banca.setIdProfessor(props.professorId)
+        banca.setDiaHora(props.dia_hora)
 
         return banca
     }
@@ -41,9 +43,37 @@ export class Banca {
         this.id_tcc = this.id_tcc
     }
 
-    private setDia(dia: Date) {
+    private setDiaHora(dia: Date) {
         //TODO: fazer validação de data
         if (!dia) throw new InvalidPropsException('A data não pode ser vazio')
         this.dia_hora = this.dia_hora
+    }
+
+    getId(): string {
+        return this.id
+    }
+
+    getIdProfessor(): string {
+        return this.id_professor
+    }
+
+    getIdTcc(): string {
+        return this.id_tcc
+    }
+
+    getDiaHora(): Date {
+        return this.dia_hora
+    }
+
+    getNotaFinal(): number {
+        return this.nota_final
+    }
+
+    getNotaApresentacao(): number {
+        return this.nota_apresentacao
+    }
+
+    getNotaTrabalho(): number {
+        return this.nota_trabalho
     }
 }
