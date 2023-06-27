@@ -1,5 +1,8 @@
-import { CadastrarUsuarioUseCase } from '../application/usecases/CadastrarUsuario.usecase'
-import { Controller, Get, Body, Param, Post, Logger, Res, UseGuards } from '@nestjs/common'
+import {
+    CadastrarUsuarioUseCase,
+    CadastrarUsuarioUseCaseProps,
+} from '../application/usecases/CadastrarUsuario.usecase'
+import { Controller, Get, Body, Param, Post, Res } from '@nestjs/common'
 import { CriarUsuarioProps } from '../domain/Usuario'
 import { AbstractController } from './AbstractController'
 import { BuscarUsuarioQuery } from '../application/queries/BuscarUsuario.query'
@@ -7,7 +10,6 @@ import { authenticationMiddleware } from 'src/presentation/middlewares/authentic
 
 @Controller('usuarios')
 export class UsuarioController extends AbstractController {
-    private logger = new Logger(UsuarioController.name)
     constructor(
         private readonly cadastrarUsuarioUseCase: CadastrarUsuarioUseCase,
         private readonly buscarUsuarioQuery: BuscarUsuarioQuery,
@@ -29,8 +31,12 @@ export class UsuarioController extends AbstractController {
     }
 
     @Post()
+<<<<<<< HEAD
     @UseGuards(authenticationMiddleware) // Aplicar o middleware de autenticação aqui
     async cadastrar(@Body() body: CriarUsuarioProps) {
+=======
+    async cadastrar(@Body() body: CadastrarUsuarioUseCaseProps) {
+>>>>>>> 29eb05b5dc651508ba99ac2a8b35cd5a35100cd0
         const result = await this.cadastrarUsuarioUseCase.execute(body)
 
         return this.handleResponse(result)

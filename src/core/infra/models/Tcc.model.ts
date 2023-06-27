@@ -8,6 +8,7 @@ import {
     PrimaryGeneratedColumn,
 } from 'typeorm'
 import { STATUS_TCC } from '../../domain/Tcc'
+import { BancaModel } from './Banca.model'
 
 @Entity({ name: 'tcc' })
 export class TccModel extends BaseEntity {
@@ -43,4 +44,10 @@ export class TccModel extends BaseEntity {
 
     @Column({ nullable: true })
     nota_final: number
+
+    @OneToMany(() => BancaModel, (banca) => banca.tcc, {
+        cascade: true,
+        eager: true,
+    })
+    banca: BancaModel[]
 }
