@@ -21,6 +21,8 @@ export class TccMapper {
             palavras_chave: tcc.getPalavrasChave(),
             resultados: tcc.getResultados(),
             status: tcc.getStatus(),
+            alunoId: tcc.getAluno(),
+            orientadorId: tcc.getOrientador(),
         })
 
         return model
