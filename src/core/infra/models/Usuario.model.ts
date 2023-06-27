@@ -2,6 +2,7 @@ import {
     BaseEntity,
     Column,
     Entity,
+    JoinColumn,
     ManyToOne,
     OneToOne,
     PrimaryGeneratedColumn,
@@ -9,6 +10,7 @@ import {
 import { TIPO_USUARIO } from '../../domain/Usuario'
 import { CursoModel } from './Curso.model'
 import { PerfilProfessorModel } from './PerfilProfessor.model'
+import { TccModel } from './Tcc.model'
 
 @Entity({ name: 'usuario' })
 export class UsuarioModel extends BaseEntity {

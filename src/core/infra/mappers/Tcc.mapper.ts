@@ -6,7 +6,7 @@ import { TccModel } from '../models/Tcc.model'
 
 @Injectable()
 export class TccMapper {
-     constructor() {}
+    constructor() {}
 
     domainToModel(tcc: Tcc): TccModel {
         const model = TccModel.create({
@@ -39,6 +39,8 @@ export class TccMapper {
                 palavras_chave: tccModel.palavras_chave,
                 resultados: tccModel.resultados,
                 status: tccModel.status,
+                aluno: tccModel.alunoId,
+                orientador: tccModel.orientadorId,
             },
             tccModel.id,
         )

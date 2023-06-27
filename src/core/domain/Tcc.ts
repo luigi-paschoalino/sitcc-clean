@@ -1,6 +1,7 @@
 import { AggregateRoot } from '@nestjs/cqrs'
 import { TccCadastradoEvent } from './events/TccCadastrado.event'
 import { Banca } from './Banca'
+import { TIPO_USUARIO, Usuario } from './Usuario'
 
 export enum STATUS_TCC {
     MATRICULA_REALIZADA = 'MATRICULA_REALIZADA',
@@ -9,6 +10,8 @@ export enum STATUS_TCC {
 }
 
 export interface CriarTccProps {
+    aluno: Usuario
+    orientador: Usuario
     titulo: string
     palavras_chave: string[]
     introducao: string
@@ -19,6 +22,8 @@ export interface CriarTccProps {
 }
 
 export interface CarregarTccProps {
+    aluno: string
+    orientador: string
     titulo: string
     palavras_chave: string[]
     introducao: string
@@ -34,6 +39,8 @@ export interface CarregarTccProps {
 
 export class Tcc extends AggregateRoot {
     private id: string
+    private alunoId: string
+    private orientadorId: string
     private status: STATUS_TCC
     private titulo: string
     private palavras_chave: string[]
@@ -51,7 +58,7 @@ export class Tcc extends AggregateRoot {
         this.id = id
     }
 
-    static criar(props: CriarTccProps, id: string): Tcc {
+    static criar(props: CriarTccProps, id: string): Error | Tcc {
         const tcc = new Tcc(id)
 
         tcc.setStatus(STATUS_TCC.MATRICULA_REALIZADA)
@@ -62,6 +69,9 @@ export class Tcc extends AggregateRoot {
         tcc.setBibliografia(props.bibliografia)
         tcc.setMetodologia(props.metodologia)
         tcc.setResultados(props.resultados)
+
+        tcc.setAluno(props.aluno)
+        tcc.setOrientador(props.orientador)
 
         tcc.apply(
             new TccCadastradoEvent({
@@ -75,22 +85,34 @@ export class Tcc extends AggregateRoot {
     static carregar(props: CarregarTccProps, id: string): Tcc {
         const tcc = new Tcc(id)
 
-        tcc.setStatus(props.status)
-        tcc.setTitulo(props.titulo)
-        tcc.setPalavrasChave(props.palavras_chave)
-        tcc.setIntroducao(props.introducao)
-        tcc.setObjetivos(props.objetivos)
-        tcc.setBibliografia(props.bibliografia)
-        tcc.setMetodologia(props.metodologia)
-        tcc.setResultados(props.resultados)
-        tcc.setNotaParcial(props.nota_parcial)
-        tcc.setNotaFinal(props.nota_final)
+        tcc.status = props.status
+        tcc.titulo = props.titulo
+        tcc.palavras_chave = props.palavras_chave
+        tcc.introducao = props.introducao
+        tcc.objetivos = props.objetivos
+        tcc.bibliografia = props.bibliografia
+        tcc.metodologia = props.metodologia
+        tcc.resultados = props.resultados
+        tcc.nota_parcial = props.nota_parcial
+        tcc.nota_final = props.nota_final
+        tcc.banca = props.banca
+
+        tcc.alunoId = props.aluno
+        tcc.orientadorId = props.orientador
 
         return tcc
     }
 
     public getId(): string {
         return this.id
+    }
+
+    public getAluno(): string {
+        return this.alunoId
+    }
+
+    public getOrientador(): string {
+        return this.orientadorId
     }
 
     public getStatus(): STATUS_TCC {
@@ -163,6 +185,30 @@ export class Tcc extends AggregateRoot {
 
     private setResultados(resultados: string): void {
         this.resultados = resultados
+    }
+
+    private setAluno(aluno: Usuario): Error | void {
+        if (!aluno) {
+            throw new Error('Aluno não informado')
+        }
+
+        if (aluno.getTipo() !== TIPO_USUARIO.ALUNO) {
+            throw new Error('Usuário informado não é um aluno')
+        }
+
+        this.alunoId = aluno.getId()
+    }
+
+    private setOrientador(orientador: Usuario): Error | void {
+        if (!orientador) {
+            throw new Error('Orientador não informado')
+        }
+
+        if (orientador.getTipo() !== TIPO_USUARIO.PROFESSOR) {
+            throw new Error('Usuário informado não é um orientador')
+        }
+
+        this.orientadorId = orientador.getId()
     }
 
     private setNotaParcial(nota_parcial: number): void {
