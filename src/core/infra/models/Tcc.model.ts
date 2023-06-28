@@ -6,9 +6,12 @@ import {
     OneToMany,
     BaseEntity,
     PrimaryGeneratedColumn,
+    JoinColumn,
+    OneToOne,
 } from 'typeorm'
 import { STATUS_TCC } from '../../domain/Tcc'
 import { BancaModel } from './Banca.model'
+import { UsuarioModel } from './Usuario.model'
 
 @Entity({ name: 'tcc' })
 export class TccModel extends BaseEntity {
@@ -50,4 +53,18 @@ export class TccModel extends BaseEntity {
         eager: true,
     })
     banca: BancaModel[]
+
+    @Column({ nullable: false })
+    alunoId: string
+
+    @OneToOne(() => UsuarioModel)
+    @JoinColumn({ name: 'alunoId' })
+    aluno: UsuarioModel
+
+    @Column({ nullable: false })
+    orientadorId: string
+
+    @ManyToOne(() => UsuarioModel)
+    @JoinColumn({ name: 'orientadorId' })
+    orientador: UsuarioModel
 }
