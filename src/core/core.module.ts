@@ -10,10 +10,17 @@ import { UsuarioRepositoryImpl } from './infra/repositories/Usuario.repository'
 import Mappers from './infra/mappers'
 import { UniversidadeRepositoryImpl } from './infra/repositories/Universidade.repository'
 import { TccRepositoryImpl } from './infra/repositories/Tcc.repository'
+import { AuthServiceImpl } from './infra/services/Login.service'
+import { AuthController } from './controllers/Auth.controller'
 
 @Module({
     imports: [CqrsModule],
-    controllers: [TccController, UniversidadeController, UsuarioController],
+    controllers: [
+        TccController,
+        UniversidadeController,
+        UsuarioController,
+        AuthController,
+    ],
     providers: [
         ...UseCases,
         ...Queries,
@@ -33,6 +40,10 @@ import { TccRepositoryImpl } from './infra/repositories/Tcc.repository'
         {
             provide: 'TccRepository',
             useClass: TccRepositoryImpl,
+        },
+        {
+            provide: 'AuthService',
+            useClass: AuthServiceImpl,
         },
     ],
     exports: [],
