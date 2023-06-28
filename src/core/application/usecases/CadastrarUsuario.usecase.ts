@@ -5,7 +5,7 @@ import { UniqueIdService } from '../../domain/services/UniqueID.service'
 import { Inject, Logger } from '@nestjs/common'
 import { UniversidadeRepository } from '../../domain/repositories/Universidade.repository'
 
-export interface CadastrarUsuarioUseCaseProps {
+export interface CadastrarUsuarioUsecaseProps {
     nome: string
     curso: string
     email: string
@@ -28,7 +28,7 @@ export class CadastrarUsuarioUseCase {
     ) {}
 
     //TODO: validar se o usuário já existe (email, matricula)
-    async execute(props: CadastrarUsuarioUseCaseProps): Promise<Error | void> {
+    async execute(props: CadastrarUsuarioUsecaseProps): Promise<Error | void> {
         try {
             this.logger.debug(props)
 

@@ -1,3 +1,4 @@
+import { AutenticarUsecase } from './Autenticar.usecase'
 import { CadastrarCursoUsecase } from './CadastrarCurso.usecase'
 import { CadastrarInstitutoUsecase } from './CadastrarInstituto.usecase'
 import { CadastrarTccUsecase } from './CadastrarTcc.usecase'
@@ -10,6 +11,7 @@ const UseCases = [
     CadastrarUniversidadeUsecase,
     CadastrarInstitutoUsecase,
     CadastrarCursoUsecase,
+    AutenticarUsecase,
 ]
 
 export default UseCases

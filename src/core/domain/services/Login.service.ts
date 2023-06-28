@@ -1,8 +1,10 @@
-export interface LoginJWT {
+import { LoginDTO } from '../../application/dtos/login.dto'
+
+export interface LoginToken {
     auth: boolean
-    token: string
+    token?: string
 }
 
-export interface LoginService {
-    login(body: LoginDTO):  
+export interface AuthService {
+    logar(body: LoginDTO): Promise<Error | LoginToken>
 }
