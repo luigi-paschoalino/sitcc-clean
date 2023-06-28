@@ -2,6 +2,10 @@ import { AggregateRoot } from '@nestjs/cqrs'
 import { TccCadastradoEvent } from './events/TccCadastrado.event'
 import { Banca } from './Banca'
 import { TIPO_USUARIO, Usuario } from './Usuario'
+import { UsuarioException } from './exceptions/Usuario.exception'
+import { TccOrientacaoAprovadaEvent } from './events/TccOrientacaoAprovada.event'
+import { TccOrientacaoReprovadaEvent } from './events/TccOrientacaoReprovada.event'
+import { InvalidPropsException } from './exceptions/InvalidProps.exception'
 
 export enum STATUS_TCC {
     MATRICULA_REALIZADA = 'MATRICULA_REALIZADA',
@@ -224,11 +228,43 @@ export class Tcc extends AggregateRoot {
         this.banca.push(banca)
     }
 
-    public aceitarOrientacao(): void {
-        this.setStatus(STATUS_TCC.ORIENTACAO_ACEITA)
-    }
+    public avaliarOrientacao(
+        professorId: string,
+        status: boolean,
+        justificativa?: string,
+    ): Error | void {
+        if (professorId !== this.orientadorId)
+            throw new UsuarioException(
+                'O professor que está avaliando não é orientador deste TCC',
+            )
 
-    public recusarOrientacao(): void {
-        this.setStatus(STATUS_TCC.ORIENTACAO_RECUSADA)
+        if (status) {
+            if (justificativa?.trim())
+                throw new InvalidPropsException(
+                    'A justificativa não deve ser informada em caso de aprovação',
+                )
+            this.setStatus(STATUS_TCC.ORIENTACAO_ACEITA)
+            this.apply(
+                new TccOrientacaoAprovadaEvent({
+                    id: this.id,
+                    alunoId: this.alunoId,
+                    orientadorId: this.orientadorId,
+                }),
+            )
+        } else {
+            if (!justificativa?.trim())
+                throw new InvalidPropsException(
+                    'A justificativa deve ser informada em caso de reprovação',
+                )
+            this.setStatus(STATUS_TCC.ORIENTACAO_RECUSADA)
+            this.apply(
+                new TccOrientacaoReprovadaEvent({
+                    id: this.id,
+                    alunoId: this.alunoId,
+                    orientadorId: this.orientadorId,
+                    justificativa: justificativa,
+                }),
+            )
+        }
     }
 }
