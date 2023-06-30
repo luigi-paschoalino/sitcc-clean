@@ -6,7 +6,8 @@ import { UsuarioException } from './exceptions/Usuario.exception'
 import { TccOrientacaoAprovadaEvent } from './events/TccOrientacaoAprovada.event'
 import { TccOrientacaoReprovadaEvent } from './events/TccOrientacaoReprovada.event'
 import { InvalidPropsException } from './exceptions/InvalidProps.exception'
-
+import { TccNotaParcialAvaliadaEvent } from './events/TccNotaParcialAvaliada.event'
+import { TccNotaFinalAvaliadaEvent } from './events/TccNotaFinalEvent.event'
 export enum STATUS_TCC {
     MATRICULA_REALIZADA = 'MATRICULA_REALIZADA',
     ORIENTACAO_ACEITA = 'ORIENTACAO_ACEITA',
@@ -266,5 +267,39 @@ export class Tcc extends AggregateRoot {
                 }),
             )
         }
+    }
+
+    public avaliarNotaParcial(professorId: string, nota: number): Error | void {
+        if (professorId !== this.orientadorId)
+            throw new UsuarioException(
+                'O professor que está avaliando não é orientador deste TCC',
+            )
+
+        if (!nota) {
+            throw new Error('Nota não informada')
+        }
+
+        this.nota_parcial = nota
+        new TccNotaParcialAvaliadaEvent({
+            tccId: this.id,
+            nota: nota,
+        })
+    }
+
+    public avaliarNotaFinal(professorId: string, nota: number): Error | void {
+        if (professorId !== this.orientadorId)
+            throw new UsuarioException(
+                'O professor que está avaliando não é orientador deste TCC',
+            )
+
+        if (!nota) {
+            throw new Error('Nota não informada')
+        }
+
+        this.nota_final = nota
+        new TccNotaFinalAvaliadaEvent({
+            tccId: this.id,
+            nota: nota,
+        })
     }
 }
