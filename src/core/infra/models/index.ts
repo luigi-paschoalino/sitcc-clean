@@ -1,3 +1,4 @@
+import { AreasAtuacaoModel } from './AreasAtuacao.model'
 import { AtividadeModel } from './Atividade.model'
 import { BancaModel } from './Banca.model'
 import { CodigoProfessorModel } from './CodigoProfessor.model'
@@ -24,6 +25,7 @@ const Models = [
     AtividadeModel,
     CodigoProfessorModel,
     BancaModel,
+    AreasAtuacaoModel,
 ]
 
 export default Models

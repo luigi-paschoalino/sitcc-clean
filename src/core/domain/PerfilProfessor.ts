@@ -1,15 +1,18 @@
+import { AreasAtuacao } from './AreasAtuacao'
 import { Projeto } from './Projeto'
 
 export interface CriarPerfilProps {
     descricao: string
     link: string
     projetos?: Projeto[]
+    areasAtuacao?: AreasAtuacao[]
 }
 export class PerfilProfessor {
     private id: string
     private descricao: string
     private link: string
     private projetos?: Projeto[]
+    private areasAtuacao?: AreasAtuacao[]
 
     private constructor(id: string) {
         this.id = id
@@ -38,5 +41,9 @@ export class PerfilProfessor {
 
     public getProjetos(): Projeto[] {
         return this.projetos
+    }
+
+    public getAreasAtuacao(): AreasAtuacao[] {
+        return this.areasAtuacao
     }
 }
