@@ -3,9 +3,6 @@ import { InvalidPropsException } from './exceptions/InvalidProps.exception'
 export interface CriarBancaProps {
     professorId: string
     dia_hora: Date
-    nota_final?: number
-    nota_apresentacao?: number
-    nota_trabalho?: number
 }
 
 export class Banca {
