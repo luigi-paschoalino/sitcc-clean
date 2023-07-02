@@ -1,11 +1,18 @@
-import { AbstractEvent } from '../../domain/events/AbstractEvent';
+import { Injectable } from '@nestjs/common'
+import { AbstractEvent } from '../../domain/events/AbstractEvent'
 import { EventRepository } from '../../domain/repositories/Event.repository'
+import { EventMapper } from '../mappers/Event.mapper'
 
-// TODO: implementar EventRepositoryImpl, mapper, model, todo o resto
+@Injectable()
 export class EventRepositoryImpl implements EventRepository {
+    constructor(private readonly eventMapper: EventMapper) {}
+
     async save(event: AbstractEvent): Promise<void | Error> {
         try {
-            const 
+            const model = this.eventMapper.domainToModel(event)
+            await model.save()
+        } catch (error) {
+            throw error
         }
     }
 }

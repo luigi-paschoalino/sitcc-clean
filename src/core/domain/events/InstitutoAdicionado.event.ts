@@ -1,8 +1,12 @@
+import { AbstractEvent } from './AbstractEvent'
+
 export interface InstitutoAdicionadoEventProps {
     universidadeId: string
     institutoId: string
 }
 
-export class InstitutoAdicionadoEvent {
-    constructor(props: InstitutoAdicionadoEventProps) {}
+export class InstitutoAdicionadoEvent extends AbstractEvent {
+    constructor(props: InstitutoAdicionadoEventProps) {
+        super(InstitutoAdicionadoEvent.name, props)
+    }
 }

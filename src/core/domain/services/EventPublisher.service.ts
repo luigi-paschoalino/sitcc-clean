@@ -1,5 +1,5 @@
-import { AbstractEvent } from '../events/AbstractEvent'
+import { AggregateRoot } from '@nestjs/cqrs'
 
 export interface EventPublisherService {
-    publish(event: AbstractEvent): Promise<Error | void>
+    publish(aggregate: AggregateRoot): Promise<Error | void>
 }

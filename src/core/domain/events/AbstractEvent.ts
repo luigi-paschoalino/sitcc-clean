@@ -5,4 +5,12 @@ export abstract class AbstractEvent implements IEvent {
         this.name = name
         this.data = data
     }
+
+    getName(): string {
+        return this.name
+    }
+
+    getData(): any {
+        return this.data
+    }
 }
