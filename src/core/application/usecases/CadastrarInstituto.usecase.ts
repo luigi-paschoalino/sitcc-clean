@@ -2,7 +2,7 @@ import { Inject, Logger } from '@nestjs/common'
 import { UniqueIdService } from '../../domain/services/UniqueID.service'
 import { Instituto } from '../../domain/Instituto'
 import { UniversidadeRepository } from '../../domain/repositories/Universidade.repository'
-import { EventPublisher } from '@nestjs/cqrs'
+import { EventPublisherService } from '../../domain/services/EventPublisher.service'
 
 export interface CadastrarInstitutoUsecaseProps {
     nome: string
@@ -13,7 +13,8 @@ export class CadastrarInstitutoUsecase {
     private logger = new Logger(CadastrarInstitutoUsecase.name)
 
     constructor(
-        private readonly eventPublisher: EventPublisher,
+        @Inject('EventPublisherService')
+        private readonly publisher: EventPublisherService,
         @Inject('UniqueIdService')
         private readonly uniqueIdService: UniqueIdService,
         @Inject('UniversidadeRepository')
@@ -59,10 +60,7 @@ export class CadastrarInstitutoUsecase {
                 throw salvar
             }
 
-            this.eventPublisher.mergeObjectContext(universidade)
-            universidade.commit()
-
-            return
+            await this.publisher.publish(universidade)
         } catch (err) {
             return err
         }

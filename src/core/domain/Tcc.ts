@@ -1,6 +1,12 @@
 import { AggregateRoot } from '@nestjs/cqrs'
 import { TccCadastradoEvent } from './events/TccCadastrado.event'
 import { Banca } from './Banca'
+import { TIPO_USUARIO, Usuario } from './Usuario'
+import { UsuarioException } from './exceptions/Usuario.exception'
+import { TccOrientacaoAprovadaEvent } from './events/TccOrientacaoAprovada.event'
+import { TccOrientacaoReprovadaEvent } from './events/TccOrientacaoReprovada.event'
+import { InvalidPropsException } from './exceptions/InvalidProps.exception'
+import { BancaAdicionadaEvent } from './events/BancaAdicionada.event'
 
 export enum STATUS_TCC {
     MATRICULA_REALIZADA = 'MATRICULA_REALIZADA',
@@ -9,6 +15,8 @@ export enum STATUS_TCC {
 }
 
 export interface CriarTccProps {
+    aluno: Usuario
+    orientador: Usuario
     titulo: string
     palavras_chave: string[]
     introducao: string
@@ -19,6 +27,8 @@ export interface CriarTccProps {
 }
 
 export interface CarregarTccProps {
+    aluno: string
+    orientador: string
     titulo: string
     palavras_chave: string[]
     introducao: string
@@ -34,6 +44,8 @@ export interface CarregarTccProps {
 
 export class Tcc extends AggregateRoot {
     private id: string
+    private alunoId: string
+    private orientadorId: string
     private status: STATUS_TCC
     private titulo: string
     private palavras_chave: string[]
@@ -51,7 +63,7 @@ export class Tcc extends AggregateRoot {
         this.id = id
     }
 
-    static criar(props: CriarTccProps, id: string): Tcc {
+    static criar(props: CriarTccProps, id: string): Error | Tcc {
         const tcc = new Tcc(id)
 
         tcc.setStatus(STATUS_TCC.MATRICULA_REALIZADA)
@@ -62,6 +74,9 @@ export class Tcc extends AggregateRoot {
         tcc.setBibliografia(props.bibliografia)
         tcc.setMetodologia(props.metodologia)
         tcc.setResultados(props.resultados)
+
+        tcc.setAluno(props.aluno)
+        tcc.setOrientador(props.orientador)
 
         tcc.apply(
             new TccCadastradoEvent({
@@ -75,22 +90,34 @@ export class Tcc extends AggregateRoot {
     static carregar(props: CarregarTccProps, id: string): Tcc {
         const tcc = new Tcc(id)
 
-        tcc.setStatus(props.status)
-        tcc.setTitulo(props.titulo)
-        tcc.setPalavrasChave(props.palavras_chave)
-        tcc.setIntroducao(props.introducao)
-        tcc.setObjetivos(props.objetivos)
-        tcc.setBibliografia(props.bibliografia)
-        tcc.setMetodologia(props.metodologia)
-        tcc.setResultados(props.resultados)
-        tcc.setNotaParcial(props.nota_parcial)
-        tcc.setNotaFinal(props.nota_final)
+        tcc.status = props.status
+        tcc.titulo = props.titulo
+        tcc.palavras_chave = props.palavras_chave
+        tcc.introducao = props.introducao
+        tcc.objetivos = props.objetivos
+        tcc.bibliografia = props.bibliografia
+        tcc.metodologia = props.metodologia
+        tcc.resultados = props.resultados
+        tcc.nota_parcial = props.nota_parcial
+        tcc.nota_final = props.nota_final
+        tcc.banca = props.banca
+
+        tcc.alunoId = props.aluno
+        tcc.orientadorId = props.orientador
 
         return tcc
     }
 
     public getId(): string {
         return this.id
+    }
+
+    public getAluno(): string {
+        return this.alunoId
+    }
+
+    public getOrientador(): string {
+        return this.orientadorId
     }
 
     public getStatus(): STATUS_TCC {
@@ -133,6 +160,10 @@ export class Tcc extends AggregateRoot {
         return this.nota_final
     }
 
+    public getBanca(): Banca[] {
+        return this.banca
+    }
+
     private setStatus(status: STATUS_TCC): void {
         this.status = status
     }
@@ -165,6 +196,30 @@ export class Tcc extends AggregateRoot {
         this.resultados = resultados
     }
 
+    private setAluno(aluno: Usuario): Error | void {
+        if (!aluno) {
+            throw new Error('Aluno não informado')
+        }
+
+        if (aluno.getTipo() !== TIPO_USUARIO.ALUNO) {
+            throw new Error('Usuário informado não é um aluno')
+        }
+
+        this.alunoId = aluno.getId()
+    }
+
+    private setOrientador(orientador: Usuario): Error | void {
+        if (!orientador) {
+            throw new Error('Orientador não informado')
+        }
+
+        if (orientador.getTipo() !== TIPO_USUARIO.PROFESSOR) {
+            throw new Error('Usuário informado não é um orientador')
+        }
+
+        this.orientadorId = orientador.getId()
+    }
+
     private setNotaParcial(nota_parcial: number): void {
         this.nota_parcial = nota_parcial
     }
@@ -175,14 +230,68 @@ export class Tcc extends AggregateRoot {
 
     // TODO: adicionar evento TccBancaAtribuidaEvent
     public atribuirBanca(banca: Banca): void {
-        this.banca.push(banca)
+        try {
+            if (!this.banca) this.banca = []
+
+            if (
+                this.banca.find(
+                    (b) => b.getIdProfessor() === banca.getIdProfessor(),
+                )
+            )
+                throw new UsuarioException(
+                    'Este professor já esta avaliando este TCC',
+                )
+
+            this.banca.push(banca)
+
+            this.apply(
+                new BancaAdicionadaEvent({
+                    tccId: this.id,
+                    bancaId: banca.getId(),
+                }),
+            )
+        } catch (error) {
+            return error
+        }
     }
 
-    public aceitarOrientacao(): void {
-        this.setStatus(STATUS_TCC.ORIENTACAO_ACEITA)
-    }
+    public avaliarOrientacao(
+        professorId: string,
+        status: boolean,
+        justificativa?: string,
+    ): Error | void {
+        if (professorId !== this.orientadorId)
+            throw new UsuarioException(
+                'O professor que está avaliando não é orientador deste TCC',
+            )
 
-    public recusarOrientacao(): void {
-        this.setStatus(STATUS_TCC.ORIENTACAO_RECUSADA)
+        if (status) {
+            if (justificativa?.trim())
+                throw new InvalidPropsException(
+                    'A justificativa não deve ser informada em caso de aprovação',
+                )
+            this.setStatus(STATUS_TCC.ORIENTACAO_ACEITA)
+            this.apply(
+                new TccOrientacaoAprovadaEvent({
+                    id: this.id,
+                    alunoId: this.alunoId,
+                    orientadorId: this.orientadorId,
+                }),
+            )
+        } else {
+            if (!justificativa?.trim())
+                throw new InvalidPropsException(
+                    'A justificativa deve ser informada em caso de reprovação',
+                )
+            this.setStatus(STATUS_TCC.ORIENTACAO_RECUSADA)
+            this.apply(
+                new TccOrientacaoReprovadaEvent({
+                    id: this.id,
+                    alunoId: this.alunoId,
+                    orientadorId: this.orientadorId,
+                    justificativa: justificativa,
+                }),
+            )
+        }
     }
 }

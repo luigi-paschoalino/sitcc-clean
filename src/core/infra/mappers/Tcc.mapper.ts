@@ -3,10 +3,11 @@ import { Usuario } from '../../domain/Usuario'
 import { UsuarioModel } from '../models/Usuario.model'
 import { Tcc } from 'src/core/domain/Tcc'
 import { TccModel } from '../models/Tcc.model'
+import { BancaMapper } from './Banca.mapper'
 
 @Injectable()
 export class TccMapper {
-     constructor() {}
+    constructor(private readonly bancaMapper: BancaMapper) {}
 
     domainToModel(tcc: Tcc): TccModel {
         const model = TccModel.create({
@@ -21,6 +22,11 @@ export class TccMapper {
             palavras_chave: tcc.getPalavrasChave(),
             resultados: tcc.getResultados(),
             status: tcc.getStatus(),
+            alunoId: tcc.getAluno(),
+            orientadorId: tcc.getOrientador(),
+            banca: tcc
+                .getBanca()
+                .map((banca) => this.bancaMapper.domainToModel(banca)),
         })
 
         return model
@@ -39,6 +45,11 @@ export class TccMapper {
                 palavras_chave: tccModel.palavras_chave,
                 resultados: tccModel.resultados,
                 status: tccModel.status,
+                aluno: tccModel.alunoId,
+                orientador: tccModel.orientadorId,
+                banca: tccModel.banca.map((banca) =>
+                    this.bancaMapper.modelToDomain(banca),
+                ),
             },
             tccModel.id,
         )

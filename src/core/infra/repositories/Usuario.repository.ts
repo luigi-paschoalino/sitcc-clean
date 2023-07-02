@@ -31,6 +31,24 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
         }
     }
 
+    async buscarPorEmail(email: string): Promise<Error | Usuario> {
+        try {
+            const model = await UsuarioModel.findOneBy({ email })
+
+            if (model instanceof Error)
+                throw new RepositoryException(model.message)
+            else if (!model)
+                throw new RepositoryDataNotFoundException(
+                    `Usuário com o email ${email} não existe!`,
+                )
+            const usuario = this.usuarioMapper.modelToDomain(model)
+
+            return usuario
+        } catch (error) {
+            return error
+        }
+    }
+
     async salvar(usuario: Usuario): Promise<Error | void> {
         try {
             const usuarioModel = this.usuarioMapper.domainToModel(usuario)
