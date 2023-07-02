@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Body, Patch } from '@nestjs/common'
+import { Controller, Get, Param, Post, Body, Patch, Put } from '@nestjs/common'
 import { BuscarTccQuery } from '../application/queries/BuscarTcc.query'
 import {
     CadastrarTccUsecase,
@@ -10,6 +10,10 @@ import {
     AvaliarOrientacaoUsecase,
     AvaliarOrientacaoUsecaseProps,
 } from '../application/usecases/AvaliarOrientacao.usecase'
+import {
+    CadastrarBancaUsecase,
+    CadastrarBancaUsecaseProps,
+} from '../application/usecases/CadastrarBanca.usecase'
 
 @Controller('tcc')
 export class TccController extends AbstractController {
@@ -17,6 +21,7 @@ export class TccController extends AbstractController {
         private readonly buscarTccQuery: BuscarTccQuery,
         private readonly cadastrarTccUsecase: CadastrarTccUsecase,
         private readonly avaliarOrientacaoUsecase: AvaliarOrientacaoUsecase,
+        private readonly cadastrarBancaUsecase: CadastrarBancaUsecase,
     ) {
         super({
             RepositoryException: 500,
@@ -47,6 +52,19 @@ export class TccController extends AbstractController {
         @Body() body: AvaliarOrientacaoUsecaseProps,
     ) {
         const result = await this.avaliarOrientacaoUsecase.execute({
+            ...body,
+            tccId: id,
+        })
+
+        return this.handleResponse(result)
+    }
+
+    @Put(':id/banca')
+    public async atribuirBanca(
+        @Param('id') id: string,
+        @Body() body: CadastrarBancaUsecaseProps,
+    ) {
+        const result = await this.cadastrarBancaUsecase.execute({
             ...body,
             tccId: id,
         })

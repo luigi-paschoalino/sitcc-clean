@@ -160,6 +160,10 @@ export class Tcc extends AggregateRoot {
         return this.nota_final
     }
 
+    public getBanca(): Banca[] {
+        return this.banca
+    }
+
     private setStatus(status: STATUS_TCC): void {
         this.status = status
     }

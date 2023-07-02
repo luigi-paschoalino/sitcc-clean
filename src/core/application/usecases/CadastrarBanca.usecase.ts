@@ -3,6 +3,7 @@ import { EventPublisher } from '@nestjs/cqrs'
 import { Banca } from 'src/core/domain/Banca'
 import { TccRepository } from 'src/core/domain/repositories/Tcc.repository'
 import { UniqueIdService } from 'src/core/domain/services/UniqueID.service'
+import { EventPublisherService } from '../../domain/services/EventPublisher.service'
 
 export interface CadastrarBancaUsecaseProps {
     professorId: string
@@ -11,10 +12,11 @@ export interface CadastrarBancaUsecaseProps {
 }
 
 export class CadastrarBancaUsecase {
-    //private logger = new Logger(CadastrarBancaUsecase.name)
+    private logger = new Logger(CadastrarBancaUsecase.name)
     //TODO: logger cadastra banca
     constructor(
-        private readonly eventPublisher: EventPublisher,
+        @Inject('EventPublisherService')
+        private readonly publisher: EventPublisherService,
         @Inject('UniqueIdService')
         private readonly uniqueIdService: UniqueIdService,
         @Inject('TccRepository')
@@ -33,6 +35,8 @@ export class CadastrarBancaUsecase {
                 uuid,
             )
 
+            this.logger.debug(JSON.stringify(banca, null, 2))
+
             if (banca instanceof Error) {
                 throw banca
             }
@@ -43,7 +47,11 @@ export class CadastrarBancaUsecase {
                 throw tcc
             }
 
+            this.logger.debug(JSON.stringify(tcc, null, 2))
+
             tcc.atribuirBanca(banca)
+
+            this.logger.debug(JSON.stringify(tcc, null, 2))
 
             const salvar = await this.tccRepository.salvarTcc(tcc)
 
@@ -51,8 +59,7 @@ export class CadastrarBancaUsecase {
                 throw salvar
             }
 
-            this.eventPublisher.mergeObjectContext(tcc)
-            tcc.commit()
+            await this.publisher.publish(tcc)
         } catch (error) {
             return error
         }
