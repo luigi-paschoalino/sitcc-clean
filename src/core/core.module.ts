@@ -12,6 +12,8 @@ import { UniversidadeRepositoryImpl } from './infra/repositories/Universidade.re
 import { TccRepositoryImpl } from './infra/repositories/Tcc.repository'
 import { AuthServiceImpl } from './infra/services/Login.service'
 import { AuthController } from './controllers/Auth.controller'
+import { EventRepositoryImpl } from './infra/repositories/Event.repository'
+import { EventPublisherServiceImpl } from './infra/services/EventPublisher.service'
 
 @Module({
     imports: [CqrsModule],
@@ -40,6 +42,14 @@ import { AuthController } from './controllers/Auth.controller'
         {
             provide: 'TccRepository',
             useClass: TccRepositoryImpl,
+        },
+        {
+            provide: 'EventRepository',
+            useClass: EventRepositoryImpl,
+        },
+        {
+            provide: 'EventPublisherService',
+            useClass: EventPublisherServiceImpl,
         },
         {
             provide: 'AuthService',

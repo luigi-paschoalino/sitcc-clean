@@ -1,9 +1,9 @@
 import { Inject } from '@nestjs/common'
 import { TccRepository } from '../../domain/repositories/Tcc.repository'
 import { UsuarioRepository } from '../../domain/repositories/Usuario.repository'
-import { EventPublisher } from '@nestjs/cqrs'
 import { TIPO_USUARIO } from '../../domain/Usuario'
 import { UsuarioException } from '../../domain/exceptions/Usuario.exception'
+import { EventPublisherService } from '../../domain/services/EventPublisher.service'
 
 export interface AvaliarOrientacaoUsecaseProps {
     professorId: string
@@ -17,7 +17,8 @@ export class AvaliarOrientacaoUsecase {
         @Inject('TccRepository') private readonly tccRepository: TccRepository,
         @Inject('UsuarioRepository')
         private readonly usuarioRepository: UsuarioRepository,
-        private readonly eventPublisher: EventPublisher,
+        @Inject('EventPublisherService')
+        private readonly publisher: EventPublisherService,
     ) {}
 
     async execute(props: AvaliarOrientacaoUsecaseProps): Promise<Error | void> {
@@ -42,8 +43,7 @@ export class AvaliarOrientacaoUsecase {
             const salvar = this.tccRepository.salvarTcc(tcc)
             if (salvar instanceof Error) throw salvar
 
-            this.eventPublisher.mergeObjectContext(tcc)
-            tcc.commit()
+            await this.publisher.publish(tcc)
         } catch (error) {
             return error
         }

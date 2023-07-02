@@ -1,6 +1,5 @@
-import { PerfilProfessor } from './../PerfilProfessor'
 import { TIPO_USUARIO } from '../Usuario'
-import { IEvent } from '@nestjs/cqrs'
+import { AbstractEvent } from './AbstractEvent'
 
 interface UsuarioCadastradoEventProps {
     id: string
@@ -13,6 +12,8 @@ interface UsuarioCadastradoEventProps {
 }
 
 //TODO: como pegar um evento disparado e salvar no banco de dados?
-export class UsuarioCadastradoEvent implements IEvent {
-    constructor(props: UsuarioCadastradoEventProps) {}
+export class UsuarioCadastradoEvent extends AbstractEvent {
+    constructor(props: UsuarioCadastradoEventProps) {
+        super(UsuarioCadastradoEvent.name, props)
+    }
 }
