@@ -18,7 +18,7 @@ export class BancaMapper {
     }
 
     modelToDomain(model: BancaModel): Banca {
-        const domain = Banca.criar(
+        const domain = Banca.carregar(
             {
                 professorId: model.professorId,
                 dia_hora: model.dia_hora,

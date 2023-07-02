@@ -6,6 +6,7 @@ import { UsuarioException } from './exceptions/Usuario.exception'
 import { TccOrientacaoAprovadaEvent } from './events/TccOrientacaoAprovada.event'
 import { TccOrientacaoReprovadaEvent } from './events/TccOrientacaoReprovada.event'
 import { InvalidPropsException } from './exceptions/InvalidProps.exception'
+import { BancaAdicionadaEvent } from './events/BancaAdicionada.event'
 
 export enum STATUS_TCC {
     MATRICULA_REALIZADA = 'MATRICULA_REALIZADA',
@@ -159,6 +160,10 @@ export class Tcc extends AggregateRoot {
         return this.nota_final
     }
 
+    public getBanca(): Banca[] {
+        return this.banca
+    }
+
     private setStatus(status: STATUS_TCC): void {
         this.status = status
     }
@@ -225,7 +230,29 @@ export class Tcc extends AggregateRoot {
 
     // TODO: adicionar evento TccBancaAtribuidaEvent
     public atribuirBanca(banca: Banca): void {
-        this.banca.push(banca)
+        try {
+            if (!this.banca) this.banca = []
+
+            if (
+                this.banca.find(
+                    (b) => b.getIdProfessor() === banca.getIdProfessor(),
+                )
+            )
+                throw new UsuarioException(
+                    'Este professor já esta avaliando este TCC',
+                )
+
+            this.banca.push(banca)
+
+            this.apply(
+                new BancaAdicionadaEvent({
+                    tccId: this.id,
+                    bancaId: banca.getId(),
+                }),
+            )
+        } catch (error) {
+            return error
+        }
     }
 
     public avaliarOrientacao(
