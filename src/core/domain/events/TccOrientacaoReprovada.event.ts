@@ -1,3 +1,5 @@
+import { AbstractEvent } from './AbstractEvent'
+
 export interface TccOrientacaoReprovadaEventProps {
     id: string
     orientadorId: string
@@ -5,6 +7,8 @@ export interface TccOrientacaoReprovadaEventProps {
     justificativa: string
 }
 
-export class TccOrientacaoReprovadaEvent {
-    constructor(props: TccOrientacaoReprovadaEventProps) {}
+export class TccOrientacaoReprovadaEvent extends AbstractEvent {
+    constructor(props: TccOrientacaoReprovadaEventProps) {
+        super(TccOrientacaoReprovadaEvent.name, props)
+    }
 }
