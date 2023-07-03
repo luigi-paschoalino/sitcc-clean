@@ -1,10 +1,12 @@
-import { IEvent } from '@nestjs/cqrs'
+import { AbstractEvent } from './AbstractEvent'
 
 interface TccCadastradoEventProps {
     id: string
     titulo: string
 }
 
-export class TccCadastradoEvent implements IEvent {
-    constructor(props: TccCadastradoEventProps) {}
+export class TccCadastradoEvent extends AbstractEvent {
+    constructor(props: TccCadastradoEventProps) {
+        super(TccCadastradoEvent.name, props)
+    }
 }

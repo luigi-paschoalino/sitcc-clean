@@ -3,7 +3,7 @@ import { UniversidadeException } from '../../domain/exceptions/Universidade.exce
 import { Inject } from '@nestjs/common'
 import { UniversidadeRepository } from '../../domain/repositories/Universidade.repository'
 import { UniqueIdService } from '../../domain/services/UniqueID.service'
-import { EventPublisher } from '@nestjs/cqrs'
+import { EventPublisherService } from '../../domain/services/EventPublisher.service'
 
 export interface CadastrarUniversidadeUsecaseProps {
     nome: string
@@ -14,7 +14,8 @@ export interface CadastrarUniversidadeUsecaseProps {
 
 export class CadastrarUniversidadeUsecase {
     constructor(
-        private readonly eventPublisher: EventPublisher,
+        @Inject('EventPublisherService')
+        private readonly publisher: EventPublisherService,
         @Inject('UniversidadeRepository')
         private readonly universidadeRepository: UniversidadeRepository,
         @Inject('UniqueIdService')
@@ -48,10 +49,7 @@ export class CadastrarUniversidadeUsecase {
 
             if (salvar instanceof Error) throw salvar
 
-            this.eventPublisher.mergeObjectContext(universidade)
-            universidade.commit()
-
-            return
+            await this.publisher.publish(universidade)
         } catch (error) {
             return error
         }

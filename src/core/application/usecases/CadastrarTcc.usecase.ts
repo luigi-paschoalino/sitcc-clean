@@ -1,9 +1,9 @@
-import { CommandHandler, EventBus, EventPublisher } from '@nestjs/cqrs'
 import { Inject, Logger } from '@nestjs/common'
 import { Tcc } from '../../domain/Tcc'
 import { UniqueIdService } from '../../domain/services/UniqueID.service'
 import { TccRepository } from '../../domain/repositories/Tcc.repository'
 import { UsuarioRepository } from '../../domain/repositories/Usuario.repository'
+import { EventPublisherService } from '../../domain/services/EventPublisher.service'
 
 export interface CadastrarTccUsecaseProps {
     aluno: string
@@ -21,7 +21,8 @@ export class CadastrarTccUsecase {
     private logger = new Logger(CadastrarTccUsecase.name)
 
     constructor(
-        private readonly eventPublisher: EventPublisher,
+        @Inject('EventPublisherService')
+        private readonly publisher: EventPublisherService,
         @Inject('UniqueIdService')
         private readonly uniqueIdService: UniqueIdService,
         @Inject('TccRepository')
@@ -65,8 +66,7 @@ export class CadastrarTccUsecase {
             const salvar = await this.tccRepository.salvarTcc(tcc)
             if (salvar instanceof Error) throw salvar
 
-            this.eventPublisher.mergeObjectContext(tcc)
-            tcc.commit()
+            await this.publisher.publish(tcc)
         } catch (error) {
             return error
         }

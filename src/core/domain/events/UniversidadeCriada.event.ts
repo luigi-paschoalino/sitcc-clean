@@ -1,4 +1,4 @@
-import { IEvent } from '@nestjs/cqrs'
+import { AbstractEvent } from './AbstractEvent'
 
 interface UniversidadeCriadaEventProps {
     id: string
@@ -6,6 +6,8 @@ interface UniversidadeCriadaEventProps {
 }
 
 //TODO: como pegar um evento disparado e salvar no banco de dados?
-export class UniversidadeCriadaEvent implements IEvent {
-    constructor(props: UniversidadeCriadaEventProps) {}
+export class UniversidadeCriadaEvent extends AbstractEvent {
+    constructor(props: UniversidadeCriadaEventProps) {
+        super(UniversidadeCriadaEvent.name, props)
+    }
 }

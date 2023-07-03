@@ -14,7 +14,11 @@ export class BancaModel extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string
 
-    @Column({ nullable: false })
+    @Column({
+        nullable: false,
+        type: 'timestamp',
+        default: () => 'CURRENT_TIMESTAMP',
+    })
     dia_hora: Date
 
     @Column({ nullable: true })
