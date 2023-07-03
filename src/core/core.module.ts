@@ -14,6 +14,7 @@ import { AuthServiceImpl } from './infra/services/Login.service'
 import { AuthController } from './controllers/Auth.controller'
 import { EventRepositoryImpl } from './infra/repositories/Event.repository'
 import { EventPublisherServiceImpl } from './infra/services/EventPublisher.service'
+import { EncriptarSenhaServiceImpl } from './infra/services/EncriptarSenha.service'
 
 @Module({
     imports: [CqrsModule],
@@ -54,6 +55,10 @@ import { EventPublisherServiceImpl } from './infra/services/EventPublisher.servi
         {
             provide: 'AuthService',
             useClass: AuthServiceImpl,
+        },
+        {
+            provide: 'EncriptarSenhaService',
+            useClass: EncriptarSenhaServiceImpl,
         },
     ],
     exports: [],

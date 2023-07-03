@@ -1,16 +1,21 @@
-import { Injectable, Inject } from '@nestjs/common'
+import { Injectable, Inject, Logger } from '@nestjs/common'
 import * as jwt from 'jsonwebtoken'
 import { LoginDTO } from '../../application/dtos/login.dto'
 import { UsuarioRepository } from '../../domain/repositories/Usuario.repository'
 import { AuthService, LoginToken } from '../../domain/services/Login.service'
+import { EncriptarSenhaService } from '../../domain/services/EncriptarSenha.service'
 
 const secretToken = 'sdaFsadasdaGasdCMySecretKey'
 
 @Injectable()
 export class AuthServiceImpl implements AuthService {
+    private logger = new Logger(AuthServiceImpl.name)
+
     constructor(
         @Inject('UsuarioRepository')
         private readonly usuarioRepository: UsuarioRepository,
+        @Inject('EncriptarSenhaService')
+        private readonly encriptarSenhaService: EncriptarSenhaService,
     ) {}
 
     async logar(body: LoginDTO): Promise<Error | LoginToken> {
@@ -20,7 +25,14 @@ export class AuthServiceImpl implements AuthService {
             )
             if (usuario instanceof Error) throw usuario
 
-            if (usuario.getSenha() === body.senha) {
+            this.logger.debug(JSON.stringify(usuario, null, 2))
+
+            if (
+                await this.encriptarSenhaService.comparar(
+                    body.senha,
+                    usuario.getSenha(),
+                )
+            ) {
                 const token = jwt.sign(
                     {
                         id: usuario.getId(),
