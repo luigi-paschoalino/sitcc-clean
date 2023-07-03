@@ -4,6 +4,7 @@ import { UsuarioRepository } from '../../domain/repositories/Usuario.repository'
 import { EventPublisher } from '@nestjs/cqrs'
 import { TIPO_USUARIO } from 'src/core/domain/Usuario'
 import { UsuarioException } from 'src/core/domain/exceptions/Usuario.exception'
+import { EventPublisherService } from '../../domain/services/EventPublisher.service'
 
 export interface AvaliarNotaParcialUsecaseProps {
     professorId: string
@@ -16,7 +17,8 @@ export class AvaliarNotaParcialUsecase {
         @Inject('TccRepository') private readonly tccRepository: TccRepository,
         @Inject('UsuarioRepository')
         private readonly usuarioRepository: UsuarioRepository,
-        private readonly eventPublisher: EventPublisher,
+        @Inject('EventPublisherService')
+        private readonly publisher: EventPublisherService,
     ) {}
 
     async execute(
@@ -42,8 +44,7 @@ export class AvaliarNotaParcialUsecase {
             const salvar = this.tccRepository.salvarTcc(tcc)
             if (salvar instanceof Error) throw salvar
 
-            this.eventPublisher.mergeObjectContext(tcc)
-            tcc.commit()
+            await this.publisher.publish(tcc)
         } catch (error) {
             return error
         }

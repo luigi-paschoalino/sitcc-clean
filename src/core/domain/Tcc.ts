@@ -307,6 +307,10 @@ export class Tcc extends AggregateRoot {
             throw new Error('Nota não informada')
         }
 
+        if (nota < 0 || nota > 10) {
+            throw new Error('Nota deve ser entre 0 e 10')
+        }
+
         this.nota_parcial = nota
         new TccNotaParcialAvaliadaEvent({
             tccId: this.id,
@@ -322,6 +326,10 @@ export class Tcc extends AggregateRoot {
 
         if (!nota) {
             throw new Error('Nota não informada')
+        }
+
+        if (nota < 0 || nota > 10) {
+            throw new Error('Nota deve ser entre 0 e 10')
         }
 
         this.nota_final = nota

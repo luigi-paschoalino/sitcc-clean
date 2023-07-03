@@ -71,4 +71,6 @@ export class TccController extends AbstractController {
 
         return this.handleResponse(result)
     }
+
+    //TODO: implementar rota para nota parcial (banca ou TCC?)
 }
