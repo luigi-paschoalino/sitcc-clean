@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common'
+import { Controller, Get, Post, Body, Param, UseGuards } from '@nestjs/common'
 import {
     CadastrarUniversidadeUsecase,
     CadastrarUniversidadeUsecaseProps,
@@ -16,6 +16,7 @@ import {
     CadastrarCursoUsecase,
     CadastrarCursoUsecaseProps,
 } from '../application/usecases/CadastrarCurso.usecase'
+import { JwtAuthGuard } from '../../middlewares/AuthenticationMiddleware'
 
 @Controller('universidades')
 export class UniversidadeController extends AbstractController {
@@ -44,6 +45,7 @@ export class UniversidadeController extends AbstractController {
     }
 
     @Get(':id')
+    @UseGuards(JwtAuthGuard)
     public async getUniversidade(@Param('id') id: string) {
         const result = await this.buscarUniversidadeQuery.execute(id)
 
@@ -51,6 +53,7 @@ export class UniversidadeController extends AbstractController {
     }
 
     @Post()
+    @UseGuards(JwtAuthGuard)
     public async cadastrarUniversidade(
         @Body() request: CadastrarUniversidadeUsecaseProps,
     ) {

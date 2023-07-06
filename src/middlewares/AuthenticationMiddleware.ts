@@ -4,6 +4,7 @@ import {
     ExecutionContext,
     UnauthorizedException,
     ForbiddenException,
+    Logger,
 } from '@nestjs/common'
 import { Observable } from 'rxjs'
 import * as jwt from 'jsonwebtoken'
@@ -12,14 +13,17 @@ const secretToken = 'sdaFsadasdaGasdCMySecretKey'
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
+    private logger = new Logger(JwtAuthGuard.name)
     canActivate(
         context: ExecutionContext,
     ): boolean | Promise<boolean> | Observable<boolean> {
         const request = context.switchToHttp().getRequest()
         const authHeader = request.headers.authorization
-        const token = authHeader && authHeader.split(' ')[1]
+        const token = authHeader
 
-        if (token == null) {
+        this.logger.debug(`AuthHeader: ${authHeader}\nToken: ${token}`)
+
+        if (token === null) {
             throw new UnauthorizedException()
         }
 

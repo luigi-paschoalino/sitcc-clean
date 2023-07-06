@@ -13,7 +13,7 @@ export interface CadastrarBancaUsecaseProps {
 
 export class CadastrarBancaUsecase {
     private logger = new Logger(CadastrarBancaUsecase.name)
-    //TODO: logger cadastra banca
+
     constructor(
         @Inject('EventPublisherService')
         private readonly publisher: EventPublisherService,
