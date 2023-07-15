@@ -1,3 +1,4 @@
+import { AlterarSenhaUsecase } from './AlterarSenha.usecase'
 import { AutenticarUsecase } from './Autenticar.usecase'
 import { AvaliarOrientacaoUsecase } from './AvaliarOrientacao.usecase'
 import { CadastrarBancaUsecase } from './CadastrarBanca.usecase'
@@ -6,6 +7,7 @@ import { CadastrarInstitutoUsecase } from './CadastrarInstituto.usecase'
 import { CadastrarTccUsecase } from './CadastrarTcc.usecase'
 import { CadastrarUniversidadeUsecase } from './CadastrarUniversidade.usecase'
 import { CadastrarUsuarioUseCase } from './CadastrarUsuario.usecase'
+import { RecuperarSenhaUsecase } from './RecuperarSenha.usecase'
 
 const UseCases = [
     CadastrarTccUsecase,
@@ -16,6 +18,8 @@ const UseCases = [
     AutenticarUsecase,
     AvaliarOrientacaoUsecase,
     CadastrarBancaUsecase,
+    RecuperarSenhaUsecase,
+    AlterarSenhaUsecase,
 ]
 
 export default UseCases

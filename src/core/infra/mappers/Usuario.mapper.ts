@@ -16,6 +16,7 @@ export class UsuarioMapper {
             senha: usuario.getSenha(),
             tipo: usuario.getTipo(),
             numero: usuario.getNumero(),
+            hashRecuperacaoSenha: usuario.getHashRecuperacaoSenha(),
         })
 
         return usuarioModel
@@ -32,6 +33,7 @@ export class UsuarioMapper {
                 senha: usuarioModel.senha,
                 tipo: usuarioModel.tipo,
                 numero: usuarioModel.numero,
+                hashRecuperacaoSenha: usuarioModel.hashRecuperacaoSenha,
             },
             usuarioModel.id,
         )
