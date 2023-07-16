@@ -9,11 +9,14 @@ import { InvalidPropsException } from './exceptions/InvalidProps.exception'
 import { TccNotaParcialAvaliadaEvent } from './events/TccNotaParcialAvaliada.event'
 import { TccNotaFinalAvaliadaEvent } from './events/TccNotaFinalEvent.event'
 import { BancaAdicionadaEvent } from './events/BancaAdicionada.event'
+import { TccEnviadoEvent } from './events/TccEnviado.event'
+import { TIPO_ENTREGA } from './services/MoverTcc.service'
 
 export enum STATUS_TCC {
     MATRICULA_REALIZADA = 'MATRICULA_REALIZADA',
     ORIENTACAO_ACEITA = 'ORIENTACAO_ACEITA',
     ORIENTACAO_RECUSADA = 'ORIENTACAO_RECUSADA',
+    ENTREGA_PARCIAL = 'ENTREGA_PARCIAL',
 }
 
 export interface CriarTccProps {
@@ -42,6 +45,7 @@ export interface CarregarTccProps {
     nota_parcial: number
     nota_final: number
     banca?: Banca[]
+    path?: string
 }
 
 export class Tcc extends AggregateRoot {
@@ -59,6 +63,7 @@ export class Tcc extends AggregateRoot {
     private nota_parcial: number
     private nota_final: number
     private banca?: Banca[]
+    private path?: string
 
     private constructor(id: string) {
         super()
@@ -103,6 +108,7 @@ export class Tcc extends AggregateRoot {
         tcc.nota_parcial = props.nota_parcial
         tcc.nota_final = props.nota_final
         tcc.banca = props.banca
+        tcc.path = props.path
 
         tcc.alunoId = props.aluno
         tcc.orientadorId = props.orientador
@@ -164,6 +170,10 @@ export class Tcc extends AggregateRoot {
 
     public getBanca(): Banca[] {
         return this.banca
+    }
+
+    public getPath(): string {
+        return this.path
     }
 
     private setStatus(status: STATUS_TCC): void {
@@ -337,5 +347,22 @@ export class Tcc extends AggregateRoot {
             tccId: this.id,
             nota: nota,
         })
+    }
+
+    public enviarTcc(path: string, tipoEntrega: TIPO_ENTREGA): Error | void {
+        if (!path.trim()) {
+            throw new Error('Caminho do arquivo não informado')
+        }
+
+        this.path = path
+        this.setStatus(STATUS_TCC.ENTREGA_PARCIAL)
+
+        this.apply(
+            new TccEnviadoEvent({
+                tccId: this.id,
+                path: path,
+                tipoEntrega,
+            }),
+        )
     }
 }

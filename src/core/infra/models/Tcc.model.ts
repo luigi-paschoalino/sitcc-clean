@@ -48,6 +48,9 @@ export class TccModel extends BaseEntity {
     @Column({ nullable: true })
     nota_final: number
 
+    @Column({ nullable: true })
+    path: string
+
     @OneToMany(() => BancaModel, (banca) => banca.tcc, {
         cascade: true,
         eager: true,
