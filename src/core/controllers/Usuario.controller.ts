@@ -2,15 +2,25 @@ import {
     CadastrarUsuarioUseCase,
     CadastrarUsuarioUsecaseProps,
 } from '../application/usecases/CadastrarUsuario.usecase'
-import { Controller, Get, Body, Param, Post, Res } from '@nestjs/common'
+import { Controller, Get, Body, Param, Post, Res, Patch } from '@nestjs/common'
 import { AbstractController } from './AbstractController'
 import { BuscarUsuarioQuery } from '../application/queries/BuscarUsuario.query'
+import {
+    RecuperarSenhaUsecase,
+    RecuperarSenhaUsecaseProps,
+} from '../application/usecases/RecuperarSenha.usecase'
+import {
+    AlterarSenhaUsecase,
+    AlterarSenhaUsecaseProps,
+} from '../application/usecases/AlterarSenha.usecase'
 
 @Controller('usuarios')
 export class UsuarioController extends AbstractController {
     constructor(
-        private readonly cadastrarUsuarioUseCase: CadastrarUsuarioUseCase,
+        private readonly cadastrarUsuarioUsecase: CadastrarUsuarioUseCase,
         private readonly buscarUsuarioQuery: BuscarUsuarioQuery,
+        private readonly recuperarSenhaUsecase: RecuperarSenhaUsecase,
+        private readonly alterarSenhaUsecase: AlterarSenhaUsecase,
     ) {
         super({
             UsuarioException: 400,
@@ -29,7 +39,27 @@ export class UsuarioController extends AbstractController {
 
     @Post()
     async cadastrar(@Body() body: CadastrarUsuarioUsecaseProps) {
-        const result = await this.cadastrarUsuarioUseCase.execute(body)
+        const result = await this.cadastrarUsuarioUsecase.execute(body)
+
+        return this.handleResponse(result)
+    }
+
+    @Patch('recuperar')
+    async recuperarSenha(@Body() body: RecuperarSenhaUsecaseProps) {
+        const result = await this.recuperarSenhaUsecase.execute(body)
+
+        return this.handleResponse(result)
+    }
+
+    @Patch('alterar-senha/:id')
+    async alterarSenha(
+        @Param('id') id: string,
+        @Body() body: AlterarSenhaUsecaseProps,
+    ) {
+        const result = await this.alterarSenhaUsecase.execute({
+            ...body,
+            id,
+        })
 
         return this.handleResponse(result)
     }

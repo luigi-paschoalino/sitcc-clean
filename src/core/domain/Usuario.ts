@@ -3,6 +3,7 @@ import { PerfilProfessor } from './PerfilProfessor'
 import { UsuarioCadastradoEvent } from './events/UsuarioCadastrado.event'
 import { InvalidPropsException } from './exceptions/InvalidProps.exception'
 import { Curso } from './Curso'
+import { SenhaReiniciadaEvent } from './events/SenhaReiniciada.event'
 
 export enum TIPO_USUARIO {
     ALUNO = 'ALUNO',
@@ -27,6 +28,7 @@ export interface CarregarUsuarioProps {
     senha: string
     tipo: TIPO_USUARIO
     numero: string
+    hashRecuperacaoSenha?: string
     perfilProfessor?: PerfilProfessor
 }
 
@@ -41,6 +43,7 @@ export class Usuario extends AggregateRoot {
     private senha: string //TODO: hashear senha
     private tipo: TIPO_USUARIO
     private numero: string
+    private hashRecuperacaoSenha?: string
     private perfilProfessor?: PerfilProfessor
 
     private constructor(id: string) {
@@ -95,7 +98,30 @@ export class Usuario extends AggregateRoot {
         instance.setNumero(props.numero)
         instance.setPerfilProfessor(props.perfilProfessor)
 
+        instance.hashRecuperacaoSenha = props.hashRecuperacaoSenha
+
         return instance
+    }
+
+    public reiniciarSenha(hash: string): void {
+        this.hashRecuperacaoSenha = hash
+
+        this.apply(
+            new SenhaReiniciadaEvent({
+                usuarioId: this.id,
+                timestamp: new Date(),
+            }),
+        )
+    }
+
+    public alterarSenha(senha: string, hash: string): Error | void {
+        if (
+            this.hashRecuperacaoSenha !== hash ||
+            !this.hashRecuperacaoSenha?.trim()
+        )
+            throw new InvalidPropsException('Hash inválido')
+        this.setSenha(senha)
+        this.hashRecuperacaoSenha = null
     }
 
     private setNome(nome: string) {
@@ -166,5 +192,9 @@ export class Usuario extends AggregateRoot {
 
     public getPerfilProfessor(): PerfilProfessor {
         return this.perfilProfessor
+    }
+
+    public getHashRecuperacaoSenha(): string {
+        return this.hashRecuperacaoSenha
     }
 }

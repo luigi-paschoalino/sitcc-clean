@@ -10,7 +10,6 @@ import {
 import { TIPO_USUARIO } from '../../domain/Usuario'
 import { CursoModel } from './Curso.model'
 import { PerfilProfessorModel } from './PerfilProfessor.model'
-import { TccModel } from './Tcc.model'
 
 @Entity({ name: 'usuario' })
 export class UsuarioModel extends BaseEntity {
@@ -34,6 +33,9 @@ export class UsuarioModel extends BaseEntity {
 
     @Column({ nullable: false, length: 256 })
     numero: string
+
+    @Column({ nullable: true })
+    hashRecuperacaoSenha: string
 
     @OneToOne(() => PerfilProfessorModel, (perfil) => perfil.usuario, {
         eager: true,
