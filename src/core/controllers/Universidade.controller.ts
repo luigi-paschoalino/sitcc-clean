@@ -63,6 +63,7 @@ export class UniversidadeController extends AbstractController {
     }
 
     @Post('institutos')
+    @UseGuards(JwtAuthGuard)
     public async cadastrarInstituto(
         @Body() request: CadastrarInstitutoUsecaseProps,
     ) {
@@ -71,6 +72,7 @@ export class UniversidadeController extends AbstractController {
     }
 
     @Get('institutos/:id')
+    @UseGuards(JwtAuthGuard)
     public async getInstituto(@Param('id') id: string) {
         const result = await this.buscarInstitutoQuery.execute({
             institutoId: id,
@@ -80,6 +82,7 @@ export class UniversidadeController extends AbstractController {
     }
 
     @Post('cursos')
+    @UseGuards(JwtAuthGuard)
     public async cadastrarCurso(@Body() request: CadastrarCursoUsecaseProps) {
         const result = await this.cadastrarCursoUsecase.execute(request)
 
@@ -87,6 +90,7 @@ export class UniversidadeController extends AbstractController {
     }
 
     @Get('cursos/:id')
+    @UseGuards(JwtAuthGuard)
     public async buscarCurso(@Param('id') id: string) {
         const result = await this.buscarCursoQuery.execute({
             cursoId: id,

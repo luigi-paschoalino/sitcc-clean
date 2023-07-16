@@ -2,7 +2,17 @@ import {
     CadastrarUsuarioUseCase,
     CadastrarUsuarioUsecaseProps,
 } from '../application/usecases/CadastrarUsuario.usecase'
-import { Controller, Get, Body, Param, Post, Res, Patch } from '@nestjs/common'
+import {
+    Controller,
+    Get,
+    Body,
+    Param,
+    Post,
+    Res,
+    PatchUseGuards,
+    UseGuards,
+    Patch,
+} from '@nestjs/common'
 import { AbstractController } from './AbstractController'
 import { BuscarUsuarioQuery } from '../application/queries/BuscarUsuario.query'
 import {
@@ -13,6 +23,7 @@ import {
     AlterarSenhaUsecase,
     AlterarSenhaUsecaseProps,
 } from '../application/usecases/AlterarSenha.usecase'
+import { JwtAuthGuard } from 'src/middlewares/AuthenticationMiddleware'
 
 @Controller('usuarios')
 export class UsuarioController extends AbstractController {
@@ -31,6 +42,7 @@ export class UsuarioController extends AbstractController {
     }
 
     @Get(':id')
+    @UseGuards(JwtAuthGuard)
     async buscarUsuarioPorId(@Param('id') id: string) {
         const result = await this.buscarUsuarioQuery.execute(id)
 
@@ -38,6 +50,7 @@ export class UsuarioController extends AbstractController {
     }
 
     @Post()
+    @UseGuards(JwtAuthGuard)
     async cadastrar(@Body() body: CadastrarUsuarioUsecaseProps) {
         const result = await this.cadastrarUsuarioUsecase.execute(body)
 
@@ -45,6 +58,7 @@ export class UsuarioController extends AbstractController {
     }
 
     @Patch('recuperar')
+    @UseGuards(JwtAuthGuard)
     async recuperarSenha(@Body() body: RecuperarSenhaUsecaseProps) {
         const result = await this.recuperarSenhaUsecase.execute(body)
 
@@ -52,6 +66,7 @@ export class UsuarioController extends AbstractController {
     }
 
     @Patch('alterar-senha/:id')
+    @UseGuards(JwtAuthGuard)
     async alterarSenha(
         @Param('id') id: string,
         @Body() body: AlterarSenhaUsecaseProps,
