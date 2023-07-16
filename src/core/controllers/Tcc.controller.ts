@@ -8,6 +8,7 @@ import {
     Put,
     UseInterceptors,
     UploadedFile,
+    Res,
 } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { BuscarTccQuery } from '../application/queries/BuscarTcc.query'
@@ -29,6 +30,8 @@ import {
     EnviarTccParcialUsecase,
     EnviarTccParcialUsecaseProps,
 } from '../application/usecases/EnviarTccParcial.usecase'
+import { Response } from 'express'
+import { BaixarTccUsecase } from '../application/usecases/BaixarTcc.usecase'
 
 @Controller('tcc')
 export class TccController extends AbstractController {
@@ -38,6 +41,7 @@ export class TccController extends AbstractController {
         private readonly avaliarOrientacaoUsecase: AvaliarOrientacaoUsecase,
         private readonly cadastrarBancaUsecase: CadastrarBancaUsecase,
         private readonly enviarTccParcialUsecase: EnviarTccParcialUsecase,
+        private readonly baixarTccUsecase: BaixarTccUsecase,
     ) {
         super({
             RepositoryException: 500,
@@ -103,6 +107,15 @@ export class TccController extends AbstractController {
             tccId: id,
             path: file.path,
         })
+
+        return this.handleResponse(result)
+    }
+
+    @Get(':id/download')
+    public async downloadTcc(@Param('id') id: string, @Res() res: Response) {
+        const result = await this.baixarTccUsecase.execute(id)
+
+        if (!(result instanceof Error)) res.download(result)
 
         return this.handleResponse(result)
     }
