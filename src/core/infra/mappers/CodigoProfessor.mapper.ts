@@ -1,6 +1,8 @@
+import { Injectable } from '@nestjs/common'
 import { CodigoProfessor } from '../../domain/CodigoProfessor'
 import { CodigoProfessorModel } from '../models/CodigoProfessor.model'
 
+@Injectable()
 export class CodigoProfessorMapper {
     constructor() {}
 

@@ -15,6 +15,9 @@ import { AuthController } from './controllers/Auth.controller'
 import { EventRepositoryImpl } from './infra/repositories/Event.repository'
 import { EventPublisherServiceImpl } from './infra/services/EventPublisher.service'
 import { EncriptarSenhaServiceImpl } from './infra/services/EncriptarSenha.service'
+import { CodigoProfessorController } from './controllers/CodigoProfessor.controller'
+import { CodigoProfessorRepositoryImpl } from './infra/repositories/CodigoProfessor.repository'
+import { GerarCodigoServiceImpl } from './infra/services/GerarCodigo.service'
 
 @Module({
     imports: [CqrsModule],
@@ -23,6 +26,7 @@ import { EncriptarSenhaServiceImpl } from './infra/services/EncriptarSenha.servi
         UniversidadeController,
         UsuarioController,
         AuthController,
+        CodigoProfessorController,
     ],
     providers: [
         ...UseCases,
@@ -45,6 +49,10 @@ import { EncriptarSenhaServiceImpl } from './infra/services/EncriptarSenha.servi
             useClass: TccRepositoryImpl,
         },
         {
+            provide: 'CodigoProfessorRepository',
+            useClass: CodigoProfessorRepositoryImpl,
+        },
+        {
             provide: 'EventRepository',
             useClass: EventRepositoryImpl,
         },
@@ -59,6 +67,10 @@ import { EncriptarSenhaServiceImpl } from './infra/services/EncriptarSenha.servi
         {
             provide: 'EncriptarSenhaService',
             useClass: EncriptarSenhaServiceImpl,
+        },
+        {
+            provide: 'GerarCodigoService',
+            useClass: GerarCodigoServiceImpl,
         },
     ],
     exports: [],
