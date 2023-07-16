@@ -3,6 +3,9 @@ import { TccController } from './controllers/Tcc.controller'
 import { UniversidadeController } from './controllers/Universidade.controller'
 import { UsuarioController } from './controllers/Usuario.controller'
 import { CqrsModule } from '@nestjs/cqrs'
+import { MulterModule } from '@nestjs/platform-express'
+import * as multer from 'multer'
+import * as path from 'path'
 import UseCases from './application/usecases'
 import Queries from './application/queries'
 import { UniqueIdServiceImpl } from './infra/services/UniqueID.service'
@@ -20,7 +23,33 @@ import { CodigoProfessorRepositoryImpl } from './infra/repositories/CodigoProfes
 import { GerarCodigoServiceImpl } from './infra/services/GerarCodigo.service'
 
 @Module({
-    imports: [CqrsModule],
+    imports: [
+        CqrsModule,
+        MulterModule.register({
+            storage: multer.diskStorage({
+                destination: './files/tfgs/temp',
+                filename: (req, file, cb) => {
+                    cb(
+                        null,
+                        `${file.fieldname}-${Date.now()}${path.extname(
+                            file.originalname,
+                        )}`,
+                    )
+                },
+            }),
+            limits: { fileSize: 10 * 1024 * 1024 }, // Limite de 10MB
+            fileFilter: (req, file, cb) => {
+                if (path.extname(file.originalname) !== '.pdf') {
+                    // Rejeita o arquivo se não for PDF
+                    return cb(
+                        new Error('Somente arquivos PDF são permitidos!'),
+                        false,
+                    )
+                }
+                cb(null, true)
+            },
+        }),
+    ],
     controllers: [
         TccController,
         UniversidadeController,
@@ -72,6 +101,7 @@ import { GerarCodigoServiceImpl } from './infra/services/GerarCodigo.service'
             provide: 'GerarCodigoService',
             useClass: GerarCodigoServiceImpl,
         },
+        // TODO: provide do serviço de mover TCC aqui
     ],
     exports: [],
 })
