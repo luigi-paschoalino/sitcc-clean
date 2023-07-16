@@ -27,6 +27,7 @@ export class TccMapper {
             banca: tcc
                 .getBanca()
                 .map((banca) => this.bancaMapper.domainToModel(banca)),
+            path: tcc.getPath(),
         })
 
         return model
@@ -50,6 +51,7 @@ export class TccMapper {
                 banca: tccModel.banca.map((banca) =>
                     this.bancaMapper.modelToDomain(banca),
                 ),
+                path: tccModel.path,
             },
             tccModel.id,
         )
