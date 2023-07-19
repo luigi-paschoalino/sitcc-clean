@@ -136,6 +136,9 @@ export class Usuario extends AggregateRoot {
 
     private setEmail(email: string) {
         if (!email) throw new InvalidPropsException('Email não informado')
+        const regex = /^[a-zA-Z0-9._%+-]+@unifei.edu.br$/
+        if (!regex.test(email))
+            throw new InvalidPropsException('Email com formato inválido')
         this.email = email
     }
 
