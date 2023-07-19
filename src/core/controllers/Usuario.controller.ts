@@ -8,8 +8,6 @@ import {
     Body,
     Param,
     Post,
-    Res,
-    PatchUseGuards,
     UseGuards,
     Patch,
 } from '@nestjs/common'
@@ -50,7 +48,6 @@ export class UsuarioController extends AbstractController {
     }
 
     @Post()
-    @UseGuards(JwtAuthGuard)
     async cadastrar(@Body() body: CadastrarUsuarioUsecaseProps) {
         const result = await this.cadastrarUsuarioUsecase.execute(body)
 
@@ -58,7 +55,6 @@ export class UsuarioController extends AbstractController {
     }
 
     @Patch('recuperar')
-    @UseGuards(JwtAuthGuard)
     async recuperarSenha(@Body() body: RecuperarSenhaUsecaseProps) {
         const result = await this.recuperarSenhaUsecase.execute(body)
 
@@ -66,7 +62,6 @@ export class UsuarioController extends AbstractController {
     }
 
     @Patch('alterar-senha/:id')
-    @UseGuards(JwtAuthGuard)
     async alterarSenha(
         @Param('id') id: string,
         @Body() body: AlterarSenhaUsecaseProps,

@@ -53,6 +53,7 @@ export class TccController extends AbstractController {
         })
     }
     @Get(':id')
+    @UseGuards(JwtAuthGuard)
     public async getTcc(@Param('id') id: string): Promise<Tcc> {
         const result = await this.buscarTccQuery.execute(id)
 

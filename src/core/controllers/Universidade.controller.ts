@@ -45,7 +45,6 @@ export class UniversidadeController extends AbstractController {
     }
 
     @Get(':id')
-    @UseGuards(JwtAuthGuard)
     public async getUniversidade(@Param('id') id: string) {
         const result = await this.buscarUniversidadeQuery.execute(id)
 
