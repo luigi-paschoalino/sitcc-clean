@@ -2,7 +2,15 @@ import {
     CadastrarUsuarioUseCase,
     CadastrarUsuarioUsecaseProps,
 } from '../application/usecases/CadastrarUsuario.usecase'
-import { Controller, Get, Body, Param, Post, Res, Patch } from '@nestjs/common'
+import {
+    Controller,
+    Get,
+    Body,
+    Param,
+    Post,
+    UseGuards,
+    Patch,
+} from '@nestjs/common'
 import { AbstractController } from './AbstractController'
 import { BuscarUsuarioQuery } from '../application/queries/BuscarUsuario.query'
 import {
@@ -13,6 +21,7 @@ import {
     AlterarSenhaUsecase,
     AlterarSenhaUsecaseProps,
 } from '../application/usecases/AlterarSenha.usecase'
+import { JwtAuthGuard } from 'src/middlewares/AuthenticationMiddleware'
 
 @Controller('usuarios')
 export class UsuarioController extends AbstractController {
@@ -31,6 +40,7 @@ export class UsuarioController extends AbstractController {
     }
 
     @Get(':id')
+    @UseGuards(JwtAuthGuard)
     async buscarUsuarioPorId(@Param('id') id: string) {
         const result = await this.buscarUsuarioQuery.execute(id)
 
