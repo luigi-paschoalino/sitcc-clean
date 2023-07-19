@@ -9,6 +9,7 @@ import {
     UseInterceptors,
     UploadedFile,
     Res,
+    UseGuards,
 } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { BuscarTccQuery } from '../application/queries/BuscarTcc.query'
@@ -32,6 +33,7 @@ import {
 } from '../application/usecases/EnviarTccParcial.usecase'
 import { Response } from 'express'
 import { BaixarTccUsecase } from '../application/usecases/BaixarTcc.usecase'
+import { JwtAuthGuard } from 'src/middlewares/AuthenticationMiddleware'
 
 @Controller('tcc')
 export class TccController extends AbstractController {
@@ -51,6 +53,7 @@ export class TccController extends AbstractController {
         })
     }
     @Get(':id')
+    @UseGuards(JwtAuthGuard)
     public async getTcc(@Param('id') id: string): Promise<Tcc> {
         const result = await this.buscarTccQuery.execute(id)
 
@@ -59,6 +62,7 @@ export class TccController extends AbstractController {
 
     // TODO: revisar a rota, se precisa enviar os dados todos logo de início
     @Post()
+    @UseGuards(JwtAuthGuard)
     public async postTcc(
         @Body() body: CadastrarTccUsecaseProps,
     ): Promise<void> {
@@ -68,6 +72,7 @@ export class TccController extends AbstractController {
     }
 
     @Patch('avaliar/:id')
+    @UseGuards(JwtAuthGuard)
     public async avaliarOrientacao(
         @Param('id') id: string,
         @Body() body: AvaliarOrientacaoUsecaseProps,
@@ -81,6 +86,7 @@ export class TccController extends AbstractController {
     }
 
     @Put(':id/banca')
+    @UseGuards(JwtAuthGuard)
     public async atribuirBanca(
         @Param('id') id: string,
         @Body() body: CadastrarBancaUsecaseProps,
@@ -96,6 +102,7 @@ export class TccController extends AbstractController {
     // Download e upload de TCCs
 
     @Post(':id/parcial')
+    @UseGuards(JwtAuthGuard)
     @UseInterceptors(FileInterceptor('file'))
     public async enviarTccParcial(
         @Param('id') id: string,
@@ -112,6 +119,7 @@ export class TccController extends AbstractController {
     }
 
     @Get(':id/download')
+    @UseGuards(JwtAuthGuard)
     public async downloadTcc(@Param('id') id: string, @Res() res: Response) {
         const result = await this.baixarTccUsecase.execute(id)
 
