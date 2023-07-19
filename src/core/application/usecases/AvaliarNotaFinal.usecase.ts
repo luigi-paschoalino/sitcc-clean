@@ -1,5 +1,4 @@
 import { Inject } from '@nestjs/common'
-import { EventPublisher } from '@nestjs/cqrs'
 import { TIPO_USUARIO } from 'src/core/domain/Usuario'
 import { UsuarioException } from 'src/core/domain/exceptions/Usuario.exception'
 import { TccRepository } from 'src/core/domain/repositories/Tcc.repository'
@@ -9,7 +8,8 @@ import { EventPublisherService } from '../../domain/services/EventPublisher.serv
 export interface AvaliarNotaFinalUsecaseProps {
     professorId: string
     tccId: string
-    nota: number
+    notaApresentacao: number
+    notaTrabalho: number
 }
 
 export class AvaliarNotaFinalUsecase {
@@ -27,19 +27,21 @@ export class AvaliarNotaFinalUsecase {
                 props.professorId,
             )
             if (professor instanceof Error) throw professor
+
             if (professor.getTipo() !== TIPO_USUARIO.PROFESSOR)
                 throw new UsuarioException('Usuário não é um professor')
 
             const tcc = await this.tccRepository.buscarTcc(props.tccId)
             if (tcc instanceof Error) throw tcc
 
-            const aplicar_nota = tcc.avaliarNotaFinal(
+            const aplicar_nota = tcc.avaliarNotaFinalBanca(
                 props.professorId,
-                props.nota,
+                props.notaApresentacao,
+                props.notaTrabalho,
             )
             if (aplicar_nota instanceof Error) throw aplicar_nota
 
-            const salvar = this.tccRepository.salvarTcc(tcc)
+            const salvar = await this.tccRepository.salvarTcc(tcc)
             if (salvar instanceof Error) throw salvar
 
             await this.publisher.publish(tcc)

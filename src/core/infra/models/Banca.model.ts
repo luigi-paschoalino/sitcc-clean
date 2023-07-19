@@ -21,13 +21,13 @@ export class BancaModel extends BaseEntity {
     })
     dia_hora: Date
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, type: 'decimal' })
     nota_final: number
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, type: 'decimal' })
     nota_apresentacao: number
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, type: 'decimal' })
     nota_trabalho: number
 
     @ManyToOne(() => TccModel, (tcc) => tcc.banca)

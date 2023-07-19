@@ -1,8 +1,9 @@
 import { AbstractEvent } from './AbstractEvent'
 
 export interface TccNotaFinalAvaliadaEventProps {
+    bancaId: string
     tccId: string
-    nota: number
+    notaFinal: number
 }
 
 export class TccNotaFinalAvaliadaEvent extends AbstractEvent {

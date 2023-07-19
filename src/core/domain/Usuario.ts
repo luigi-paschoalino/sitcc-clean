@@ -92,12 +92,12 @@ export class Usuario extends AggregateRoot {
 
         instance.setNome(props.nome)
         instance.setCurso(props.curso)
-        instance.setEmail(props.email)
         instance.setSenha(props.senha)
         instance.setTipo(props.tipo)
         instance.setNumero(props.numero)
         instance.setPerfilProfessor(props.perfilProfessor)
 
+        instance.email = props.email
         instance.hashRecuperacaoSenha = props.hashRecuperacaoSenha
 
         return instance

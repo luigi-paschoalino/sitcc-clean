@@ -34,6 +34,14 @@ import {
 import { Response } from 'express'
 import { BaixarTccUsecase } from '../application/usecases/BaixarTcc.usecase'
 import { JwtAuthGuard } from 'src/middlewares/AuthenticationMiddleware'
+import {
+    AvaliarNotaParcialUsecase,
+    AvaliarNotaParcialUsecaseProps,
+} from '../application/usecases/AvaliarNotaParcial.usecase'
+import {
+    AvaliarNotaFinalUsecase,
+    AvaliarNotaFinalUsecaseProps,
+} from '../application/usecases/AvaliarNotaFinal.usecase'
 
 @Controller('tcc')
 export class TccController extends AbstractController {
@@ -44,6 +52,8 @@ export class TccController extends AbstractController {
         private readonly cadastrarBancaUsecase: CadastrarBancaUsecase,
         private readonly enviarTccParcialUsecase: EnviarTccParcialUsecase,
         private readonly baixarTccUsecase: BaixarTccUsecase,
+        private readonly avaliarNotaParcial: AvaliarNotaParcialUsecase,
+        private readonly avaliarNotaFinal: AvaliarNotaFinalUsecase,
     ) {
         super({
             RepositoryException: 500,
@@ -92,6 +102,34 @@ export class TccController extends AbstractController {
         @Body() body: CadastrarBancaUsecaseProps,
     ) {
         const result = await this.cadastrarBancaUsecase.execute({
+            ...body,
+            tccId: id,
+        })
+
+        return this.handleResponse(result)
+    }
+
+    @Put(':id/nota-parcial')
+    // @UseGuards(JwtAuthGuard)
+    public async atribuirNotaParcial(
+        @Param('id') id: string,
+        @Body() body: AvaliarNotaParcialUsecaseProps,
+    ) {
+        const result = await this.avaliarNotaParcial.execute({
+            ...body,
+            tccId: id,
+        })
+
+        return this.handleResponse(result)
+    }
+
+    @Put(':id/nota-final')
+    // @UseGuards(JwtAuthGuard)
+    public async atribuirNotaFinal(
+        @Param('id') id: string,
+        @Body() body: AvaliarNotaFinalUsecaseProps,
+    ) {
+        const result = await this.avaliarNotaFinal.execute({
             ...body,
             tccId: id,
         })

@@ -1,5 +1,7 @@
 import { AlterarSenhaUsecase } from './AlterarSenha.usecase'
 import { AutenticarUsecase } from './Autenticar.usecase'
+import { AvaliarNotaFinalUsecase } from './AvaliarNotaFinal.usecase'
+import { AvaliarNotaParcialUsecase } from './AvaliarNotaParcial.usecase'
 import { AvaliarOrientacaoUsecase } from './AvaliarOrientacao.usecase'
 import { BaixarTccUsecase } from './BaixarTcc.usecase'
 import { CadastrarBancaUsecase } from './CadastrarBanca.usecase'
@@ -26,6 +28,8 @@ const UseCases = [
     GerarCodigoProfessorUsecase,
     EnviarTccParcialUsecase,
     BaixarTccUsecase,
+    AvaliarNotaParcialUsecase,
+    AvaliarNotaFinalUsecase,
 ]
 
 export default UseCases

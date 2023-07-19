@@ -233,10 +233,26 @@ export class Tcc extends AggregateRoot {
     }
 
     private setNotaParcial(nota_parcial: number): void {
+        if (!nota_parcial) {
+            throw new Error('Nota não informada')
+        }
+
+        if (nota_parcial < 0 || nota_parcial > 10) {
+            throw new Error('Nota deve ser entre 0 e 10')
+        }
+
         this.nota_parcial = nota_parcial
     }
 
     private setNotaFinal(nota_final: number): void {
+        if (!nota_final) {
+            throw new Error('Nota não informada')
+        }
+
+        if (nota_final < 0 || nota_final > 10) {
+            throw new Error('Nota deve ser entre 0 e 10')
+        }
+
         this.nota_final = nota_final
     }
 
@@ -313,39 +329,32 @@ export class Tcc extends AggregateRoot {
                 'O professor que está avaliando não é orientador deste TCC',
             )
 
-        if (!nota) {
-            throw new Error('Nota não informada')
-        }
+        this.setNotaParcial(nota)
 
-        if (nota < 0 || nota > 10) {
-            throw new Error('Nota deve ser entre 0 e 10')
-        }
-
-        this.nota_parcial = nota
         new TccNotaParcialAvaliadaEvent({
             tccId: this.id,
             nota: nota,
         })
     }
 
-    public avaliarNotaFinal(professorId: string, nota: number): Error | void {
-        if (professorId !== this.orientadorId)
+    public avaliarNotaFinalBanca(
+        professorId: string,
+        notaApresentacao: number,
+        notaTrabalho: number,
+    ): Error | void {
+        const banca = this.banca.find((b) => b.getIdProfessor() === professorId)
+
+        if (!banca)
             throw new UsuarioException(
-                'O professor que está avaliando não é orientador deste TCC',
+                'Professor informado não possui registro na banca deste TCC',
             )
 
-        if (!nota) {
-            throw new Error('Nota não informada')
-        }
+        banca.avaliarNotaTcc(notaApresentacao, notaTrabalho)
 
-        if (nota < 0 || nota > 10) {
-            throw new Error('Nota deve ser entre 0 e 10')
-        }
-
-        this.nota_final = nota
         new TccNotaFinalAvaliadaEvent({
+            bancaId: banca.getId(),
             tccId: this.id,
-            nota: nota,
+            notaFinal: banca.getNotaFinal(),
         })
     }
 

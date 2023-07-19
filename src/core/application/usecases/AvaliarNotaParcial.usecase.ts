@@ -41,7 +41,7 @@ export class AvaliarNotaParcialUsecase {
             )
             if (aplicar_nota instanceof Error) throw aplicar_nota
 
-            const salvar = this.tccRepository.salvarTcc(tcc)
+            const salvar = await this.tccRepository.salvarTcc(tcc)
             if (salvar instanceof Error) throw salvar
 
             await this.publisher.publish(tcc)

@@ -42,10 +42,10 @@ export class TccModel extends BaseEntity {
     @Column({ nullable: false, length: 256 })
     resultados: string
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, type: 'decimal' })
     nota_parcial: number
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, type: 'decimal' })
     nota_final: number
 
     @Column({ nullable: true })

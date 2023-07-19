@@ -40,9 +40,9 @@ export class Banca {
         banca.setIdProfessor(props.professorId)
         banca.setDiaHora(props.dia_hora)
 
-        banca.nota_final = props.nota_final
         banca.nota_apresentacao = props.nota_apresentacao
         banca.nota_trabalho = props.nota_trabalho
+        banca.nota_final = props.nota_final
 
         return banca
     }
@@ -83,5 +83,22 @@ export class Banca {
 
     getNotaTrabalho(): number {
         return this.nota_trabalho
+    }
+
+    avaliarNotaTcc(
+        notaApresentacao: number,
+        notaTrabalho: number,
+    ): Error | void {
+        if (!notaApresentacao || notaApresentacao < 0 || notaApresentacao > 10)
+            throw new InvalidPropsException('Nota de apresentação inválida')
+        if (!notaTrabalho || notaTrabalho < 0 || notaTrabalho > 10)
+            throw new InvalidPropsException('Nota de trabalho inválida')
+
+        this.nota_apresentacao = notaApresentacao
+        this.nota_trabalho = notaTrabalho
+
+        this.nota_final = Number(
+            (notaTrabalho * 0.7 + notaApresentacao * 0.3).toFixed(2),
+        )
     }
 }
