@@ -8,6 +8,7 @@ export interface LoginToken {
 export interface Validation {
     auth: boolean
     nome: string
+    tipo: string
 }
 
 export interface AuthService {

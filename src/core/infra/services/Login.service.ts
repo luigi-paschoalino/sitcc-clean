@@ -68,9 +68,13 @@ export class AuthServiceImpl implements AuthService {
 
             if (usuario instanceof Error) throw usuario
 
-            return { auth: true, nome: usuario.getNome() }
+            return {
+                auth: true,
+                nome: usuario.getNome(),
+                tipo: usuario.getTipo(),
+            }
         } catch (error) {
-            return { auth: false, nome: null }
+            return { auth: false, nome: null, tipo: null }
         }
     }
 }
