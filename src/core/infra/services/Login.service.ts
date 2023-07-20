@@ -2,7 +2,11 @@ import { Injectable, Inject, Logger } from '@nestjs/common'
 import * as jwt from 'jsonwebtoken'
 import { LoginDTO } from '../../application/dtos/login.dto'
 import { UsuarioRepository } from '../../domain/repositories/Usuario.repository'
-import { AuthService, LoginToken } from '../../domain/services/Login.service'
+import {
+    AuthService,
+    LoginToken,
+    Validation,
+} from '../../domain/services/Login.service'
 import { EncriptarSenhaService } from '../../domain/services/EncriptarSenha.service'
 
 const secretToken = 'sdaFsadasdaGasdCMySecretKey'
@@ -50,6 +54,23 @@ export class AuthServiceImpl implements AuthService {
             return { auth: false, token: null }
         } catch (error) {
             return error
+        }
+    }
+
+    async validar(token: string): Promise<Error | Validation> {
+        try {
+            const validation = jwt.verify(token, secretToken)
+            if (validation instanceof Error) throw validation
+
+            const usuario = await this.usuarioRepository.buscarPorId(
+                validation['id'],
+            )
+
+            if (usuario instanceof Error) throw usuario
+
+            return { auth: true, nome: usuario.getNome() }
+        } catch (error) {
+            return { auth: false, nome: null }
         }
     }
 }
