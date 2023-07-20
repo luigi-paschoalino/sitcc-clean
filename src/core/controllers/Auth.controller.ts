@@ -5,10 +5,17 @@ import {
 } from '../application/usecases/Autenticar.usecase'
 import { AbstractController } from './AbstractController'
 import { Response } from 'express'
+import {
+    ValidarTokenUsecase,
+    ValidarTokenUsecaseProps,
+} from '../application/usecases/ValidarToken.usecase'
 
 @Controller('login')
 export class AuthController extends AbstractController {
-    constructor(private readonly autenticarUsecase: AutenticarUsecase) {
+    constructor(
+        private readonly autenticarUsecase: AutenticarUsecase,
+        private readonly validarTokenUsecase: ValidarTokenUsecase,
+    ) {
         super({
             UsuarioException: 400,
             RepositoryException: 500,
@@ -28,5 +35,12 @@ export class AuthController extends AbstractController {
     async logout(res: Response) {
         res.setHeader('Authorization', '')
         res.status(200).send()
+    }
+
+    @Post('validate')
+    async validateToken(@Body() body: ValidarTokenUsecaseProps) {
+        const result = await this.validarTokenUsecase.execute(body)
+
+        return super.handleResponse(result)
     }
 }

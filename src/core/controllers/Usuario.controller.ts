@@ -61,14 +61,14 @@ export class UsuarioController extends AbstractController {
         return this.handleResponse(result)
     }
 
-    @Patch('alterar-senha/:id')
+    @Patch('alterar-senha/:hash')
     async alterarSenha(
-        @Param('id') id: string,
+        @Param('hash') hash: string,
         @Body() body: AlterarSenhaUsecaseProps,
     ) {
         const result = await this.alterarSenhaUsecase.execute({
             ...body,
-            id,
+            hashRecuperacaoSenha: hash,
         })
 
         return this.handleResponse(result)

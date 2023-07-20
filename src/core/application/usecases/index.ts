@@ -13,6 +13,7 @@ import { CadastrarUsuarioUseCase } from './CadastrarUsuario.usecase'
 import { EnviarTccParcialUsecase } from './EnviarTccParcial.usecase'
 import { GerarCodigoProfessorUsecase } from './GerarCodigoProfessor.usecase'
 import { RecuperarSenhaUsecase } from './RecuperarSenha.usecase'
+import { ValidarTokenUsecase } from './ValidarToken.usecase'
 
 const UseCases = [
     CadastrarTccUsecase,
@@ -30,6 +31,7 @@ const UseCases = [
     BaixarTccUsecase,
     AvaliarNotaParcialUsecase,
     AvaliarNotaFinalUsecase,
+    ValidarTokenUsecase,
 ]
 
 export default UseCases
