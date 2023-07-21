@@ -5,7 +5,7 @@ export interface SenhaReiniciadaEventProps {
     timestamp: Date
 }
 
-export class SenhaReiniciadaEvent extends AbstractEvent {
+export class SenhaReiniciadaEvent extends AbstractEvent<SenhaReiniciadaEventProps> {
     constructor(props: SenhaReiniciadaEventProps) {
         super(SenhaReiniciadaEvent.name, props)
     }

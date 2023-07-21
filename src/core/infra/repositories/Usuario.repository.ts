@@ -22,7 +22,6 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
                     `Usuário com o ID ${id} não existe!`,
                 )
 
-            this.logger.debug(JSON.stringify(model, null, 2))
             const usuario = this.usuarioMapper.modelToDomain(model)
 
             return usuario
@@ -41,6 +40,27 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
                 throw new RepositoryDataNotFoundException(
                     `Usuário com o email ${email} não existe!`,
                 )
+            const usuario = this.usuarioMapper.modelToDomain(model)
+
+            return usuario
+        } catch (error) {
+            return error
+        }
+    }
+
+    async buscarPorHashSenha(hash: string): Promise<Error | Usuario> {
+        try {
+            const model = await UsuarioModel.findOneBy({
+                hashRecuperacaoSenha: hash,
+            })
+
+            if (model instanceof Error)
+                throw new RepositoryException(model.message)
+            else if (!model)
+                throw new RepositoryDataNotFoundException(
+                    `A hash ${hash} expirou ou foi preenchida incorretamente. Solicite novamente a recuperação de senha!`,
+                )
+
             const usuario = this.usuarioMapper.modelToDomain(model)
 
             return usuario

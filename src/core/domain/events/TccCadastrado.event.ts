@@ -5,7 +5,7 @@ interface TccCadastradoEventProps {
     titulo: string
 }
 
-export class TccCadastradoEvent extends AbstractEvent {
+export class TccCadastradoEvent extends AbstractEvent<TccCadastradoEventProps> {
     constructor(props: TccCadastradoEventProps) {
         super(TccCadastradoEvent.name, props)
     }

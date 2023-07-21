@@ -7,7 +7,7 @@ export interface TccOrientacaoReprovadaEventProps {
     justificativa: string
 }
 
-export class TccOrientacaoReprovadaEvent extends AbstractEvent {
+export class TccOrientacaoReprovadaEvent extends AbstractEvent<TccOrientacaoReprovadaEventProps> {
     constructor(props: TccOrientacaoReprovadaEventProps) {
         super(TccOrientacaoReprovadaEvent.name, props)
     }

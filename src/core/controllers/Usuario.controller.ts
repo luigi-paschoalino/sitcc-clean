@@ -61,6 +61,13 @@ export class UsuarioController extends AbstractController {
         return this.handleResponse(result)
     }
 
+    @Get('recuperar/:hash')
+    async buscarUsuarioPorHashSenha(@Param('hash') hash: string) {
+        const result = await this.buscarUsuarioQuery.execute(hash)
+
+        return this.handleResponse(result)
+    }
+
     @Patch('alterar-senha/:hash')
     async alterarSenha(
         @Param('hash') hash: string,

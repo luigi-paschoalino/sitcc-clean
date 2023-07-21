@@ -29,7 +29,6 @@ export class Universidade extends AggregateRoot {
         this.id = id
     }
 
-    //TODO: criar universidade use case
     static criar(
         props: CriarUniversidadeProps,
         id: string,
@@ -93,7 +92,6 @@ export class Universidade extends AggregateRoot {
         this.nome = nome
     }
 
-    //TODO: validações da entidade Instituo devem constar na camada de domínio
     public addInstituto(instituto: Instituto): Error | void {
         try {
             if (!this.institutos) this.institutos = []

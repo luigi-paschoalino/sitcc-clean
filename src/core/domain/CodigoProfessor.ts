@@ -12,7 +12,6 @@ export class CodigoProfessor extends AggregateRoot {
         this.id = id
     }
 
-    // TODO: useCase GerarCodigoProfessor utilizando o crypto-random-string
     static gerar(codigo: string, id: string): CodigoProfessor {
         const instance = new CodigoProfessor(id)
         instance.setCodigo(codigo)

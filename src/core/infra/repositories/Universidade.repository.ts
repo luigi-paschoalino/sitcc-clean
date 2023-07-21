@@ -64,10 +64,6 @@ export class UniversidadeRepositoryImpl implements UniversidadeRepository {
                     `Não foi possível encontrar uma universidade com o instituto ${institutoId}`,
                 )
 
-            this.logger.debug(
-                'aaaaaaaaaaaaaaaaaaaaaaaaaaaaa' + JSON.stringify(model),
-            )
-
             const universidade = this.universidadeMapper.modelToDomain(model)
 
             if (universidade instanceof Error) throw universidade
@@ -120,11 +116,7 @@ export class UniversidadeRepositoryImpl implements UniversidadeRepository {
                     `Não foi possível encontrar uma universidade com o curso ${cursoId}`,
                 )
 
-            this.logger.debug(JSON.stringify(model, null, 2))
-
             const universidade = this.universidadeMapper.modelToDomain(model)
-
-            this.logger.debug(JSON.stringify(universidade, null, 2))
 
             const instituto = universidade
                 .getInstitutos()

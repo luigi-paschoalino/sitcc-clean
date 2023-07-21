@@ -5,7 +5,7 @@ export interface InstitutoAdicionadoEventProps {
     institutoId: string
 }
 
-export class InstitutoAdicionadoEvent extends AbstractEvent {
+export class InstitutoAdicionadoEvent extends AbstractEvent<InstitutoAdicionadoEventProps> {
     constructor(props: InstitutoAdicionadoEventProps) {
         super(InstitutoAdicionadoEvent.name, props)
     }

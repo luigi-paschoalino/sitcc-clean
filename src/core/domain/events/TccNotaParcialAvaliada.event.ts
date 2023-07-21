@@ -5,7 +5,7 @@ export interface TccNotaParcialAvaliadaEventProps {
     nota: number
 }
 
-export class TccNotaParcialAvaliadaEvent extends AbstractEvent {
+export class TccNotaParcialAvaliadaEvent extends AbstractEvent<TccNotaParcialAvaliadaEventProps> {
     constructor(props: TccNotaParcialAvaliadaEventProps) {
         super(TccNotaParcialAvaliadaEvent.name, props)
     }

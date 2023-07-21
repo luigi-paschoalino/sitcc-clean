@@ -21,25 +21,25 @@ export class TccModel extends BaseEntity {
     @Column({ nullable: false, type: 'enum', enum: STATUS_TCC })
     status: STATUS_TCC
 
-    @Column({ nullable: false, length: 256 })
+    @Column({ nullable: true, length: 256 })
     titulo: string
 
-    @Column('text', { nullable: false, array: true })
+    @Column('text', { nullable: true, array: true })
     palavras_chave: string[]
 
-    @Column({ nullable: false, length: 256 })
+    @Column({ nullable: true, length: 256 })
     introducao: string
 
-    @Column({ nullable: false, length: 256 })
+    @Column({ nullable: true, length: 256 })
     objetivos: string
 
-    @Column({ nullable: false, length: 256 })
+    @Column({ nullable: true, length: 256 })
     bibliografia: string
 
-    @Column({ nullable: false, length: 256 })
+    @Column({ nullable: true, length: 256 })
     metodologia: string
 
-    @Column({ nullable: false, length: 256 })
+    @Column({ nullable: true, length: 256 })
     resultados: string
 
     @Column({ nullable: true, type: 'decimal' })
@@ -70,4 +70,11 @@ export class TccModel extends BaseEntity {
     @ManyToOne(() => UsuarioModel)
     @JoinColumn({ name: 'orientadorId' })
     orientador: UsuarioModel
+
+    @Column({ nullable: true })
+    coorientadorId: string
+
+    @ManyToOne(() => UsuarioModel)
+    @JoinColumn({ name: 'coorientadorId' })
+    coorientador: UsuarioModel
 }

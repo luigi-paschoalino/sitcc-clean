@@ -5,7 +5,7 @@ export interface BancaAdicionadaEventProps {
     bancaId: string
 }
 
-export class BancaAdicionadaEvent extends AbstractEvent {
+export class BancaAdicionadaEvent extends AbstractEvent<BancaAdicionadaEventProps> {
     constructor(props: BancaAdicionadaEventProps) {
         super(BancaAdicionadaEvent.name, props)
     }

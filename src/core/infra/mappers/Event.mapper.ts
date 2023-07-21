@@ -5,10 +5,10 @@ import { EventModel } from '../models/Event.model'
 export class EventMapper {
     constructor() {}
 
-    domainToModel(event: AbstractEvent): EventModel {
+    domainToModel(event: AbstractEvent<any>): EventModel {
         const model = new EventModel()
-        model.eventName = event.getName()
-        model.eventData = event.getData()
+        model.eventName = event.name
+        model.eventData = event.data
         return model
     }
 }

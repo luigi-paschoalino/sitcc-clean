@@ -6,7 +6,7 @@ export interface TccEnviadoEventProps {
     tipoEntrega: string
 }
 
-export class TccEnviadoEvent extends AbstractEvent {
+export class TccEnviadoEvent extends AbstractEvent<TccEnviadoEventProps> {
     constructor(props: TccEnviadoEventProps) {
         super(TccEnviadoEvent.name, props)
     }

@@ -5,6 +5,8 @@ import { Inject, Logger } from '@nestjs/common'
 import { UniversidadeRepository } from '../../domain/repositories/Universidade.repository'
 import { EventPublisherService } from '../../domain/services/EventPublisher.service'
 import { EncriptarSenhaService } from '../../domain/services/EncriptarSenha.service'
+import { InvalidPropsException } from '../../domain/exceptions/InvalidProps.exception'
+import { CodigoProfessorRepository } from '../../domain/repositories/CodigoProfessor.repository'
 
 export interface CadastrarUsuarioUsecaseProps {
     nome: string
@@ -13,6 +15,7 @@ export interface CadastrarUsuarioUsecaseProps {
     senha: string
     tipo: TIPO_USUARIO
     numero: string
+    codigo?: string
 }
 
 export class CadastrarUsuarioUseCase {
@@ -27,6 +30,8 @@ export class CadastrarUsuarioUseCase {
         private readonly encriptarSenhaService: EncriptarSenhaService,
         @Inject('UsuarioRepository')
         private readonly usuarioRepository: UsuarioRepository,
+        @Inject('CodigoProfessorRepository')
+        private readonly codigoProfessorRepository: CodigoProfessorRepository,
         @Inject('UniversidadeRepository')
         private readonly universidadeRepository: UniversidadeRepository,
     ) {}
@@ -34,7 +39,18 @@ export class CadastrarUsuarioUseCase {
     //TODO: validar se o usuário já existe (email, matricula)
     async execute(props: CadastrarUsuarioUsecaseProps): Promise<Error | void> {
         try {
-            this.logger.debug(props)
+            if (props.tipo === TIPO_USUARIO.PROFESSOR) {
+                if (!props.codigo?.trim())
+                    throw new InvalidPropsException(
+                        'Código do professor não informado',
+                    )
+
+                const codigo =
+                    await this.codigoProfessorRepository.buscarCodigo(
+                        props.codigo,
+                    )
+                if (codigo instanceof Error) throw codigo
+            }
 
             const id = this.uniqueIdService.gerarUuid()
 
@@ -55,6 +71,7 @@ export class CadastrarUsuarioUseCase {
                     senha: senha,
                     tipo: props.tipo,
                     numero: props.numero,
+                    codigo: props.codigo,
                 },
                 id,
             )
