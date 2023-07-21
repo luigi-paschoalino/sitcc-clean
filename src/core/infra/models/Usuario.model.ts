@@ -39,6 +39,7 @@ export class UsuarioModel extends BaseEntity {
 
     @OneToOne(() => PerfilProfessorModel, (perfil) => perfil.usuario, {
         eager: true,
+        cascade: true,
     })
     perfilProfessor: PerfilProfessorModel
 }

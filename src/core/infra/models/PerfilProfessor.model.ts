@@ -32,7 +32,6 @@ export class PerfilProfessorModel extends BaseEntity {
 
     @OneToMany(() => ProjetoModel, (projeto) => projeto.perfilProfessor, {
         eager: true,
-        cascade: true,
     })
     projetos: ProjetoModel[]
 }
