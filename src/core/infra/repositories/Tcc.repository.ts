@@ -15,7 +15,7 @@ export class TccRepositoryImpl implements TccRepository {
             const model = await TccModel.findOneBy({ id })
 
             if (model instanceof Error)
-                throw new RepositoryException(model.message)
+                throw new RepositoryException(model.stack)
             else if (!model)
                 throw new RepositoryDataNotFoundException(
                     `TCC com ID ${id} não existe!`,
@@ -34,7 +34,7 @@ export class TccRepositoryImpl implements TccRepository {
             const tccSalvar = await tccModel.save()
 
             if (tccSalvar instanceof Error)
-                throw new RepositoryException(tccSalvar.message)
+                throw new RepositoryException(tccSalvar.stack)
 
             return
         } catch (error) {

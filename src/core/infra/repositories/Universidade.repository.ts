@@ -132,7 +132,7 @@ export class UniversidadeRepositoryImpl implements UniversidadeRepository {
 
             return curso
         } catch (error) {
-            return new RepositoryException(error.message)
+            return new RepositoryException(error.stack)
         }
     }
 
@@ -169,7 +169,7 @@ export class UniversidadeRepositoryImpl implements UniversidadeRepository {
             const salvarUniversidade = await universidadeModel.save()
 
             if (salvarUniversidade instanceof Error)
-                throw new RepositoryException(salvarUniversidade.message)
+                throw new RepositoryException(salvarUniversidade.stack)
 
             return
         } catch (error) {

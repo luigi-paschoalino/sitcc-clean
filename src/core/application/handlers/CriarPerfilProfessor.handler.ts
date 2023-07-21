@@ -22,6 +22,7 @@ export class CriarPerfilProfessorHandler
     ) {}
     async handle(event: UsuarioCadastradoEvent): Promise<Error | void> {
         try {
+            this.logger.warn('CHEGOU NO HANDLER! Props: \n', event.data)
             if (event.data.tipo === TIPO_USUARIO.PROFESSOR) {
                 const codigoExiste =
                     await this.codigoProfessorRepository.buscarCodigo(
@@ -29,12 +30,16 @@ export class CriarPerfilProfessorHandler
                     )
                 if (codigoExiste instanceof Error) throw codigoExiste
 
+                this.logger.debug('1')
+
                 const professor = await this.usuarioRepository.buscarPorId(
                     event.data.id,
                 )
                 if (professor instanceof Error) throw professor
+                this.logger.debug('2')
 
                 const id = this.uniqueIdService.gerarUuid()
+                this.logger.debug('3')
 
                 const perfilProfessor = PerfilProfessor.criar(
                     {
@@ -43,16 +48,20 @@ export class CriarPerfilProfessorHandler
                     },
                     id,
                 )
+                this.logger.debug('4')
 
                 professor.setPerfilProfessor(perfilProfessor)
+                this.logger.debug('5')
 
                 const professorAtualizado = await this.usuarioRepository.salvar(
                     professor,
                 )
                 if (professorAtualizado instanceof Error)
                     throw professorAtualizado
+                this.logger.debug('6')
 
                 codigoExiste.consumirCodigo()
+                this.logger.debug('7')
 
                 const codigoAtualizado =
                     await this.codigoProfessorRepository.salvarCodigo(
@@ -63,6 +72,7 @@ export class CriarPerfilProfessorHandler
                 this.logger.debug('CHEGOU NO FINAL PORRAAAAAA')
             }
         } catch (error) {
+            this.logger.error(error)
             return error
         }
     }

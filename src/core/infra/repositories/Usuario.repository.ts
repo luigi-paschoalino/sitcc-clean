@@ -16,7 +16,7 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
             const model = await UsuarioModel.findOneBy({ id })
 
             if (model instanceof Error)
-                throw new RepositoryException(model.message)
+                throw new RepositoryException(model.stack)
             else if (!model)
                 throw new RepositoryDataNotFoundException(
                     `Usuário com o ID ${id} não existe!`,
@@ -35,7 +35,7 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
             const model = await UsuarioModel.findOneBy({ email })
 
             if (model instanceof Error)
-                throw new RepositoryException(model.message)
+                throw new RepositoryException(model.stack)
             else if (!model)
                 throw new RepositoryDataNotFoundException(
                     `Usuário com o email ${email} não existe!`,
@@ -55,7 +55,7 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
             })
 
             if (model instanceof Error)
-                throw new RepositoryException(model.message)
+                throw new RepositoryException(model.stack)
             else if (!model)
                 throw new RepositoryDataNotFoundException(
                     `A hash ${hash} expirou ou foi preenchida incorretamente. Solicite novamente a recuperação de senha!`,
@@ -76,7 +76,7 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
             const usuarioSalvo = await usuarioModel.save()
 
             if (usuarioSalvo instanceof Error)
-                throw new RepositoryException(usuarioSalvo.message)
+                throw new RepositoryException(usuarioSalvo.stack)
 
             return
         } catch (error) {

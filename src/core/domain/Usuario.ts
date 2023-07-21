@@ -158,13 +158,8 @@ export class Usuario extends AggregateRoot {
     }
 
     setPerfilProfessor(perfilProfessor: PerfilProfessor) {
-        if (this.getTipo() === TIPO_USUARIO.PROFESSOR) {
-            if (!perfilProfessor)
-                throw new InvalidPropsException(
-                    'Perfil do professor não informado',
-                )
+        if (this.getTipo() === TIPO_USUARIO.PROFESSOR)
             this.perfilProfessor = perfilProfessor
-        }
     }
 
     public getId(): string {
