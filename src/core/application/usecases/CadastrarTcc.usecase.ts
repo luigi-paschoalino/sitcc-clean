@@ -8,13 +8,7 @@ import { EventPublisherService } from '../../domain/services/EventPublisher.serv
 export interface CadastrarTccUsecaseProps {
     aluno: string
     orientador: string
-    titulo: string
-    palavras_chave: string[]
-    introducao: string
-    objetivos: string
-    bibliografia: string
-    metodologia: string
-    resultados: string
+    coorientador: string
 }
 
 export class CadastrarTccUsecase {
@@ -46,17 +40,16 @@ export class CadastrarTccUsecase {
             )
             if (orientador instanceof Error) throw orientador
 
+            const coorientador = await this.usuarioRepository.buscarPorId(
+                props.coorientador,
+            )
+            if (coorientador instanceof Error) throw coorientador
+
             const tcc = Tcc.criar(
                 {
                     aluno: aluno,
                     orientador: orientador,
-                    titulo: props.titulo,
-                    palavras_chave: props.palavras_chave,
-                    introducao: props.introducao,
-                    objetivos: props.objetivos,
-                    bibliografia: props.bibliografia,
-                    metodologia: props.metodologia,
-                    resultados: props.resultados,
+                    coorientador: coorientador ?? null,
                 },
                 uuid,
             )

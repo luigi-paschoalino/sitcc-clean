@@ -24,6 +24,7 @@ export class TccMapper {
             status: tcc.getStatus(),
             alunoId: tcc.getAluno(),
             orientadorId: tcc.getOrientador(),
+            coorientadorId: tcc.getCoorientador(),
             banca: tcc
                 .getBanca()
                 .map((banca) => this.bancaMapper.domainToModel(banca)),
@@ -48,6 +49,7 @@ export class TccMapper {
                 status: tccModel.status,
                 aluno: tccModel.alunoId,
                 orientador: tccModel.orientadorId,
+                coorientador: tccModel.coorientadorId,
                 banca: tccModel.banca.map((banca) =>
                     this.bancaMapper.modelToDomain(banca),
                 ),

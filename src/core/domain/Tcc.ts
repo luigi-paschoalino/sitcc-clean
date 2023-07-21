@@ -22,28 +22,30 @@ export enum STATUS_TCC {
 export interface CriarTccProps {
     aluno: Usuario
     orientador: Usuario
-    titulo: string
-    palavras_chave: string[]
-    introducao: string
-    objetivos: string
-    bibliografia: string
-    metodologia: string
-    resultados: string
+    coorientador?: Usuario
+    titulo?: string
+    palavras_chave?: string[]
+    introducao?: string
+    objetivos?: string
+    bibliografia?: string
+    metodologia?: string
+    resultados?: string
 }
 
 export interface CarregarTccProps {
     aluno: string
     orientador: string
-    titulo: string
-    palavras_chave: string[]
-    introducao: string
-    objetivos: string
-    bibliografia: string
-    metodologia: string
-    resultados: string
-    status: STATUS_TCC
-    nota_parcial: number
-    nota_final: number
+    coorientador?: string
+    titulo?: string
+    palavras_chave?: string[]
+    introducao?: string
+    objetivos?: string
+    bibliografia?: string
+    metodologia?: string
+    resultados?: string
+    status?: STATUS_TCC
+    nota_parcial?: number
+    nota_final?: number
     banca?: Banca[]
     path?: string
 }
@@ -52,16 +54,17 @@ export class Tcc extends AggregateRoot {
     private id: string
     private alunoId: string
     private orientadorId: string
+    private coorientadorId?: string
     private status: STATUS_TCC
-    private titulo: string
-    private palavras_chave: string[]
-    private introducao: string
-    private objetivos: string
-    private bibliografia: string
-    private metodologia: string
-    private resultados: string
-    private nota_parcial: number
-    private nota_final: number
+    private titulo?: string
+    private palavras_chave?: string[]
+    private introducao?: string
+    private objetivos?: string
+    private bibliografia?: string
+    private metodologia?: string
+    private resultados?: string
+    private nota_parcial?: number
+    private nota_final?: number
     private banca?: Banca[]
     private path?: string
 
@@ -84,6 +87,7 @@ export class Tcc extends AggregateRoot {
 
         tcc.setAluno(props.aluno)
         tcc.setOrientador(props.orientador)
+        tcc.setCoorientador(props.coorientador)
 
         tcc.apply(
             new TccCadastradoEvent({
@@ -112,6 +116,7 @@ export class Tcc extends AggregateRoot {
 
         tcc.alunoId = props.aluno
         tcc.orientadorId = props.orientador
+        tcc.coorientadorId = props.coorientador
 
         return tcc
     }
@@ -126,6 +131,10 @@ export class Tcc extends AggregateRoot {
 
     public getOrientador(): string {
         return this.orientadorId
+    }
+
+    public getCoorientador(): string | null {
+        return this.coorientadorId
     }
 
     public getStatus(): STATUS_TCC {
@@ -226,10 +235,18 @@ export class Tcc extends AggregateRoot {
         }
 
         if (orientador.getTipo() !== TIPO_USUARIO.PROFESSOR) {
-            throw new Error('Usuário informado não é um orientador')
+            throw new Error('Usuário informado não é um professor')
         }
 
         this.orientadorId = orientador.getId()
+    }
+
+    private setCoorientador(coorientador: Usuario): Error | void {
+        if (coorientador.getTipo() !== TIPO_USUARIO.PROFESSOR) {
+            throw new Error('Usuário informado não é um professor')
+        }
+
+        this.coorientadorId = coorientador?.getId() || null
     }
 
     private setNotaParcial(nota_parcial: number): void {
