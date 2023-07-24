@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { Usuario } from '../../domain/Usuario'
+import { TIPO_USUARIO, Usuario } from '../../domain/Usuario'
 import { RepositoryException } from '../../domain/exceptions/Repository.exception'
 import { UsuarioMapper } from '../mappers/Usuario.mapper'
 import { UsuarioRepository } from './../../domain/repositories/Usuario.repository'
@@ -80,6 +80,23 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
 
             return
         } catch (error) {
+            return error
+        }
+    }
+
+    async buscarPorTipo(tipo: TIPO_USUARIO): Promise<Error | Usuario[]> {
+        try {
+            const models = await UsuarioModel.find({ where: { tipo } })
+            if (!models || models.length === 0)
+                throw new RepositoryDataNotFoundException(
+                    'Não foi possível encontrar nenhum usuario com o tipo: ${tipo}',
+                )
+            const usuarios = models.map((model) =>
+                this.usuarioMapper.modelToDomain(model),
+            )
+            return usuarios
+        } catch (error) {
+            // Trate o erro aqui, se necessário
             return error
         }
     }

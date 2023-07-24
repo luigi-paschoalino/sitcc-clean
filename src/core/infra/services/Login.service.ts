@@ -48,10 +48,15 @@ export class AuthServiceImpl implements AuthService {
                         expiresIn: 86400,
                     },
                 )
-                return { auth: true, token: token }
+                return {
+                    auth: true,
+                    token: token,
+                    nome: usuario.getNome(),
+                    tipo: usuario.getTipo(),
+                }
             }
 
-            return { auth: false, token: null }
+            return { auth: false, token: null, nome: null, tipo: null }
         } catch (error) {
             return error
         }
