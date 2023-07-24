@@ -7,7 +7,7 @@ import { EventMapper } from '../mappers/Event.mapper'
 export class EventRepositoryImpl implements EventRepository {
     constructor(private readonly eventMapper: EventMapper) {}
 
-    async save(event: AbstractEvent): Promise<void | Error> {
+    async save(event: AbstractEvent<any>): Promise<Error | void> {
         try {
             const model = this.eventMapper.domainToModel(event)
             await model.save()

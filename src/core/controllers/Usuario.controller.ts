@@ -22,6 +22,7 @@ import {
     AlterarSenhaUsecaseProps,
 } from '../application/usecases/AlterarSenha.usecase'
 import { JwtAuthGuard } from 'src/middlewares/AuthenticationMiddleware'
+import { ListarProfessoresQuerry } from '../application/queries/ListarProfessores.query'
 
 @Controller('usuarios')
 export class UsuarioController extends AbstractController {
@@ -30,6 +31,7 @@ export class UsuarioController extends AbstractController {
         private readonly buscarUsuarioQuery: BuscarUsuarioQuery,
         private readonly recuperarSenhaUsecase: RecuperarSenhaUsecase,
         private readonly alterarSenhaUsecase: AlterarSenhaUsecase,
+        private readonly listarprofessores: ListarProfessoresQuerry,
     ) {
         super({
             UsuarioException: 400,
@@ -61,6 +63,13 @@ export class UsuarioController extends AbstractController {
         return this.handleResponse(result)
     }
 
+    @Get('recuperar/:hash')
+    async buscarUsuarioPorHashSenha(@Param('hash') hash: string) {
+        const result = await this.buscarUsuarioQuery.execute(hash)
+
+        return this.handleResponse(result)
+    }
+
     @Patch('alterar-senha/:hash')
     async alterarSenha(
         @Param('hash') hash: string,
@@ -71,6 +80,13 @@ export class UsuarioController extends AbstractController {
             hashRecuperacaoSenha: hash,
         })
 
+        return this.handleResponse(result)
+    }
+
+    @Get('professores')
+    @UseGuards(JwtAuthGuard)
+    async listprofs() {
+        const result = await this.listarprofessores.execute()
         return this.handleResponse(result)
     }
 }

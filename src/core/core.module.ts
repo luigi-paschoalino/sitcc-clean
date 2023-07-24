@@ -22,6 +22,7 @@ import { CodigoProfessorController } from './controllers/CodigoProfessor.control
 import { CodigoProfessorRepositoryImpl } from './infra/repositories/CodigoProfessor.repository'
 import { GerarCodigoServiceImpl } from './infra/services/GerarCodigo.service'
 import { MoverTccServiceImpl } from './infra/services/MoverTcc.service'
+import { Handlers } from './application/handlers'
 
 @Module({
     imports: [
@@ -57,6 +58,7 @@ import { MoverTccServiceImpl } from './infra/services/MoverTcc.service'
         ...UseCases,
         ...Queries,
         ...Mappers,
+        ...Handlers,
         {
             provide: 'UniqueIdService',
             useClass: UniqueIdServiceImpl,

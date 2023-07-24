@@ -6,7 +6,7 @@ export interface TccNotaFinalAvaliadaEventProps {
     notaFinal: number
 }
 
-export class TccNotaFinalAvaliadaEvent extends AbstractEvent {
+export class TccNotaFinalAvaliadaEvent extends AbstractEvent<TccNotaFinalAvaliadaEventProps> {
     constructor(props: TccNotaFinalAvaliadaEventProps) {
         super(TccNotaFinalAvaliadaEvent.name, props)
     }

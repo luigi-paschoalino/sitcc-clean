@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { Usuario } from '../../domain/Usuario'
+import { TIPO_USUARIO, Usuario } from '../../domain/Usuario'
 import { RepositoryException } from '../../domain/exceptions/Repository.exception'
 import { UsuarioMapper } from '../mappers/Usuario.mapper'
 import { UsuarioRepository } from './../../domain/repositories/Usuario.repository'
@@ -16,13 +16,12 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
             const model = await UsuarioModel.findOneBy({ id })
 
             if (model instanceof Error)
-                throw new RepositoryException(model.message)
+                throw new RepositoryException(model.stack)
             else if (!model)
                 throw new RepositoryDataNotFoundException(
                     `Usuário com o ID ${id} não existe!`,
                 )
 
-            this.logger.debug(JSON.stringify(model, null, 2))
             const usuario = this.usuarioMapper.modelToDomain(model)
 
             return usuario
@@ -36,11 +35,32 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
             const model = await UsuarioModel.findOneBy({ email })
 
             if (model instanceof Error)
-                throw new RepositoryException(model.message)
+                throw new RepositoryException(model.stack)
             else if (!model)
                 throw new RepositoryDataNotFoundException(
                     `Usuário com o email ${email} não existe!`,
                 )
+            const usuario = this.usuarioMapper.modelToDomain(model)
+
+            return usuario
+        } catch (error) {
+            return error
+        }
+    }
+
+    async buscarPorHashSenha(hash: string): Promise<Error | Usuario> {
+        try {
+            const model = await UsuarioModel.findOneBy({
+                hashRecuperacaoSenha: hash,
+            })
+
+            if (model instanceof Error)
+                throw new RepositoryException(model.stack)
+            else if (!model)
+                throw new RepositoryDataNotFoundException(
+                    `A hash ${hash} expirou ou foi preenchida incorretamente. Solicite novamente a recuperação de senha!`,
+                )
+
             const usuario = this.usuarioMapper.modelToDomain(model)
 
             return usuario
@@ -56,10 +76,27 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
             const usuarioSalvo = await usuarioModel.save()
 
             if (usuarioSalvo instanceof Error)
-                throw new RepositoryException(usuarioSalvo.message)
+                throw new RepositoryException(usuarioSalvo.stack)
 
             return
         } catch (error) {
+            return error
+        }
+    }
+
+    async buscarPorTipo(tipo: TIPO_USUARIO): Promise<Error | Usuario[]> {
+        try {
+            const models = await UsuarioModel.find({ where: { tipo } })
+            if (!models || models.length === 0)
+                throw new RepositoryDataNotFoundException(
+                    'Não foi possível encontrar nenhum usuario com o tipo: ${tipo}',
+                )
+            const usuarios = models.map((model) =>
+                this.usuarioMapper.modelToDomain(model),
+            )
+            return usuarios
+        } catch (error) {
+            // Trate o erro aqui, se necessário
             return error
         }
     }

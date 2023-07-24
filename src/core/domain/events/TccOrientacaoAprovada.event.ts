@@ -6,7 +6,7 @@ export interface TccOrientacaoAprovadaEventProps {
     alunoId: string
 }
 
-export class TccOrientacaoAprovadaEvent extends AbstractEvent {
+export class TccOrientacaoAprovadaEvent extends AbstractEvent<TccOrientacaoAprovadaEventProps> {
     constructor(props: TccOrientacaoAprovadaEventProps) {
         super(TccOrientacaoAprovadaEvent.name, props)
     }

@@ -19,6 +19,7 @@ export interface CriarUsuarioProps {
     senha: string
     tipo: TIPO_USUARIO
     numero: string
+    codigo?: string
 }
 
 export interface CarregarUsuarioProps {
@@ -32,15 +33,12 @@ export interface CarregarUsuarioProps {
     perfilProfessor?: PerfilProfessor
 }
 
-//TODO: usuario vai ser um só, com perfil professor criado pelo handler do evento usuarioCriadoEvent em caso do enum ser 'PROFESSOR'
-
-//TODO: métodos de atualização do perfilProfessor serão feitas apenas se o enum for 'PROFESSOR'
 export class Usuario extends AggregateRoot {
     private id: string // Matricula
     private curso: Curso
     private nome: string
     private email: string
-    private senha: string //TODO: hashear senha
+    private senha: string
     private tipo: TIPO_USUARIO
     private numero: string
     private hashRecuperacaoSenha?: string
@@ -54,7 +52,6 @@ export class Usuario extends AggregateRoot {
 
     static criar(props: CriarUsuarioProps, id: string): Usuario {
         try {
-            //TODO arrumar exceção
             if (Object.keys(props).length === 0)
                 throw new InvalidPropsException(
                     'Dados do usuário não informados',
@@ -78,6 +75,7 @@ export class Usuario extends AggregateRoot {
                     senha: instance.senha,
                     tipo: instance.tipo,
                     numero: instance.numero,
+                    codigo: props.codigo,
                 }),
             )
 
@@ -159,10 +157,9 @@ export class Usuario extends AggregateRoot {
         this.numero = numero
     }
 
-    private setPerfilProfessor(perfilProfessor: PerfilProfessor) {
-        // if (!perfilProfessor || this.tipo !== TIPO_USUARIO.PROFESSOR)
-        // throw new InvalidPropsException('Perfil professor não informado')
-        this.perfilProfessor = perfilProfessor
+    setPerfilProfessor(perfilProfessor: PerfilProfessor) {
+        if (this.getTipo() === TIPO_USUARIO.PROFESSOR)
+            this.perfilProfessor = perfilProfessor
     }
 
     public getId(): string {

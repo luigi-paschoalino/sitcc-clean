@@ -15,10 +15,10 @@ export class PerfilProfessorMapper {
             link: domain.getLink(),
             areasAtuacao: domain
                 .getAreasAtuacao()
-                .map((area) => this.areaAtuacaoMapper.domainToModel(area)),
+                ?.map((area) => this.areaAtuacaoMapper.domainToModel(area)),
             projetos: domain
                 .getProjetos()
-                .map((projeto) => this.projetoMapper.domainToModel(projeto)),
+                ?.map((projeto) => this.projetoMapper.domainToModel(projeto)),
         })
 
         return model
@@ -29,10 +29,10 @@ export class PerfilProfessorMapper {
             {
                 descricao: model.descricao,
                 link: model.link,
-                areasAtuacao: model.areasAtuacao.map((area) =>
+                areasAtuacao: model.areasAtuacao?.map((area) =>
                     this.areaAtuacaoMapper.modelToDomain(area),
                 ),
-                projetos: model.projetos.map((projeto) =>
+                projetos: model.projetos?.map((projeto) =>
                     this.projetoMapper.modelToDomain(projeto),
                 ),
             },

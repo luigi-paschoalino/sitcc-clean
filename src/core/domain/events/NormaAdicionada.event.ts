@@ -6,7 +6,7 @@ export interface NormaAdicionadaEventProps {
     norma: Norma
 }
 
-export class NormaAdicionadaEvent extends AbstractEvent {
+export class NormaAdicionadaEvent extends AbstractEvent<NormaAdicionadaEventProps> {
     constructor(props: NormaAdicionadaEventProps) {
         super(NormaAdicionadaEvent.name, props)
     }

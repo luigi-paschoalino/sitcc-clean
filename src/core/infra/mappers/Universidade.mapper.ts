@@ -23,9 +23,7 @@ export class UniversidadeMapper {
         return model
     }
 
-    //TODO: criar método carregar() dentro de Universidade.ts
     public modelToDomain(model: UniversidadeModel): Universidade {
-        //TODO: recuperar institutos do banco de dados
         try {
             if (!model.institutos) model.institutos = []
 

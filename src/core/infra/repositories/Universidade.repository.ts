@@ -64,10 +64,6 @@ export class UniversidadeRepositoryImpl implements UniversidadeRepository {
                     `Não foi possível encontrar uma universidade com o instituto ${institutoId}`,
                 )
 
-            this.logger.debug(
-                'aaaaaaaaaaaaaaaaaaaaaaaaaaaaa' + JSON.stringify(model),
-            )
-
             const universidade = this.universidadeMapper.modelToDomain(model)
 
             if (universidade instanceof Error) throw universidade
@@ -120,11 +116,7 @@ export class UniversidadeRepositoryImpl implements UniversidadeRepository {
                     `Não foi possível encontrar uma universidade com o curso ${cursoId}`,
                 )
 
-            this.logger.debug(JSON.stringify(model, null, 2))
-
             const universidade = this.universidadeMapper.modelToDomain(model)
-
-            this.logger.debug(JSON.stringify(universidade, null, 2))
 
             const instituto = universidade
                 .getInstitutos()
@@ -140,7 +132,7 @@ export class UniversidadeRepositoryImpl implements UniversidadeRepository {
 
             return curso
         } catch (error) {
-            return new RepositoryException(error.message)
+            return new RepositoryException(error.stack)
         }
     }
 
@@ -177,7 +169,7 @@ export class UniversidadeRepositoryImpl implements UniversidadeRepository {
             const salvarUniversidade = await universidadeModel.save()
 
             if (salvarUniversidade instanceof Error)
-                throw new RepositoryException(salvarUniversidade.message)
+                throw new RepositoryException(salvarUniversidade.stack)
 
             return
         } catch (error) {
