@@ -149,6 +149,7 @@ export class TccController extends AbstractController {
     ) {
         const result = await this.enviarTccParcialUsecase.execute({
             usuarioId: body.usuarioId, // TODO: pegar o usuário logado
+            titulo: body.titulo,
             tccId: id,
             path: file.path,
         })

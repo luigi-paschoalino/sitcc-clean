@@ -89,14 +89,13 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
             const models = await UsuarioModel.find({ where: { tipo } })
             if (!models || models.length === 0)
                 throw new RepositoryDataNotFoundException(
-                    'Não foi possível encontrar nenhum usuario com o tipo: ${tipo}',
+                    `Não foi possível encontrar nenhum usuario com o tipo: ${tipo}`,
                 )
             const usuarios = models.map((model) =>
                 this.usuarioMapper.modelToDomain(model),
             )
             return usuarios
         } catch (error) {
-            // Trate o erro aqui, se necessário
             return error
         }
     }

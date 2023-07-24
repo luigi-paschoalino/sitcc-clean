@@ -12,6 +12,7 @@ import { STATUS_TCC } from '../../domain/Tcc'
 
 export interface EnviarTccParcialUsecaseProps {
     usuarioId: string
+    titulo: string
     tccId: string
     path: string
 }

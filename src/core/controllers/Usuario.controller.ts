@@ -22,7 +22,7 @@ import {
     AlterarSenhaUsecaseProps,
 } from '../application/usecases/AlterarSenha.usecase'
 import { JwtAuthGuard } from 'src/middlewares/AuthenticationMiddleware'
-import { ListarProfessoresQuerry } from '../application/queries/ListarProfessores.query'
+import { ListarProfessoresQuery } from '../application/queries/ListarProfessores.query'
 
 @Controller('usuarios')
 export class UsuarioController extends AbstractController {
@@ -31,7 +31,7 @@ export class UsuarioController extends AbstractController {
         private readonly buscarUsuarioQuery: BuscarUsuarioQuery,
         private readonly recuperarSenhaUsecase: RecuperarSenhaUsecase,
         private readonly alterarSenhaUsecase: AlterarSenhaUsecase,
-        private readonly listarprofessores: ListarProfessoresQuerry,
+        private readonly listarProfessores: ListarProfessoresQuery,
     ) {
         super({
             UsuarioException: 400,
@@ -39,6 +39,14 @@ export class UsuarioController extends AbstractController {
             RepositoryDataNotFoundException: 404,
             InvalidPropsException: 400,
         })
+    }
+
+    @Get('professores')
+    @UseGuards(JwtAuthGuard)
+    async listProfs() {
+        const result = await this.listarProfessores.execute()
+
+        return this.handleResponse(result)
     }
 
     @Get(':id')
@@ -80,13 +88,6 @@ export class UsuarioController extends AbstractController {
             hashRecuperacaoSenha: hash,
         })
 
-        return this.handleResponse(result)
-    }
-
-    @Get('professores')
-    @UseGuards(JwtAuthGuard)
-    async listprofs() {
-        const result = await this.listarprofessores.execute()
         return this.handleResponse(result)
     }
 }

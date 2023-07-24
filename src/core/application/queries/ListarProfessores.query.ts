@@ -3,7 +3,7 @@ import { TIPO_USUARIO } from 'src/core/domain/Usuario'
 import { UsuarioRepository } from 'src/core/domain/repositories/Usuario.repository'
 import { ProfessoresDTO } from '../dtos/Professores.dto'
 
-export class ListarProfessoresQuerry {
+export class ListarProfessoresQuery {
     constructor(
         @Inject('UsuarioRepository')
         private readonly usuarioRepository: UsuarioRepository,
