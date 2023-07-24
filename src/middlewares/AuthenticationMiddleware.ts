@@ -8,8 +8,11 @@ import {
 } from '@nestjs/common'
 import { Observable } from 'rxjs'
 import * as jwt from 'jsonwebtoken'
+import * as dotenv from 'dotenv'
 
-const secretToken = 'sdaFsadasdaGasdCMySecretKey'
+dotenv.config()
+
+const secretToken = process.env.SECRET_TOKEN
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {

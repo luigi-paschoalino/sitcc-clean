@@ -1,7 +1,9 @@
-import { Controller, Get, Post } from '@nestjs/common'
+import { Body, Controller, Get, Post, UseInterceptors } from '@nestjs/common'
 import { InvalidPropsException } from './../domain/exceptions/InvalidProps.exception'
 import { AbstractController } from './AbstractController'
 import { GerarCodigoProfessorUsecase } from '../application/usecases/GerarCodigoProfessor.usecase'
+import { TokenInterceptor } from '../../middlewares/TokenCaptureMiddleware'
+import { JwtAuthGuard } from '../../middlewares/AuthenticationMiddleware'
 
 @Controller('codigo')
 export class CodigoProfessorController extends AbstractController {
@@ -20,8 +22,9 @@ export class CodigoProfessorController extends AbstractController {
     // }
 
     @Post()
-    async gerarCodigo(): Promise<Error | string> {
-        const result = await this.gerarCodigoUsecase.execute()
+    @UseInterceptors(JwtAuthGuard, TokenInterceptor)
+    async gerarCodigo(@Body() body: any): Promise<Error | string> {
+        const result = await this.gerarCodigoUsecase.execute(body.id)
         if (result instanceof Error) throw result
 
         return this.handleResponse(result)
