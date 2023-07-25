@@ -35,6 +35,11 @@ export class CadastrarTccUsecase {
 
             this.logger.debug(aluno)
 
+            if (props.orientador === props.coorientador)
+                throw new Error(
+                    'Orientador e coorientador não podem ser iguais',
+                )
+
             const orientador = await this.usuarioRepository.buscarPorId(
                 props.orientador,
             )
