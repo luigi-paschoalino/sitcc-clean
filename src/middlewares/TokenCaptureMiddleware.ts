@@ -36,6 +36,8 @@ export class TokenInterceptor implements NestInterceptor {
                     const id = response.data.id
                     request.body.id = id
 
+                    console.log(request.body)
+
                     return next.handle()
                 }),
                 catchError((err) => {

@@ -1,4 +1,4 @@
-import { Inject } from '@nestjs/common'
+import { Inject, Logger } from '@nestjs/common'
 import { TccRepository } from '../../domain/repositories/Tcc.repository'
 import { UsuarioRepository } from '../../domain/repositories/Usuario.repository'
 import { EventPublisher } from '@nestjs/cqrs'
@@ -13,6 +13,7 @@ export interface AvaliarNotaParcialUsecaseProps {
 }
 
 export class AvaliarNotaParcialUsecase {
+    private logger = new Logger(AvaliarNotaParcialUsecase.name)
     constructor(
         @Inject('TccRepository') private readonly tccRepository: TccRepository,
         @Inject('UsuarioRepository')
@@ -28,6 +29,9 @@ export class AvaliarNotaParcialUsecase {
             const professor = await this.usuarioRepository.buscarPorId(
                 props.professorId,
             )
+
+            this.logger.debug(JSON.stringify(professor, null, 2))
+
             if (professor instanceof Error) throw professor
             if (professor.getTipo() !== TIPO_USUARIO.PROFESSOR)
                 throw new UsuarioException('Usuário não é um professor')
