@@ -4,11 +4,12 @@ import { UniqueIdService } from '../../domain/services/UniqueID.service'
 import { TccRepository } from '../../domain/repositories/Tcc.repository'
 import { UsuarioRepository } from '../../domain/repositories/Usuario.repository'
 import { EventPublisherService } from '../../domain/services/EventPublisher.service'
+import { Usuario } from 'src/core/domain/Usuario'
 
 export interface CadastrarTccUsecaseProps {
     aluno: string
     orientador: string
-    coorientador: string
+    coorientador?: string
 }
 
 export class CadastrarTccUsecase {
@@ -45,10 +46,15 @@ export class CadastrarTccUsecase {
             )
             if (orientador instanceof Error) throw orientador
 
-            const coorientador = await this.usuarioRepository.buscarPorId(
-                props.coorientador,
-            )
-            if (coorientador instanceof Error) throw coorientador
+            let coorientador: Usuario
+
+            if (props.coorientador?.trim()) {
+                const busca = await this.usuarioRepository.buscarPorId(
+                    props.coorientador,
+                )
+                if (busca instanceof Error) throw busca
+                coorientador = busca
+            }
 
             const tcc = Tcc.criar(
                 {

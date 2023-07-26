@@ -75,10 +75,15 @@ export class TccController extends AbstractController {
     // TODO: revisar a rota, se precisa enviar os dados todos logo de início
     @Post()
     @UseGuards(JwtAuthGuard)
+    @UseInterceptors(TokenInterceptor)
     public async postTcc(
+        @Req() req: any,
         @Body() body: CadastrarTccUsecaseProps,
     ): Promise<void> {
-        const result = await this.cadastrarTccUsecase.execute(body)
+        const result = await this.cadastrarTccUsecase.execute({
+            ...body,
+            aluno: req.body.id,
+        })
 
         return this.handleResponse(result)
     }
