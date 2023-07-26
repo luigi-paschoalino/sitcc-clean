@@ -153,7 +153,7 @@ export class Usuario extends AggregateRoot {
     }
 
     private setNumero(numero: string) {
-        if (!numero) throw new InvalidPropsException('Matrícula não informada')
+        if (!numero) throw new InvalidPropsException('Número não informada')
         this.numero = numero
     }
 
