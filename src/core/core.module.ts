@@ -23,9 +23,11 @@ import { CodigoProfessorRepositoryImpl } from './infra/repositories/CodigoProfes
 import { GerarCodigoServiceImpl } from './infra/services/GerarCodigo.service'
 import { MoverTccServiceImpl } from './infra/services/MoverTcc.service'
 import { Handlers } from './application/handlers'
+import { HttpModule } from '@nestjs/axios'
 
 @Module({
     imports: [
+        HttpModule,
         CqrsModule,
         MulterModule.register({
             storage: multer.diskStorage({

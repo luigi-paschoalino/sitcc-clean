@@ -9,6 +9,7 @@ import {
     UseInterceptors,
     UploadedFile,
     Res,
+    Req,
     UseGuards,
 } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
@@ -42,6 +43,7 @@ import {
     AvaliarNotaFinalUsecase,
     AvaliarNotaFinalUsecaseProps,
 } from '../application/usecases/AvaliarNotaFinal.usecase'
+import { TokenInterceptor } from '../../middlewares/TokenCaptureMiddleware'
 
 @Controller('tcc')
 export class TccController extends AbstractController {
@@ -73,10 +75,15 @@ export class TccController extends AbstractController {
     // TODO: revisar a rota, se precisa enviar os dados todos logo de início
     @Post()
     @UseGuards(JwtAuthGuard)
+    @UseInterceptors(TokenInterceptor)
     public async postTcc(
+        @Req() req: any,
         @Body() body: CadastrarTccUsecaseProps,
     ): Promise<void> {
-        const result = await this.cadastrarTccUsecase.execute(body)
+        const result = await this.cadastrarTccUsecase.execute({
+            ...body,
+            aluno: req.body.id,
+        })
 
         return this.handleResponse(result)
     }
@@ -110,21 +117,24 @@ export class TccController extends AbstractController {
     }
 
     @Put(':id/nota-parcial')
-    // @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard)
+    @UseInterceptors(TokenInterceptor)
     public async atribuirNotaParcial(
         @Param('id') id: string,
+        @Req() req: any,
         @Body() body: AvaliarNotaParcialUsecaseProps,
     ) {
         const result = await this.avaliarNotaParcial.execute({
             ...body,
             tccId: id,
+            professorId: req.body.id,
         })
 
         return this.handleResponse(result)
     }
 
     @Put(':id/nota-final')
-    // @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard)
     public async atribuirNotaFinal(
         @Param('id') id: string,
         @Body() body: AvaliarNotaFinalUsecaseProps,

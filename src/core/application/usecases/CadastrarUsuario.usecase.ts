@@ -57,7 +57,8 @@ export class CadastrarUsuarioUseCase {
             const curso = await this.universidadeRepository.buscarCurso(
                 props.curso,
             )
-            if (curso instanceof Error) throw curso
+            if (curso instanceof Error)
+                throw new InvalidPropsException('Curso não informado')
 
             const senha = await this.encriptarSenhaService.encriptar(
                 props.senha,

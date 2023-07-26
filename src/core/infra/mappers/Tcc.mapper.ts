@@ -27,7 +27,7 @@ export class TccMapper {
             coorientadorId: tcc.getCoorientador(),
             banca: tcc
                 .getBanca()
-                .map((banca) => this.bancaMapper.domainToModel(banca)),
+                ?.map((banca) => this.bancaMapper.domainToModel(banca)),
             path: tcc.getPath(),
         })
 

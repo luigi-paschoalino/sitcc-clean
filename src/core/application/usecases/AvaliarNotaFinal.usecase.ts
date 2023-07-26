@@ -6,7 +6,7 @@ import { UsuarioRepository } from 'src/core/domain/repositories/Usuario.reposito
 import { EventPublisherService } from '../../domain/services/EventPublisher.service'
 
 export interface AvaliarNotaFinalUsecaseProps {
-    professorId: string
+    id: string
     tccId: string
     notaApresentacao: number
     notaTrabalho: number
@@ -23,9 +23,7 @@ export class AvaliarNotaFinalUsecase {
 
     async execute(props: AvaliarNotaFinalUsecaseProps): Promise<Error | void> {
         try {
-            const professor = await this.usuarioRepository.buscarPorId(
-                props.professorId,
-            )
+            const professor = await this.usuarioRepository.buscarPorId(props.id)
             if (professor instanceof Error) throw professor
 
             if (professor.getTipo() !== TIPO_USUARIO.PROFESSOR)
@@ -35,7 +33,7 @@ export class AvaliarNotaFinalUsecase {
             if (tcc instanceof Error) throw tcc
 
             const aplicar_nota = tcc.avaliarNotaFinalBanca(
-                props.professorId,
+                props.id,
                 props.notaApresentacao,
                 props.notaTrabalho,
             )

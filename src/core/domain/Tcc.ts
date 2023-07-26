@@ -11,6 +11,7 @@ import { TccNotaFinalAvaliadaEvent } from './events/TccNotaFinalEvent.event'
 import { BancaAdicionadaEvent } from './events/BancaAdicionada.event'
 import { TccEnviadoEvent } from './events/TccEnviado.event'
 import { TIPO_ENTREGA } from './services/MoverTcc.service'
+import { IsNull } from 'typeorm'
 
 export enum STATUS_TCC {
     MATRICULA_REALIZADA = 'MATRICULA_REALIZADA',
@@ -77,14 +78,6 @@ export class Tcc extends AggregateRoot {
         const tcc = new Tcc(id)
 
         tcc.setStatus(STATUS_TCC.MATRICULA_REALIZADA)
-        tcc.setTitulo(props.titulo)
-        tcc.setPalavrasChave(props.palavras_chave)
-        tcc.setIntroducao(props.introducao)
-        tcc.setObjetivos(props.objetivos)
-        tcc.setBibliografia(props.bibliografia)
-        tcc.setMetodologia(props.metodologia)
-        tcc.setResultados(props.resultados)
-
         tcc.setAluno(props.aluno)
         tcc.setOrientador(props.orientador)
         tcc.setCoorientador(props.coorientador)
@@ -242,11 +235,15 @@ export class Tcc extends AggregateRoot {
     }
 
     private setCoorientador(coorientador: Usuario): Error | void {
+        if (!coorientador) {
+            this.coorientadorId = null
+            return
+        }
         if (coorientador.getTipo() !== TIPO_USUARIO.PROFESSOR) {
             throw new Error('Usuário informado não é um professor')
         }
 
-        this.coorientadorId = coorientador?.getId() || null
+        this.coorientadorId = coorientador.getId()
     }
 
     private setNotaParcial(nota_parcial: number): void {

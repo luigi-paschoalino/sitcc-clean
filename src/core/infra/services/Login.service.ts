@@ -5,6 +5,7 @@ import { UsuarioRepository } from '../../domain/repositories/Usuario.repository'
 import {
     AuthService,
     LoginToken,
+    TokenInfo,
     Validation,
 } from '../../domain/services/Login.service'
 import { EncriptarSenhaService } from '../../domain/services/EncriptarSenha.service'
@@ -75,9 +76,31 @@ export class AuthServiceImpl implements AuthService {
 
             return {
                 auth: true,
+                nome: usuario.getNome(),
+                id: usuario.getId(),
+                tipo: usuario.getTipo(),
             }
         } catch (error) {
             return { auth: false }
+        }
+    }
+
+    async decifrar(token: string): Promise<Error | TokenInfo> {
+        try {
+            const validation = jwt.verify(token, secretToken)
+            if (validation instanceof Error) throw validation
+
+            const usuario = await this.usuarioRepository.buscarPorId(
+                validation['id'],
+            )
+
+            if (usuario instanceof Error) throw usuario
+
+            return {
+                id: usuario.getId(),
+            }
+        } catch (error) {
+            return error
         }
     }
 }
