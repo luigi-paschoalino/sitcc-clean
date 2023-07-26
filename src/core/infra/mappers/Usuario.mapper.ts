@@ -1,36 +1,55 @@
 import { Injectable } from '@nestjs/common'
 import { Usuario } from '../../domain/Usuario'
 import { UsuarioModel } from '../models/Usuario.model'
+import { CursoMapper } from './Curso.mapper'
+import { PerfilProfessorMapper } from './PerfilProfessor.mapper'
 
 @Injectable()
 export class UsuarioMapper {
-    constructor() {}
+    constructor(
+        private readonly cursoMapper: CursoMapper,
+        private readonly perfilProfessorMapper: PerfilProfessorMapper,
+    ) {}
 
-    domainToModel(usuario: Usuario): UsuarioModel {
+    domainToModel(domain: Usuario): UsuarioModel {
         const usuarioModel = UsuarioModel.create({
-            id: usuario.getId(),
-            nome: usuario.getNome(),
-            curso: usuario.getCurso(),
-            email: usuario.getEmail(),
-            senha: usuario.getSenha(),
-            tipo: usuario.getTipo(),
-            numero: usuario.getNumero(),
+            id: domain.getId(),
+            nome: domain.getNome(),
+            curso: this.cursoMapper.domainToModel(domain.getCurso()),
+            email: domain.getEmail(),
+            senha: domain.getSenha(),
+            tipo: domain.getTipo(),
+            numero: domain.getNumero(),
+            hashRecuperacaoSenha: domain.getHashRecuperacaoSenha(),
+            perfilProfessor: domain.getPerfilProfessor()
+                ? this.perfilProfessorMapper.domainToModel(
+                      domain.getPerfilProfessor(),
+                  )
+                : null,
         })
 
         return usuarioModel
     }
 
-    modelToDomain(usuarioModel: UsuarioModel): Usuario {
-        const usuario = Usuario.criar(
+    modelToDomain(model: UsuarioModel): Usuario {
+        const curso = this.cursoMapper.modelToDomain(model.curso)
+
+        const usuario = Usuario.carregar(
             {
-                nome: usuarioModel.nome,
-                curso: usuarioModel.curso,
-                email: usuarioModel.email,
-                senha: usuarioModel.senha,
-                tipo: usuarioModel.tipo,
-                numero: usuarioModel.numero,
+                nome: model.nome,
+                curso,
+                email: model.email,
+                senha: model.senha,
+                tipo: model.tipo,
+                numero: model.numero,
+                hashRecuperacaoSenha: model.hashRecuperacaoSenha,
+                perfilProfessor: model.perfilProfessor
+                    ? this.perfilProfessorMapper.modelToDomain(
+                          model.perfilProfessor,
+                      )
+                    : null,
             },
-            usuarioModel.id,
+            model.id,
         )
 
         return usuario

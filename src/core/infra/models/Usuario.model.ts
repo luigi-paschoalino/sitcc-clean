@@ -1,5 +1,15 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
+import {
+    BaseEntity,
+    Column,
+    Entity,
+    JoinColumn,
+    ManyToOne,
+    OneToOne,
+    PrimaryGeneratedColumn,
+} from 'typeorm'
 import { TIPO_USUARIO } from '../../domain/Usuario'
+import { CursoModel } from './Curso.model'
+import { PerfilProfessorModel } from './PerfilProfessor.model'
 
 @Entity({ name: 'usuario' })
 export class UsuarioModel extends BaseEntity {
@@ -9,8 +19,8 @@ export class UsuarioModel extends BaseEntity {
     @Column({ nullable: false, length: 256 })
     nome: string
 
-    @Column({ nullable: false, length: 256 })
-    curso: string
+    @ManyToOne(() => CursoModel, (curso) => curso.usuarios, { eager: true })
+    curso: CursoModel
 
     @Column({ nullable: false, length: 256 })
     email: string
@@ -23,4 +33,13 @@ export class UsuarioModel extends BaseEntity {
 
     @Column({ nullable: false, length: 256 })
     numero: string
+
+    @Column({ nullable: true })
+    hashRecuperacaoSenha: string
+
+    @OneToOne(() => PerfilProfessorModel, (perfil) => perfil.usuario, {
+        eager: true,
+        cascade: true,
+    })
+    perfilProfessor: PerfilProfessorModel
 }

@@ -26,6 +26,9 @@ export class InstitutoModel extends BaseEntity {
     )
     universidade: UniversidadeModel
 
-    @OneToMany(() => CursoModel, (curso) => curso.instituto)
+    @OneToMany(() => CursoModel, (curso) => curso.instituto, {
+        cascade: true,
+        eager: true,
+    })
     cursos: CursoModel[]
 }

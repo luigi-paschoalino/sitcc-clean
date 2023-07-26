@@ -1,8 +1,12 @@
-import { Logger } from '@nestjs/common'
-import { EventPublisher } from '@nestjs/cqrs'
+import { AbstractEvent } from './AbstractEvent'
 
-export class TccCadastradoEvent {
-    private logger = new Logger(TccCadastradoEvent.name)
+interface TccCadastradoEventProps {
+    id: string
+    titulo: string
+}
 
-    constructor() {}
+export class TccCadastradoEvent extends AbstractEvent<TccCadastradoEventProps> {
+    constructor(props: TccCadastradoEventProps) {
+        super(TccCadastradoEvent.name, props)
+    }
 }
