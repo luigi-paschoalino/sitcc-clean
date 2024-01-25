@@ -1,5 +1,5 @@
 import { Logger, Injectable } from '@nestjs/common'
-const cryptoRandomString = require('crypto-random-string')
+import cryptoRandomString from 'crypto-random-string'
 import { GerarCodigoService } from './../../domain/services/GerarCodigo.service'
 
 @Injectable()

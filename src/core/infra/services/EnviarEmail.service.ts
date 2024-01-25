@@ -7,8 +7,6 @@ import {
 
 @Injectable()
 export class EnviarEmailImpl implements EnviarEmailService {
-    constructor() {}
-
     async enviar(props: EnviarEmailPorps) {
         // Configurações do transporte de e-mail
         const transporter = nodemailer.createTransport({
