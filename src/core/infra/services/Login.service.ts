@@ -42,11 +42,10 @@ export class AuthServiceImpl implements AuthService {
                     {
                         id: usuario.getId(),
                         perfil: usuario.getTipo(),
-                        timestamp: Date.now(),
                     },
                     secretToken,
                     {
-                        expiresIn: 86400,
+                        expiresIn: '2h',
                     },
                 )
                 return {
@@ -65,7 +64,9 @@ export class AuthServiceImpl implements AuthService {
 
     async validar(token: string): Promise<Error | Validation> {
         try {
-            const validation = jwt.verify(token, secretToken)
+            const validation = jwt.verify(token, secretToken, {
+                ignoreExpiration: false,
+            })
             if (validation instanceof Error) throw validation
 
             const usuario = await this.usuarioRepository.buscarPorId(

@@ -14,10 +14,11 @@ export class EventPublisherServiceImpl implements EventPublisherService {
 
     async publish(aggregate: AggregateRoot): Promise<void | Error> {
         try {
-            const events = aggregate.getUncommittedEvents()
+            const events =
+                aggregate.getUncommittedEvents() as AbstractEvent<any>[]
             if (!!events.length) {
                 for (const event of events)
-                    await this.eventRepository.save(event as AbstractEvent<any>)
+                    await this.eventRepository.save(event)
                 this.eventPublisher.mergeObjectContext(aggregate)
                 aggregate.commit()
             }

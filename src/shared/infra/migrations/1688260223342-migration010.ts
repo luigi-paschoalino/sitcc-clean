@@ -1,4 +1,4 @@
-import { MigrationInterface, QueryRunner } from "typeorm";
+import { MigrationInterface, QueryRunner } from 'typeorm'
 
 export class Migration0101688260223342 implements MigrationInterface {
     name = 'Migration0101688260223342'
@@ -11,13 +11,12 @@ export class Migration0101688260223342 implements MigrationInterface {
                 "eventData" jsonb NOT NULL,
                 CONSTRAINT "PK_0160c56e6ee504871c2f9c87e58" PRIMARY KEY ("id")
             )
-        `);
+        `)
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`
             DROP TABLE "event-log"
-        `);
+        `)
     }
-
 }
