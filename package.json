@@ -18,14 +18,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "typeorm": "ts-node --transpile-only -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
-    "typeorm:create": "npm run typeorm -- migration:create",
-    "typeorm:run": "npm run build && npm run typeorm migration:run -- -d ./ormconfig.ts",
-    "typeorm:revert": "npm run typeorm migration:revert -- -d ./ormconfig.ts",
-    "typeorm:generate": "npm run build && npm run typeorm migration:generate -- -d ./ormconfig.ts -p",
-    "typeorm:drop": "npm run typeorm schema:drop",
-    "typeorm:sync": "npm run typeorm schema:sync",
-    "typeorm:validate": "npm run typeorm schema:log"
+    "prisma:generate": "npx prisma migrate dev --schema=./src/shared/infra/database/prisma/schema.prisma --name"
   },
   "dependencies": {
     "@nestjs/axios": "^3.0.0",
@@ -35,7 +28,7 @@
     "@nestjs/jwt": "^10.0.3",
     "@nestjs/passport": "^10.0.0",
     "@nestjs/platform-express": "^9.0.0",
-    "@nestjs/typeorm": "^9.0.1",
+    "@prisma/client": "^5.9.1",
     "@types/crypto-random-string": "^2.0.0",
     "@types/uuid": "^9.0.1",
     "axios": "^1.4.0",
@@ -48,7 +41,6 @@
     "pg": "^8.10.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0",
-    "typeorm": "^0.3.16",
     "uuid": "^9.0.0"
   },
   "devDependencies": {

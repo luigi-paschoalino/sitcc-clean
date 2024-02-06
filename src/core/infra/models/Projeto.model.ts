@@ -1,29 +1,20 @@
-import {
-    BaseEntity,
-    Column,
-    Entity,
-    ManyToOne,
-    PrimaryGeneratedColumn,
-} from 'typeorm'
-import { PerfilProfessorModel } from './PerfilProfessor.model'
+// @Entity({ name: 'projeto' })
+// export class ProjetoModel extends BaseEntity {
+//     @PrimaryGeneratedColumn('uuid')
+//     id: string
 
-@Entity({ name: 'projeto' })
-export class ProjetoModel extends BaseEntity {
-    @PrimaryGeneratedColumn('uuid')
-    id: string
+//     @Column({ nullable: false })
+//     titulo: string
 
-    @Column({ nullable: false })
-    titulo: string
+//     @Column({ nullable: false })
+//     descricao: string
 
-    @Column({ nullable: false })
-    descricao: string
+//     @Column({ nullable: false })
+//     preRequisitos: string
 
-    @Column({ nullable: false })
-    preRequisitos: string
+//     @Column({ nullable: false })
+//     disponivel: boolean
 
-    @Column({ nullable: false })
-    disponivel: boolean
-
-    @ManyToOne(() => PerfilProfessorModel, (perfil) => perfil.projetos)
-    perfilProfessor: PerfilProfessorModel
-}
+//     @ManyToOne(() => PerfilProfessorModel, (perfil) => perfil.projetos)
+//     perfilProfessor: PerfilProfessorModel
+// }

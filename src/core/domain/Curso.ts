@@ -1,13 +1,21 @@
 import { InvalidPropsException } from './exceptions/InvalidProps.exception'
 import { Norma } from './Norma'
 import { Cronograma } from './Cronograma'
+import { AggregateRoot } from '@nestjs/cqrs'
 
 export interface CriarCursoProps {
     nome: string
     codigo: string
 }
 
-export class Curso {
+export interface CarregarCursoProps {
+    nome: string
+    codigo: string
+    normas?: Norma[]
+    cronogramas: Cronograma[]
+}
+
+export class Curso extends AggregateRoot {
     private id: string
     private nome: string
     private codigo: string
@@ -15,13 +23,26 @@ export class Curso {
     private cronogramas: Cronograma[]
 
     private constructor(id: string) {
+        super()
+
         this.id = id
     }
 
-    static criar(props: CriarCursoProps, id: string): Curso {
+    //TODO: criar função pra gerar UUID por conta
+    static criar(props: CriarCursoProps): Curso {
+        const instance = new Curso('')
+        instance.setNome(props.nome)
+        instance.setCodigo(props.codigo)
+
+        return instance
+    }
+
+    static carregar(props: CarregarCursoProps, id: string): Curso {
         const instance = new Curso(id)
         instance.setNome(props.nome)
         instance.setCodigo(props.codigo)
+        instance.normas = props.normas
+        instance.setCronogramas(props.cronogramas)
 
         return instance
     }
@@ -38,6 +59,18 @@ export class Curso {
                 'Código do curso não pode ser vazio',
             )
         this.codigo = codigo
+    }
+
+    private setCronogramas(cronogramas: Cronograma[]) {
+        if (!cronogramas)
+            throw new InvalidPropsException(
+                'Cronogramas do curso não pode ser vazio',
+            )
+        this.cronogramas = cronogramas
+    }
+
+    adicionarNorma(norma: Norma) {
+        this.normas.push(norma)
     }
 
     adicionarCronograma(cronograma: Cronograma) {

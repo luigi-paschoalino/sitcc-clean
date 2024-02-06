@@ -1,6 +1,6 @@
 import { Inject, Logger } from '@nestjs/common'
 import { UniqueIdService } from '../../domain/services/UniqueID.service'
-import { UniversidadeRepository } from '../../domain/repositories/Universidade.repository'
+import { UniversidadeRepository } from '../../domain/repositories/Curso.repository'
 import { Curso } from '../../domain/Curso'
 import { UniversidadeException } from '../../domain/exceptions/Universidade.exception'
 import { EventPublisherService } from '../../domain/services/EventPublisher.service'

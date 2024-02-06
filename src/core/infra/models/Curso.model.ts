@@ -1,12 +1,3 @@
-import {
-    BaseEntity,
-    Column,
-    Entity,
-    ManyToOne,
-    OneToMany,
-    PrimaryGeneratedColumn,
-} from 'typeorm'
-import { InstitutoModel } from './Instituto.model'
 import { UsuarioModel } from './Usuario.model'
 import { CronogramaModel } from './Cronograma.model'
 
@@ -17,12 +8,6 @@ export class CursoModel extends BaseEntity {
 
     @Column({ nullable: false, length: 256 })
     nome: string
-
-    @Column({ nullable: false })
-    institutoId: string
-
-    @ManyToOne(() => InstitutoModel, (instituto) => instituto.cursos)
-    instituto: InstitutoModel
 
     @Column({ nullable: false, length: 256 })
     codigo: string

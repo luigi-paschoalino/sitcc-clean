@@ -1,0 +1,171 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Curso {
+  id         String       @id @default(uuid()) @db.Uuid
+  nome       String       @unique @db.VarChar(100)
+  codigo     String       @unique @db.Char(3)
+  usuarios   Usuario[]
+  cronograma Cronograma[]
+
+  @@map("cursos")
+}
+
+model Usuario {
+  id              String            @id @default(uuid()) @db.Uuid
+  nome            String            @db.VarChar(255)
+  email           String            @unique @db.VarChar(255)
+  senha           String            @db.VarChar(100)
+  curso           Curso             @relation(fields: [cursoId], references: [id])
+  tipo            TIPO_USUARIO
+  cursoId         String            @db.Uuid
+  PerfilProfessor PerfilProfessor[]
+  Banca           Banca[]
+  TfgAluno        Tfg[]             @relation(name: "AlunoRelation")
+  TfgOrientador   Tfg[]             @relation(name: "OrientadorRelation")
+  TfgCoorientador Tfg[]             @relation(name: "CoorientadorRelation")
+
+  @@map("usuarios")
+}
+
+model Cronograma {
+  id         String      @id @default(uuid()) @db.Uuid
+  ano        Int
+  semestre   SEMESTRE
+  Curso      Curso?      @relation(fields: [cursoId], references: [id])
+  cursoId    String?     @db.Uuid
+  atividades Atividade[]
+
+  @@map("cronogramas")
+}
+
+model Atividade {
+  id           String         @id @default(uuid()) @db.Uuid
+  data         DateTime
+  titulo       TIPO_ATIVIDADE
+  descricao    String         @db.VarChar()
+  cronograma   Cronograma     @relation(fields: [cronogramaId], references: [id])
+  cronogramaId String         @db.Uuid
+
+  @@map("atividades")
+}
+
+model Norma {
+  id        String @id @default(uuid()) @db.Uuid
+  titulo    String @db.VarChar(100)
+  descricao String @db.VarChar()
+  link      String @db.VarChar(255)
+
+  @@map("normas")
+}
+
+model PerfilProfessor {
+  id           String     @id @default(uuid()) @db.Uuid
+  descricao    String     @db.VarChar()
+  link         String     @db.VarChar()
+  areasAtuacao Json[]     @db.Json
+  projetos     Projetos[]
+  usuario      Usuario    @relation(fields: [usuarioId], references: [id])
+  usuarioId    String     @db.Uuid
+
+  @@map("perfis_professores")
+}
+
+model CodigoProfessor {
+  id         String  @id @default(uuid()) @db.Uuid
+  codigo     String  @unique @db.VarChar(12)
+  disponivel Boolean @default(true)
+
+  @@map("codigos_professores")
+}
+
+model Projetos {
+  id                String           @id @default(uuid()) @db.Uuid
+  titulo            String           @db.VarChar(255)
+  descricao         String           @db.VarChar()
+  preRequisitos     String           @db.VarChar()
+  disponivel        Boolean          @default(true)
+  PerfilProfessor   PerfilProfessor? @relation(fields: [perfilProfessorId], references: [id])
+  perfilProfessorId String?          @db.Uuid
+
+  @@map("projetos")
+}
+
+//TODO: editar banca para receber dois professores
+model Banca {
+  id               String   @id @default(uuid()) @db.Uuid
+  data             DateTime
+  professorId      String   @db.Uuid
+  tccId            String   @db.Uuid
+  professor        Usuario  @relation(fields: [professorId], references: [id])
+  tcc              Tfg      @relation(fields: [tccId], references: [id])
+  notaApresentacao Decimal? @db.Decimal(4, 2)
+  notaTrabalho     Decimal? @db.Decimal(4, 2)
+
+  @@map("bancas")
+}
+
+model Tfg {
+  id             String     @id @default(uuid()) @db.Uuid
+  status         STATUS_TFG
+  titulo         String     @db.VarChar(255)
+  palavrasChave  String     @db.VarChar()
+  introducao     String     @db.VarChar()
+  objetivos      String     @db.VarChar()
+  bibliografia   String     @db.VarChar()
+  metodologia    String     @db.VarChar()
+  resultados     String     @db.VarChar()
+  notaParcial    Decimal?   @db.Decimal(4, 2)
+  notaFinal      Decimal?   @db.Decimal(4, 2)
+  path           String     @db.VarChar()
+  aluno          Usuario    @relation(name: "AlunoRelation", fields: [alunoId], references: [id])
+  alunoId        String     @db.Uuid
+  orientador     Usuario    @relation(name: "OrientadorRelation", fields: [orientadorId], references: [id])
+  orientadorId   String     @db.Uuid
+  coorientador   Usuario?   @relation(name: "CoorientadorRelation", fields: [coorientadorId], references: [id])
+  coorientadorId String?    @db.Uuid
+  Banca          Banca[]
+
+  @@map("tfgs")
+}
+
+// Enums
+
+enum TIPO_ATIVIDADE {
+  ENTREGA_PARCIAL
+  ENTREGA_FINAL
+  DATA_DEFESA
+}
+
+enum TIPO_USUARIO {
+  ALUNO
+  PROFESSOR
+  ADMIN
+
+  @@map("TipoUsuario")
+}
+
+enum SEMESTRE {
+  PRIMEIRO
+  SEGUNDO
+
+  @@map("Semestre")
+}
+
+enum STATUS_TFG {
+  MATRICULA_REALIZADA
+  ORIENTACAO_ACEITA
+  ORIENTACAO_RECUSADA
+  ENTREGA_PARCIAL
+
+  @@map("StatusTfg")
+}
