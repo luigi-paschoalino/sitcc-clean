@@ -169,3 +169,13 @@ enum STATUS_TFG {
 
   @@map("StatusTfg")
 }
+
+// Event log model
+
+model EventLog {
+  id        String @id @default(uuid()) @db.Uuid
+  eventName String @db.VarChar(100)
+  eventData Json   @db.Json
+
+  @@map("event_logs")
+}

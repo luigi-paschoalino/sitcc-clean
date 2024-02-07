@@ -1,13 +1,13 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
+// import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
 
-@Entity({ name: 'event-log' })
-export class EventModel extends BaseEntity {
-    @PrimaryGeneratedColumn('uuid')
-    id: string
+// @Entity({ name: 'event-log' })
+// export class EventModel extends BaseEntity {
+//     @PrimaryGeneratedColumn('uuid')
+//     id: string
 
-    @Column()
-    eventName: string
+//     @Column()
+//     eventName: string
 
-    @Column({ type: 'jsonb' })
-    eventData: unknown
-}
+//     @Column({ type: 'jsonb' })
+//     eventData: unknown
+// }
