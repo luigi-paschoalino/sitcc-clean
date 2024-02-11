@@ -24,6 +24,8 @@ import { GerarCodigoServiceImpl } from './infra/services/GerarCodigo.service'
 import { MoverTccServiceImpl } from './infra/services/MoverTcc.service'
 import { Handlers } from './application/handlers'
 import { HttpModule } from '@nestjs/axios'
+import { PrismaService } from '../shared/infra/database/prisma/prisma.service'
+import { CursoMapper } from './infra/mappers/Curso.mapper'
 
 @Module({
     imports: [
@@ -62,6 +64,10 @@ import { HttpModule } from '@nestjs/axios'
         ...Mappers,
         ...Handlers,
         {
+            provide: 'PrismaService',
+            useClass: PrismaService,
+        },
+        {
             provide: 'UniqueIdService',
             useClass: UniqueIdServiceImpl,
         },
@@ -71,7 +77,10 @@ import { HttpModule } from '@nestjs/axios'
         },
         {
             provide: 'CursoRepository',
-            useClass: CursoRepositoryImpl,
+            useFactory(prismaService: PrismaService, cursoMapper: CursoMapper) {
+                return new CursoRepositoryImpl(prismaService, cursoMapper)
+            },
+            inject: ['PrismaService'],
         },
         {
             provide: 'TccRepository',

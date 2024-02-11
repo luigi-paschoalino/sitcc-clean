@@ -12,7 +12,7 @@ export interface CarregarCursoProps {
     nome: string
     codigo: string
     normas?: Norma[]
-    cronogramas: Cronograma[]
+    cronogramas?: Cronograma[]
 }
 
 export class Curso extends AggregateRoot {

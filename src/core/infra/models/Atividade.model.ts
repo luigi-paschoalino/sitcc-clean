@@ -1,6 +1,3 @@
-import { TIPO_ATIVIDADE } from 'src/core/domain/Atividades'
-import { CronogramaModel } from './Cronograma.model'
-
 // @Entity({ name: 'atividade' })
 // export class AtividadeModel extends BaseEntity {
 //     @PrimaryGeneratedColumn('uuid')

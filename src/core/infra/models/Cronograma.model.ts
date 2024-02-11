@@ -1,7 +1,3 @@
-import { ENUM_SEMESTRE } from '../../domain/Cronograma'
-import { CursoModel } from './Curso.model'
-import { AtividadeModel } from './Atividade.model'
-
 // @Entity({ name: 'cronograma' })
 // export class CronogramaModel extends BaseEntity {
 //     @PrimaryGeneratedColumn('uuid')

@@ -1,21 +1,19 @@
 import { Curso } from '../../domain/Curso'
-import { CursoModel } from '../models/Curso.model'
+import { Curso as PrismaCurso } from '@prisma/client'
 
 export class CursoMapper {
     constructor() {}
 
-    domainToModel(domain: Curso): CursoModel {
-        const model = CursoModel.create({
+    domainToModel(domain: Curso): PrismaCurso {
+        return {
             id: domain.getId(),
             nome: domain.getNome(),
             codigo: domain.getCodigo(),
-        })
-
-        return model
+        }
     }
 
-    modelToDomain(model: CursoModel): Curso {
-        const domain = Curso.criar(
+    modelToDomain(model: PrismaCurso): Curso {
+        const domain = Curso.carregar(
             {
                 nome: model.nome,
                 codigo: model.codigo,

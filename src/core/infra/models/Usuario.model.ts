@@ -1,7 +1,3 @@
-import { TIPO_USUARIO } from '../../domain/Usuario'
-import { CursoModel } from './Curso.model'
-import { PerfilProfessorModel } from './PerfilProfessor.model'
-
 // @Entity({ name: 'usuario' })
 // export class UsuarioModel extends BaseEntity {
 //     @PrimaryGeneratedColumn('uuid')
