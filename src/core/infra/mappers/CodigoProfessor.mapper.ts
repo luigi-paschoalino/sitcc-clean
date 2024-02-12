@@ -1,19 +1,17 @@
 import { Injectable } from '@nestjs/common'
 import { CodigoProfessor } from '../../domain/CodigoProfessor'
-import { CodigoProfessorModel } from '../models/CodigoProfessor.model'
+import { CodigoProfessor as CodigoProfessorModel } from '@prisma/client'
 
 @Injectable()
 export class CodigoProfessorMapper {
     constructor() {}
 
     domainToModel(domain: CodigoProfessor): CodigoProfessorModel {
-        const model = CodigoProfessorModel.create({
+        return {
             id: domain.getId(),
             codigo: domain.getCodigo(),
             disponivel: domain.getDisponivel(),
-        })
-
-        return model
+        }
     }
 
     modelToDomain(model: CodigoProfessorModel): CodigoProfessor {

@@ -20,7 +20,7 @@ export class Curso extends AggregateRoot {
     private nome: string
     private codigo: string
     private normas?: Norma[]
-    private cronogramas: Cronograma[]
+    private cronogramas?: Cronograma[]
 
     private constructor(id: string) {
         super()
@@ -41,8 +41,8 @@ export class Curso extends AggregateRoot {
         const instance = new Curso(id)
         instance.setNome(props.nome)
         instance.setCodigo(props.codigo)
-        instance.normas = props.normas
-        instance.setCronogramas(props.cronogramas)
+        instance.normas = props.normas ?? []
+        instance.setCronogramas(props.cronogramas ?? [])
 
         return instance
     }

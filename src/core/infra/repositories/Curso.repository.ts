@@ -16,15 +16,15 @@ export class CursoRepositoryImpl implements CursoRepository {
 
     async buscarPorId(id: string): Promise<Error | Curso> {
         try {
-            // implementar via prisma
             const model = await this.prismaService.curso.findUnique({
                 where: { id },
+                include: { cronograma: true, normas: true },
             })
             if (!model)
                 throw new RepositoryDataNotFoundException(
                     `Não foi possível encontrar um curso com o ID ${id}`,
                 )
-
+            this.logger.debug(JSON.stringify(model, null, 2))
             const curso = this.cursoMapper.modelToDomain(model)
 
             return curso
@@ -60,6 +60,18 @@ export class CursoRepositoryImpl implements CursoRepository {
 
             const models = await this.prismaService.curso.findMany({
                 where: filter,
+                include: {
+                    cronograma: {
+                        select: {
+                            id: true,
+                            ano: true,
+                            semestre: true,
+                            atividades: true,
+                            cursoId: true,
+                        },
+                    },
+                    normas: true,
+                },
             })
 
             if (!models || models.length === 0)

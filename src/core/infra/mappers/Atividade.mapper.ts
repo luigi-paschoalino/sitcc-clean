@@ -1,18 +1,20 @@
-import { Atividade } from 'src/core/domain/Atividades'
-import { AtividadeModel } from '../models/Atividade.model'
+import { Atividade, TIPO_ATIVIDADE } from 'src/core/domain/Atividades'
+import { Atividade as AtividadeModel } from '@prisma/client'
 
 export class AtividadeMapper {
     constructor() {}
 
-    public domainToModel(domain: Atividade): AtividadeModel {
-        const model = AtividadeModel.create({
+    public domainToModel(
+        domain: Atividade,
+        cronogramaId: string,
+    ): AtividadeModel {
+        return {
             id: domain.getId(),
             data: domain.getData(),
-            titulo: domain.getTitulo(),
             descricao: domain.getDescricao(),
-        })
-
-        return model
+            titulo: domain.getTitulo(),
+            cronogramaId,
+        }
     }
 
     public modelToDomain(model: AtividadeModel): Atividade {
@@ -20,7 +22,7 @@ export class AtividadeMapper {
             {
                 data: model.data,
                 descricao: model.descricao,
-                titulo: model.titulo,
+                titulo: model.titulo as TIPO_ATIVIDADE,
             },
             model.id,
         )
