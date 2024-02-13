@@ -1,13 +1,7 @@
 import { Cronograma, SEMESTRE } from '../../domain/Cronograma'
-import {
-    Atividade as PrismaAtividade,
-    Cronograma as PrismaCronograma,
-} from '@prisma/client'
+import { Cronograma as PrismaCronograma } from '@prisma/client'
 import { AtividadeMapper } from './Atividade.mapper'
-
-export interface CronogramaModel extends PrismaCronograma {
-    atividades?: PrismaAtividade[]
-}
+import { CronogramaInfraDTO } from '../../../shared/infra/database/prisma/dtos/Cronograma.dto'
 
 export class CronogramaMapper {
     constructor(private readonly atividadeMapper: AtividadeMapper) {}
@@ -21,7 +15,7 @@ export class CronogramaMapper {
         }
     }
 
-    modelToDomain(model: CronogramaModel): Cronograma {
+    modelToDomain(model: CronogramaInfraDTO): Cronograma {
         const atividadesDomain = model.atividades?.map((atividade) => {
             return this.atividadeMapper.modelToDomain(atividade)
         })

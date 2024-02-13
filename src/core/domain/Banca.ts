@@ -2,24 +2,26 @@ import { InvalidPropsException } from './exceptions/InvalidProps.exception'
 
 export interface CriarBancaProps {
     professorId: string
-    dia_hora: Date
+    segundoProfessorId: string
+    data: Date
 }
 
 export interface CarregarBancaProps {
     professorId: string
-    dia_hora: Date
-    nota_final: number
-    nota_apresentacao: number
-    nota_trabalho: number
+    segundoProfessorId: string
+    data: Date
+    notaApresentacao: number
+    notaTrabalho: number
 }
 
 export class Banca {
     private id: string
-    private id_professor: string
-    private dia_hora: Date
-    private nota_final: number
-    private nota_apresentacao: number
-    private nota_trabalho: number
+    private professorId: string
+    private segundoProfessorId: string
+    private data: Date
+    private notaApresentacao: number
+    private notaTrabalho: number
+    private versao: number
 
     private constructor(id: string) {
         this.id = id
@@ -28,8 +30,8 @@ export class Banca {
     static criar(props: CriarBancaProps, id: string): Banca {
         const banca = new Banca(id)
 
-        banca.setIdProfessor(props.professorId)
-        banca.setDiaHora(props.dia_hora)
+        banca.setProfessorId(props.professorId)
+        banca.setData(props.data)
 
         return banca
     }
@@ -37,52 +39,55 @@ export class Banca {
     static carregar(props: CarregarBancaProps, id: string): Banca {
         const banca = new Banca(id)
 
-        banca.setIdProfessor(props.professorId)
-        banca.setDiaHora(props.dia_hora)
+        banca.setProfessorId(props.professorId)
+        banca.setData(props.data)
 
-        banca.nota_apresentacao = props.nota_apresentacao
-        banca.nota_trabalho = props.nota_trabalho
-        banca.nota_final = props.nota_final
+        banca.notaApresentacao = props.notaApresentacao
+        banca.notaTrabalho = props.notaTrabalho
 
         return banca
     }
 
-    private setIdProfessor(id: string): Error | void {
+    private setProfessorId(id: string): Error | void {
         if (!id)
             throw new InvalidPropsException(
                 'Id do Professor não pode ser vazio',
             )
-        this.id_professor = id
+        this.professorId = id
     }
 
-    private setDiaHora(dia: Date): Error | void {
+    private setData(data: Date): Error | void {
         //TODO: fazer validação de data
-        if (!dia) throw new InvalidPropsException('A data não pode ser vazio')
-        this.dia_hora = dia
+        if (!data) throw new InvalidPropsException('A data não pode ser vazio')
+        this.data = data
     }
 
     getId(): string {
         return this.id
     }
 
-    getIdProfessor(): string {
-        return this.id_professor
+    getProfessorId(): string {
+        return this.professorId
+    }
+
+    getSegundoProfessorId(): string {
+        return this.segundoProfessorId
     }
 
     getDiaHora(): Date {
-        return this.dia_hora
-    }
-
-    getNotaFinal(): number {
-        return this.nota_final
+        return this.data
     }
 
     getNotaApresentacao(): number {
-        return this.nota_apresentacao
+        return this.notaApresentacao
     }
 
     getNotaTrabalho(): number {
-        return this.nota_trabalho
+        return this.notaTrabalho
+    }
+
+    getVersao(): number {
+        return this.versao
     }
 
     avaliarNotaTcc(
@@ -94,11 +99,11 @@ export class Banca {
         if (!notaTrabalho || notaTrabalho < 0 || notaTrabalho > 10)
             throw new InvalidPropsException('Nota de trabalho inválida')
 
-        this.nota_apresentacao = notaApresentacao
-        this.nota_trabalho = notaTrabalho
+        this.notaApresentacao = notaApresentacao
+        this.notaTrabalho = notaTrabalho
 
-        this.nota_final = Number(
-            (notaTrabalho * 0.7 + notaApresentacao * 0.3).toFixed(2),
-        )
+        // this.nota_final = Number(
+        //     (notaTrabalho * 0.7 + notaApresentacao * 0.3).toFixed(2),
+        // )
     }
 }

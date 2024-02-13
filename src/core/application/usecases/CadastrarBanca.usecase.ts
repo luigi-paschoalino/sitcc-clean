@@ -30,7 +30,7 @@ export class CadastrarBancaUsecase {
             const banca = Banca.criar(
                 {
                     professorId: props.professorId,
-                    dia_hora: props.dia_hora,
+                    data: props.dia_hora,
                 },
                 uuid,
             )

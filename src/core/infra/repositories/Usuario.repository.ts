@@ -1,19 +1,35 @@
-import { Injectable, Logger } from '@nestjs/common'
+import { Inject, Injectable, Logger } from '@nestjs/common'
 import { TIPO_USUARIO, Usuario } from '../../domain/Usuario'
 import { RepositoryException } from '../../domain/exceptions/Repository.exception'
 import { UsuarioMapper } from '../mappers/Usuario.mapper'
 import { UsuarioRepository } from './../../domain/repositories/Usuario.repository'
-import { UsuarioModel } from '../models/Usuario.model'
 import { RepositoryDataNotFoundException } from '../../domain/exceptions/RepositoryDataNotFound.exception'
+import { PrismaService } from '../../../shared/infra/database/prisma/prisma.service'
 
 @Injectable()
 export class UsuarioRepositoryImpl implements UsuarioRepository {
     private logger = new Logger(UsuarioRepositoryImpl.name)
-    constructor(private readonly usuarioMapper: UsuarioMapper) {}
+    constructor(
+        @Inject('PrismaService') private readonly prismaService: PrismaService,
+        private readonly usuarioMapper: UsuarioMapper,
+    ) {}
 
     async buscarPorId(id: string): Promise<Error | Usuario> {
         try {
-            const model = await UsuarioModel.findOneBy({ id })
+            const model = await this.prismaService.usuario.findUnique({
+                where: { id },
+                include: {
+                    PerfilProfessor: {
+                        select: {
+                            id: true,
+                            descricao: true,
+                            link: true,
+                            areasAtuacao: true,
+                            projetos: true,
+                        },
+                    },
+                },
+            })
 
             if (model instanceof Error)
                 throw new RepositoryException(model.stack)
@@ -32,7 +48,20 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
 
     async buscarPorEmail(email: string): Promise<Error | Usuario> {
         try {
-            const model = await UsuarioModel.findOneBy({ email })
+            const model = await this.prismaService.usuario.findUnique({
+                where: { email },
+                include: {
+                    PerfilProfessor: {
+                        select: {
+                            id: true,
+                            descricao: true,
+                            link: true,
+                            areasAtuacao: true,
+                            projetos: true,
+                        },
+                    },
+                },
+            })
 
             if (model instanceof Error)
                 throw new RepositoryException(model.stack)
@@ -50,8 +79,21 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
 
     async buscarPorHashSenha(hash: string): Promise<Error | Usuario> {
         try {
-            const model = await UsuarioModel.findOneBy({
-                hashRecuperacaoSenha: hash,
+            const model = await this.prismaService.usuario.findFirstOrThrow({
+                where: {
+                    hashRecuperacaoSenha: hash,
+                },
+                include: {
+                    PerfilProfessor: {
+                        select: {
+                            id: true,
+                            descricao: true,
+                            link: true,
+                            areasAtuacao: true,
+                            projetos: true,
+                        },
+                    },
+                },
             })
 
             if (model instanceof Error)
@@ -61,7 +103,9 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
                     `A hash ${hash} expirou ou foi preenchida incorretamente. Solicite novamente a recuperação de senha!`,
                 )
 
-            const usuario = this.usuarioMapper.modelToDomain(model)
+            const usuario = this.usuarioMapper.modelToDomain({
+                ...model,
+            })
 
             return usuario
         } catch (error) {
@@ -71,7 +115,10 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
 
     async salvar(usuario: Usuario): Promise<Error | void> {
         try {
-            const usuarioModel = this.usuarioMapper.domainToModel(usuario)
+            const usuarioModel = this.usuarioMapper.domainToModel(
+                usuario,
+                usuario.getCurso().getId(),
+            )
 
             const usuarioSalvo = await usuarioModel.save()
 

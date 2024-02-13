@@ -11,13 +11,15 @@ import { TccNotaFinalAvaliadaEvent } from './events/TccNotaFinalEvent.event'
 import { BancaAdicionadaEvent } from './events/BancaAdicionada.event'
 import { TccEnviadoEvent } from './events/TccEnviado.event'
 import { TIPO_ENTREGA } from './services/MoverTcc.service'
-import { IsNull } from 'typeorm'
 
-export enum STATUS_TCC {
+export enum STATUS_TFG {
     MATRICULA_REALIZADA = 'MATRICULA_REALIZADA',
     ORIENTACAO_ACEITA = 'ORIENTACAO_ACEITA',
     ORIENTACAO_RECUSADA = 'ORIENTACAO_RECUSADA',
     ENTREGA_PARCIAL = 'ENTREGA_PARCIAL',
+    ENTREGA_FINAL = 'ENTREGA_FINAL',
+    APROVADO = 'APROVADO',
+    REPROVADO = 'REPROVADO',
 }
 
 export interface CriarTccProps {
@@ -25,7 +27,7 @@ export interface CriarTccProps {
     orientador: Usuario
     coorientador?: Usuario
     titulo?: string
-    palavras_chave?: string[]
+    palavrasChave?: string
     introducao?: string
     objetivos?: string
     bibliografia?: string
@@ -38,34 +40,34 @@ export interface CarregarTccProps {
     orientador: string
     coorientador?: string
     titulo?: string
-    palavras_chave?: string[]
+    palavrasChave?: string
     introducao?: string
     objetivos?: string
     bibliografia?: string
     metodologia?: string
     resultados?: string
-    status?: STATUS_TCC
-    nota_parcial?: number
-    nota_final?: number
+    status?: STATUS_TFG
+    notaParcial?: number
+    notaFinal?: number
     banca?: Banca[]
     path?: string
 }
 
-export class Tcc extends AggregateRoot {
+export class Tfg extends AggregateRoot {
     private id: string
     private alunoId: string
     private orientadorId: string
     private coorientadorId?: string
-    private status: STATUS_TCC
+    private status: STATUS_TFG
     private titulo?: string
-    private palavras_chave?: string[]
+    private palavrasChave?: string
     private introducao?: string
     private objetivos?: string
     private bibliografia?: string
     private metodologia?: string
     private resultados?: string
-    private nota_parcial?: number
-    private nota_final?: number
+    private notaParcial?: number
+    private notaFinal?: number
     private banca?: Banca[]
     private path?: string
 
@@ -74,10 +76,10 @@ export class Tcc extends AggregateRoot {
         this.id = id
     }
 
-    static criar(props: CriarTccProps, id: string): Error | Tcc {
-        const tcc = new Tcc(id)
+    static criar(props: CriarTccProps, id: string): Error | Tfg {
+        const tcc = new Tfg(id)
 
-        tcc.setStatus(STATUS_TCC.MATRICULA_REALIZADA)
+        tcc.setStatus(STATUS_TFG.MATRICULA_REALIZADA)
         tcc.setAluno(props.aluno)
         tcc.setOrientador(props.orientador)
         tcc.setCoorientador(props.coorientador)
@@ -91,19 +93,19 @@ export class Tcc extends AggregateRoot {
         return tcc
     }
 
-    static carregar(props: CarregarTccProps, id: string): Tcc {
-        const tcc = new Tcc(id)
+    static carregar(props: CarregarTccProps, id: string): Tfg {
+        const tcc = new Tfg(id)
 
         tcc.status = props.status
         tcc.titulo = props.titulo
-        tcc.palavras_chave = props.palavras_chave
+        tcc.palavrasChave = props.palavrasChave
         tcc.introducao = props.introducao
         tcc.objetivos = props.objetivos
         tcc.bibliografia = props.bibliografia
         tcc.metodologia = props.metodologia
         tcc.resultados = props.resultados
-        tcc.nota_parcial = props.nota_parcial
-        tcc.nota_final = props.nota_final
+        tcc.notaParcial = props.notaParcial
+        tcc.notaFinal = props.notaFinal
         tcc.banca = props.banca
         tcc.path = props.path
 
@@ -130,7 +132,7 @@ export class Tcc extends AggregateRoot {
         return this.coorientadorId
     }
 
-    public getStatus(): STATUS_TCC {
+    public getStatus(): STATUS_TFG {
         return this.status
     }
 
@@ -138,8 +140,8 @@ export class Tcc extends AggregateRoot {
         return this.titulo
     }
 
-    public getPalavrasChave(): string[] {
-        return this.palavras_chave
+    public getPalavrasChave(): string {
+        return this.palavrasChave
     }
 
     public getIntroducao(): string {
@@ -163,11 +165,11 @@ export class Tcc extends AggregateRoot {
     }
 
     public getNotaParcial(): number {
-        return this.nota_parcial
+        return this.notaParcial
     }
 
     public getNotaFinal(): number {
-        return this.nota_final
+        return this.notaFinal
     }
 
     public getBanca(): Banca[] {
@@ -178,7 +180,7 @@ export class Tcc extends AggregateRoot {
         return this.path
     }
 
-    private setStatus(status: STATUS_TCC): void {
+    private setStatus(status: STATUS_TFG): void {
         this.status = status
     }
 
@@ -186,8 +188,8 @@ export class Tcc extends AggregateRoot {
         this.titulo = titulo
     }
 
-    private setPalavrasChave(palavras_chave: string[]): void {
-        this.palavras_chave = palavras_chave
+    private setPalavrasChave(palavrasChave: string): void {
+        this.palavrasChave = palavrasChave
     }
 
     private setIntroducao(introducao: string): void {
@@ -255,19 +257,18 @@ export class Tcc extends AggregateRoot {
             throw new Error('Nota deve ser entre 0 e 10')
         }
 
-        this.nota_parcial = nota_parcial
+        this.notaParcial = nota_parcial
     }
-
-    private setNotaFinal(nota_final: number): void {
-        if (!nota_final) {
+    private setNotaFinal(notaFinal: number): void {
+        if (!notaFinal) {
             throw new Error('Nota não informada')
         }
 
-        if (nota_final < 0 || nota_final > 10) {
+        if (notaFinal < 0 || notaFinal > 10) {
             throw new Error('Nota deve ser entre 0 e 10')
         }
 
-        this.nota_final = nota_final
+        this.notaFinal = notaFinal
     }
 
     // TODO: adicionar evento TccBancaAtribuidaEvent
@@ -277,7 +278,7 @@ export class Tcc extends AggregateRoot {
 
             if (
                 this.banca.find(
-                    (b) => b.getIdProfessor() === banca.getIdProfessor(),
+                    (b) => b.getProfessorId() === banca.getProfessorId(),
                 )
             )
                 throw new UsuarioException(
@@ -312,7 +313,7 @@ export class Tcc extends AggregateRoot {
                 throw new InvalidPropsException(
                     'A justificativa não deve ser informada em caso de aprovação',
                 )
-            this.setStatus(STATUS_TCC.ORIENTACAO_ACEITA)
+            this.setStatus(STATUS_TFG.ORIENTACAO_ACEITA)
             this.apply(
                 new TccOrientacaoAprovadaEvent({
                     id: this.id,
@@ -325,7 +326,7 @@ export class Tcc extends AggregateRoot {
                 throw new InvalidPropsException(
                     'A justificativa deve ser informada em caso de reprovação',
                 )
-            this.setStatus(STATUS_TCC.ORIENTACAO_RECUSADA)
+            this.setStatus(STATUS_TFG.ORIENTACAO_RECUSADA)
             this.apply(
                 new TccOrientacaoReprovadaEvent({
                     id: this.id,
@@ -356,7 +357,7 @@ export class Tcc extends AggregateRoot {
         notaApresentacao: number,
         notaTrabalho: number,
     ): Error | void {
-        const banca = this.banca.find((b) => b.getIdProfessor() === professorId)
+        const banca = this.banca.find((b) => b.getProfessorId() === professorId)
 
         if (!banca)
             throw new UsuarioException(
@@ -368,7 +369,6 @@ export class Tcc extends AggregateRoot {
         new TccNotaFinalAvaliadaEvent({
             bancaId: banca.getId(),
             tccId: this.id,
-            notaFinal: banca.getNotaFinal(),
         })
     }
 
@@ -378,7 +378,7 @@ export class Tcc extends AggregateRoot {
         }
 
         this.path = path
-        this.setStatus(STATUS_TCC.ENTREGA_PARCIAL)
+        this.setStatus(STATUS_TFG.ENTREGA_PARCIAL)
 
         this.apply(
             new TccEnviadoEvent({
@@ -387,5 +387,26 @@ export class Tcc extends AggregateRoot {
                 tipoEntrega,
             }),
         )
+    }
+
+    public toDTO() {
+        return {
+            id: this.id,
+            aluno: this.alunoId,
+            orientador: this.orientadorId,
+            coorientador: this.coorientadorId,
+            status: this.status,
+            titulo: this.titulo,
+            palavrasChave: this.palavrasChave,
+            introducao: this.introducao,
+            objetivos: this.objetivos,
+            bibliografia: this.bibliografia,
+            metodologia: this.metodologia,
+            resultados: this.resultados,
+            notaParcial: this.notaParcial,
+            notaFinal: this.notaFinal,
+            banca: this.banca,
+            path: this.path,
+        }
     }
 }

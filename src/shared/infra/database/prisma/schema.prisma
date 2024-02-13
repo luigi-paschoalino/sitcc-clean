@@ -22,18 +22,22 @@ model Curso {
 }
 
 model Usuario {
-  id              String            @id @default(uuid()) @db.Uuid
-  nome            String            @db.VarChar(255)
-  email           String            @unique @db.VarChar(255)
-  senha           String            @db.VarChar(100)
-  curso           Curso             @relation(fields: [cursoId], references: [id])
-  tipo            TIPO_USUARIO
-  cursoId         String            @db.Uuid
-  PerfilProfessor PerfilProfessor[]
-  Banca           Banca[]
-  TfgAluno        Tfg[]             @relation(name: "AlunoRelation")
-  TfgOrientador   Tfg[]             @relation(name: "OrientadorRelation")
-  TfgCoorientador Tfg[]             @relation(name: "CoorientadorRelation")
+  id                   String           @id @default(uuid()) @db.Uuid
+  nome                 String           @db.VarChar(255)
+  email                String           @unique @db.VarChar(255)
+  senha                String           @db.VarChar(100)
+  hashRecuperacaoSenha String?          @db.VarChar(100)
+  numero               String?          @db.VarChar(15)
+  matricula            String?          @db.VarChar(10)
+  curso                Curso            @relation(fields: [cursoId], references: [id])
+  tipo                 TIPO_USUARIO
+  cursoId              String           @db.Uuid
+  PerfilProfessor      PerfilProfessor?
+  TfgAluno             Tfg[]            @relation(name: "AlunoRelation")
+  TfgOrientador        Tfg[]            @relation(name: "OrientadorRelation")
+  TfgCoorientador      Tfg[]            @relation(name: "CoorientadorRelation")
+  BancaPrimeiroProf    Banca[]          @relation(name: "PrimeiroProfessorRelation")
+  BancaSegundoProf     Banca[]          @relation(name: "SegundoProfessorRelation")
 
   @@map("usuarios")
 }
@@ -72,13 +76,13 @@ model Norma {
 }
 
 model PerfilProfessor {
-  id           String     @id @default(uuid()) @db.Uuid
-  descricao    String     @db.VarChar()
-  link         String     @db.VarChar()
-  areasAtuacao Json[]     @db.Json
-  projetos     Projetos[]
-  usuario      Usuario    @relation(fields: [usuarioId], references: [id])
-  usuarioId    String     @db.Uuid
+  id           String    @id @default(uuid()) @db.Uuid
+  descricao    String    @db.VarChar()
+  link         String    @db.VarChar()
+  areasAtuacao Json[]    @db.Json
+  projetos     Projeto[]
+  usuario      Usuario   @relation(fields: [usuarioId], references: [id])
+  usuarioId    String    @unique @db.Uuid
 
   @@map("perfis_professores")
 }
@@ -91,7 +95,7 @@ model CodigoProfessor {
   @@map("codigos_professores")
 }
 
-model Projetos {
+model Projeto {
   id                String           @id @default(uuid()) @db.Uuid
   titulo            String           @db.VarChar(255)
   descricao         String           @db.VarChar()
@@ -103,17 +107,20 @@ model Projetos {
   @@map("projetos")
 }
 
-//TODO: editar banca para receber dois professores
 model Banca {
-  id               String   @id @default(uuid()) @db.Uuid
-  data             DateTime
-  professorId      String   @db.Uuid
-  tccId            String   @db.Uuid
-  professor        Usuario  @relation(fields: [professorId], references: [id])
-  tcc              Tfg      @relation(fields: [tccId], references: [id])
-  notaApresentacao Decimal? @db.Decimal(4, 2)
-  notaTrabalho     Decimal? @db.Decimal(4, 2)
+  id                 String   @id @default(uuid()) @db.Uuid
+  data               DateTime
+  professorId        String   @db.Uuid
+  segundoProfessorId String   @db.Uuid // Adiciona um segundo professor
+  tccId              String   @db.Uuid
+  professor          Usuario  @relation(name: "PrimeiroProfessorRelation", fields: [professorId], references: [id])
+  segundoProfessor   Usuario  @relation(name: "SegundoProfessorRelation", fields: [segundoProfessorId], references: [id])
+  tcc                Tfg      @relation(fields: [tccId], references: [id])
+  notaApresentacao   Decimal? @db.Decimal(4, 2)
+  notaTrabalho       Decimal? @db.Decimal(4, 2)
+  versao             Int      @default(1)
 
+  @@unique([tccId, versao])
   @@map("bancas")
 }
 
@@ -136,7 +143,7 @@ model Tfg {
   orientadorId   String     @db.Uuid
   coorientador   Usuario?   @relation(name: "CoorientadorRelation", fields: [coorientadorId], references: [id])
   coorientadorId String?    @db.Uuid
-  Banca          Banca[]
+  banca          Banca[]
 
   @@map("tfgs")
 }
@@ -152,7 +159,8 @@ enum TIPO_ATIVIDADE {
 enum TIPO_USUARIO {
   ALUNO
   PROFESSOR
-  ADMIN
+  COORDENADOR
+  ADMINISTRADOR
 
   @@map("TipoUsuario")
 }
@@ -169,6 +177,9 @@ enum STATUS_TFG {
   ORIENTACAO_ACEITA
   ORIENTACAO_RECUSADA
   ENTREGA_PARCIAL
+  ENTREGA_FINAL
+  APROVADO
+  REPROVADO
 
   @@map("StatusTfg")
 }

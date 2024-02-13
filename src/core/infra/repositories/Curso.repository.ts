@@ -18,7 +18,18 @@ export class CursoRepositoryImpl implements CursoRepository {
         try {
             const model = await this.prismaService.curso.findUnique({
                 where: { id },
-                include: { cronograma: true, normas: true },
+                include: {
+                    cronograma: {
+                        select: {
+                            id: true,
+                            ano: true,
+                            semestre: true,
+                            atividades: true,
+                            cursoId: true,
+                        },
+                    },
+                    normas: true,
+                },
             })
             if (!model)
                 throw new RepositoryDataNotFoundException(
@@ -37,6 +48,18 @@ export class CursoRepositoryImpl implements CursoRepository {
         try {
             const model = await this.prismaService.curso.findUnique({
                 where: { nome },
+                include: {
+                    cronograma: {
+                        select: {
+                            id: true,
+                            ano: true,
+                            semestre: true,
+                            atividades: true,
+                            cursoId: true,
+                        },
+                    },
+                    normas: true,
+                },
             })
 
             if (!model)
@@ -95,8 +118,40 @@ export class CursoRepositoryImpl implements CursoRepository {
 
             const salvarCurso = await this.prismaService.curso.upsert({
                 where: { id: model.id },
-                update: model,
-                create: model,
+                create: {
+                    ...model,
+                    normas: {
+                        create: model.normas
+                            .filter((n) => !n.id)
+                            .map((norma) => ({
+                                titulo: norma.titulo,
+                                descricao: norma.descricao,
+                                link: norma.link,
+                            })),
+                    },
+                },
+                update: {
+                    ...model,
+                    normas: {
+                        upsert: model.normas.map((norma) => ({
+                            where: { id: norma.id },
+                            create: {
+                                titulo: norma.titulo,
+                                descricao: norma.descricao,
+                                link: norma.link,
+                            },
+                            update: {
+                                titulo: norma.titulo,
+                                descricao: norma.descricao,
+                                link: norma.link,
+                            },
+                        })),
+                    },
+                },
+                include: {
+                    cronograma: true,
+                    normas: true,
+                },
             })
 
             if (salvarCurso instanceof Error)

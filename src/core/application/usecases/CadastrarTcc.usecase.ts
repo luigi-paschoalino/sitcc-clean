@@ -1,5 +1,5 @@
 import { Inject, Logger } from '@nestjs/common'
-import { Tcc } from '../../domain/Tcc'
+import { Tfg } from '../../domain/Tfg'
 import { UniqueIdService } from '../../domain/services/UniqueID.service'
 import { TccRepository } from '../../domain/repositories/Tcc.repository'
 import { UsuarioRepository } from '../../domain/repositories/Usuario.repository'
@@ -56,7 +56,7 @@ export class CadastrarTccUsecase {
                 coorientador = busca
             }
 
-            const tcc = Tcc.criar(
+            const tcc = Tfg.criar(
                 {
                     aluno: aluno,
                     orientador: orientador,

@@ -1,12 +1,8 @@
+import { Curso as PrismaCurso } from '@prisma/client'
 import { Curso } from '../../domain/Curso'
-import { Norma as PrismaNorma, Curso as PrismaCurso } from '@prisma/client'
+import { CursoInfraDTO } from '../../../shared/infra/database/prisma/dtos/Curso.dto'
+import { CronogramaMapper } from './Cronograma.mapper'
 import { NormaMapper } from './Norma.mapper'
-import { CronogramaMapper, CronogramaModel } from './Cronograma.mapper'
-
-interface CursoModel extends PrismaCurso {
-    normas?: PrismaNorma[]
-    cronogramas?: CronogramaModel[]
-}
 
 export class CursoMapper {
     constructor(
@@ -15,15 +11,28 @@ export class CursoMapper {
     ) {}
 
     //TODO: Implementar o mapeamento de normas e cronogramas para o model
-    domainToModel(domain: Curso): PrismaCurso {
+    domainToModel(domain: Curso): CursoInfraDTO {
         return {
             id: domain.getId(),
             nome: domain.getNome(),
             codigo: domain.getCodigo(),
+            cronogramas: domain
+                .getCronogramas()
+                .map((cronograma) =>
+                    this.cronogramaMapper.domainToModel(
+                        cronograma,
+                        domain.getId(),
+                    ),
+                ),
+            normas: domain
+                .getNormas()
+                .map((norma) =>
+                    this.normaMapper.domainToModel(norma, domain.getId()),
+                ),
         }
     }
 
-    modelToDomain(model: CursoModel): Curso {
+    modelToDomain(model: CursoInfraDTO): Curso {
         const normasDomain = model.normas?.map((norma) =>
             this.normaMapper.modelToDomain(norma),
         )

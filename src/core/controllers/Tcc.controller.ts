@@ -18,7 +18,7 @@ import {
     CadastrarTccUsecase,
     CadastrarTccUsecaseProps,
 } from '../application/usecases/CadastrarTcc.usecase'
-import { Tcc } from '../domain/Tcc'
+import { Tfg } from '../domain/Tfg'
 import { AbstractController } from './AbstractController'
 import {
     AvaliarOrientacaoUsecase,
@@ -66,7 +66,7 @@ export class TccController extends AbstractController {
     }
     @Get(':id')
     @UseGuards(JwtAuthGuard)
-    public async getTcc(@Param('id') id: string): Promise<Tcc> {
+    public async getTcc(@Param('id') id: string): Promise<Tfg> {
         const result = await this.buscarTccQuery.execute(id)
 
         return this.handleResponse(result)

@@ -1,53 +1,51 @@
 import { Injectable } from '@nestjs/common'
-import { Usuario } from '../../domain/Usuario'
-import { UsuarioModel } from '../models/Usuario.model'
-import { CursoMapper } from './Curso.mapper'
+import { TIPO_USUARIO, Usuario } from '../../domain/Usuario'
 import { PerfilProfessorMapper } from './PerfilProfessor.mapper'
+import { UsuarioInfraDTO as UsuarioModel } from '../../../shared/infra/database/prisma/dtos/Usuario.dto'
 
 @Injectable()
 export class UsuarioMapper {
     constructor(
-        private readonly cursoMapper: CursoMapper,
         private readonly perfilProfessorMapper: PerfilProfessorMapper,
     ) {}
 
-    domainToModel(domain: Usuario): UsuarioModel {
-        const usuarioModel = UsuarioModel.create({
+    domainToModel(domain: Usuario, cursoId: string): UsuarioModel {
+        const perfilProfessor =
+            this.perfilProfessorMapper.domainToModel(
+                domain.getPerfilProfessor(),
+                domain.getId(),
+            ) ?? null
+
+        return {
             id: domain.getId(),
-            nome: domain.getNome(),
-            curso: this.cursoMapper.domainToModel(domain.getCurso()),
             email: domain.getEmail(),
+            cursoId,
+            nome: domain.getNome(),
             senha: domain.getSenha(),
             tipo: domain.getTipo(),
             numero: domain.getNumero(),
             hashRecuperacaoSenha: domain.getHashRecuperacaoSenha(),
-            perfilProfessor: domain.getPerfilProfessor()
-                ? this.perfilProfessorMapper.domainToModel(
-                      domain.getPerfilProfessor(),
-                  )
-                : null,
-        })
-
-        return usuarioModel
+            matricula: domain.getMatricula(),
+            perfilProfessor,
+        }
     }
 
     modelToDomain(model: UsuarioModel): Usuario {
-        const curso = this.cursoMapper.modelToDomain(model.curso)
+        const perfilProfessor =
+            this.perfilProfessorMapper.modelToDomain(model.perfilProfessor) ??
+            null
 
         const usuario = Usuario.carregar(
             {
                 nome: model.nome,
-                curso,
+                cursoId: model.cursoId,
                 email: model.email,
                 senha: model.senha,
-                tipo: model.tipo,
+                tipo: model.tipo as TIPO_USUARIO,
                 numero: model.numero,
                 hashRecuperacaoSenha: model.hashRecuperacaoSenha,
-                perfilProfessor: model.perfilProfessor
-                    ? this.perfilProfessorMapper.modelToDomain(
-                          model.perfilProfessor,
-                      )
-                    : null,
+                perfilProfessor,
+                matricula: model.matricula,
             },
             model.id,
         )

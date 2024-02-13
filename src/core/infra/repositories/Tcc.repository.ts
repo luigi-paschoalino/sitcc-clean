@@ -1,18 +1,29 @@
-import { Injectable } from '@nestjs/common'
+import { Inject, Injectable } from '@nestjs/common'
 import { TccRepository } from '../../domain/repositories/Tcc.repository'
-import { Tcc } from '../../domain/Tcc'
-import { TccModel } from '../models/Tcc.model'
+import { Tfg } from '../../domain/Tfg'
 import { RepositoryException } from '../../domain/exceptions/Repository.exception'
 import { RepositoryDataNotFoundException } from '../../domain/exceptions/RepositoryDataNotFound.exception'
 import { TccMapper } from '../mappers/Tcc.mapper'
+import { PrismaService } from '../../../shared/infra/database/prisma/prisma.service'
 
 @Injectable()
 export class TccRepositoryImpl implements TccRepository {
-    constructor(private readonly tccMapper: TccMapper) {}
+    constructor(
+        @Inject('PrismaService')
+        private readonly prismaService: PrismaService,
+        private readonly tccMapper: TccMapper,
+    ) {}
 
-    async buscarTcc(id: string): Promise<Error | Tcc> {
+    async buscarTcc(id: string): Promise<Error | Tfg> {
         try {
-            const model = await TccModel.findOneBy({ id })
+            const model = await this.prismaService.tfg.findUnique({
+                where: {
+                    id,
+                },
+                include: {
+                    banca: true,
+                },
+            })
 
             if (model instanceof Error)
                 throw new RepositoryException(model.stack)
@@ -27,14 +38,42 @@ export class TccRepositoryImpl implements TccRepository {
         }
     }
 
-    async salvarTcc(tcc: Tcc): Promise<Error | void> {
+    async salvarTcc(tcc: Tfg): Promise<Error | void> {
         try {
-            const tccModel = this.tccMapper.domainToModel(tcc)
+            const model = this.tccMapper.domainToModel(tcc)
 
-            const tccSalvar = await tccModel.save()
-
-            if (tccSalvar instanceof Error)
-                throw new RepositoryException(tccSalvar.stack)
+            await this.prismaService.tfg.upsert({
+                where: {
+                    id: model.id,
+                },
+                update: {
+                    ...model,
+                    banca: {
+                        upsert: model.banca.map((banca) => ({
+                            where: {
+                                id: banca.id,
+                            },
+                            update: banca,
+                            create: banca,
+                        })),
+                    },
+                },
+                create: {
+                    ...model,
+                    banca: {
+                        create: model.banca
+                            .filter((n) => !n.id)
+                            .map((banca) => ({
+                                professorId: banca.professorId,
+                                segundoProfessorId: banca.segundoProfessorId,
+                                data: banca.data,
+                                notaApresentacao: banca.notaApresentacao,
+                                notaTrabalho: banca.notaTrabalho,
+                                versao: banca.versao,
+                            })),
+                    },
+                },
+            })
 
             return
         } catch (error) {

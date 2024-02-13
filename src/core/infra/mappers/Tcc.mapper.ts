@@ -1,52 +1,51 @@
 import { Injectable } from '@nestjs/common'
-import { Usuario } from '../../domain/Usuario'
-import { UsuarioModel } from '../models/Usuario.model'
-import { Tcc } from 'src/core/domain/Tcc'
-import { TccModel } from '../models/Tcc.model'
+import { STATUS_TFG, Tfg } from 'src/core/domain/Tfg'
 import { BancaMapper } from './Banca.mapper'
+import { TfgInfraDTO as TfgModel } from '../../../shared/infra/database/prisma/dtos/Tcc.dto'
+import { Prisma } from '@prisma/client'
 
 @Injectable()
 export class TccMapper {
     constructor(private readonly bancaMapper: BancaMapper) {}
 
-    domainToModel(tcc: Tcc): TccModel {
-        const model = TccModel.create({
-            bibliografia: tcc.getBibliografia(),
-            titulo: tcc.getTitulo(),
+    domainToModel(tcc: Tfg): TfgModel {
+        return {
             id: tcc.getId(),
-            introducao: tcc.getIntroducao(),
-            metodologia: tcc.getMetodologia(),
-            nota_final: tcc.getNotaFinal(),
-            nota_parcial: tcc.getNotaParcial(),
-            objetivos: tcc.getObjetivos(),
-            palavras_chave: tcc.getPalavrasChave(),
-            resultados: tcc.getResultados(),
-            status: tcc.getStatus(),
             alunoId: tcc.getAluno(),
             orientadorId: tcc.getOrientador(),
             coorientadorId: tcc.getCoorientador(),
+            bibliografia: tcc.getBibliografia(),
+            palavrasChave: tcc.getPalavrasChave(),
+            introducao: tcc.getIntroducao(),
+            metodologia: tcc.getMetodologia(),
+            objetivos: tcc.getObjetivos(),
+            resultados: tcc.getResultados(),
+            titulo: tcc.getTitulo(),
+            status: tcc.getStatus(),
+            notaFinal: new Prisma.Decimal(tcc.getNotaFinal()),
+            notaParcial: new Prisma.Decimal(tcc.getNotaParcial()),
+            path: tcc.getPath(),
             banca: tcc
                 .getBanca()
-                ?.map((banca) => this.bancaMapper.domainToModel(banca)),
-            path: tcc.getPath(),
-        })
-
-        return model
+                .map((banca) =>
+                    this.bancaMapper.domainToModel(banca, tcc.getId()),
+                ),
+        }
     }
 
-    modelToDomain(tccModel: TccModel): Tcc {
-        const domain = Tcc.carregar(
+    modelToDomain(tccModel: TfgModel): Tfg {
+        const domain = Tfg.carregar(
             {
                 bibliografia: tccModel.bibliografia,
                 titulo: tccModel.titulo,
                 introducao: tccModel.introducao,
                 metodologia: tccModel.metodologia,
-                nota_final: tccModel.nota_final,
-                nota_parcial: tccModel.nota_parcial,
+                notaFinal: Number(tccModel.notaFinal),
+                notaParcial: Number(tccModel.notaParcial),
                 objetivos: tccModel.objetivos,
-                palavras_chave: tccModel.palavras_chave,
+                palavrasChave: tccModel.palavrasChave,
                 resultados: tccModel.resultados,
-                status: tccModel.status,
+                status: tccModel.status as STATUS_TFG,
                 aluno: tccModel.alunoId,
                 orientador: tccModel.orientadorId,
                 coorientador: tccModel.coorientadorId,

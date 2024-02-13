@@ -7,6 +7,6 @@ export interface TccDTO {
     bibliografia: string
     metodologia: string
     resultados: string
-    nota_parcial: number
-    nota_final: number
+    notaParcial: number
+    notaFinal: number
 }

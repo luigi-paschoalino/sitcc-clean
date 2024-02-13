@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common'
-import { Tcc } from '../../domain/Tcc'
+import { Tfg } from '../../domain/Tfg'
 import { TccDTO } from '../../application/dtos/Tcc.dto'
 import { InvalidPropsException } from '../../domain/exceptions/InvalidProps.exception'
 import { TccRepository } from '../../domain/repositories/Tcc.repository'
@@ -25,8 +25,8 @@ export class BuscarTccQuery {
                 bibliografia: tcc.getBibliografia(),
                 metodologia: tcc.getMetodologia(),
                 resultados: tcc.getResultados(),
-                nota_parcial: tcc.getNotaParcial(),
-                nota_final: tcc.getNotaFinal(),
+                notaParcial: tcc.getNotaParcial(),
+                notaFinal: tcc.getNotaFinal(),
             }
 
             return tccResult

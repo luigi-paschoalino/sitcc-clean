@@ -8,7 +8,7 @@ import { EventPublisherService } from '../../domain/services/EventPublisher.serv
 import { InvalidPropsException } from '../../domain/exceptions/InvalidProps.exception'
 import { UsuarioException } from '../../domain/exceptions/Usuario.exception'
 import { TccException } from '../../domain/exceptions/Tcc.exception'
-import { STATUS_TCC } from '../../domain/Tcc'
+import { STATUS_TFG } from '../../domain/Tfg'
 
 export interface EnviarTccParcialUsecaseProps {
     usuarioId: string
@@ -38,7 +38,7 @@ export class EnviarTccParcialUsecase {
                     'O usuário informado não possui autoria sobre o TCC',
                 )
 
-            if (tcc.getStatus() !== STATUS_TCC.ORIENTACAO_ACEITA)
+            if (tcc.getStatus() !== STATUS_TFG.ORIENTACAO_ACEITA)
                 throw new TccException('A orientação do TCC não foi aprovada!')
 
             this.logger.debug('\n' + JSON.stringify(tcc, null, 2))
