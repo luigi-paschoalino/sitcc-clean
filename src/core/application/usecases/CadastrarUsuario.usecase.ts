@@ -2,11 +2,11 @@ import { TIPO_USUARIO, Usuario } from '../../domain/Usuario'
 import { UsuarioRepository } from '../../domain/repositories/Usuario.repository'
 import { UniqueIdService } from '../../domain/services/UniqueID.service'
 import { Inject, Logger } from '@nestjs/common'
-import { UniversidadeRepository } from '../../domain/repositories/Curso.repository'
 import { EventPublisherService } from '../../domain/services/EventPublisher.service'
 import { EncriptarSenhaService } from '../../domain/services/EncriptarSenha.service'
 import { InvalidPropsException } from '../../domain/exceptions/InvalidProps.exception'
 import { CodigoProfessorRepository } from '../../domain/repositories/CodigoProfessor.repository'
+import { CursoRepository } from '../../domain/repositories/Curso.repository'
 
 export interface CadastrarUsuarioUsecaseProps {
     nome: string
@@ -15,6 +15,7 @@ export interface CadastrarUsuarioUsecaseProps {
     senha: string
     tipo: TIPO_USUARIO
     numero: string
+    matricula: string
     codigo?: string
 }
 
@@ -32,8 +33,8 @@ export class CadastrarUsuarioUseCase {
         private readonly usuarioRepository: UsuarioRepository,
         @Inject('CodigoProfessorRepository')
         private readonly codigoProfessorRepository: CodigoProfessorRepository,
-        @Inject('UniversidadeRepository')
-        private readonly universidadeRepository: UniversidadeRepository,
+        @Inject('CursoRepository')
+        private readonly cursoRepository: CursoRepository,
     ) {}
 
     //TODO: validar se o usuário já existe (email, matricula)
@@ -54,9 +55,7 @@ export class CadastrarUsuarioUseCase {
 
             const id = this.uniqueIdService.gerarUuid()
 
-            const curso = await this.universidadeRepository.buscarCurso(
-                props.curso,
-            )
+            const curso = await this.cursoRepository.buscarPorId(props.curso)
             if (curso instanceof Error)
                 throw new InvalidPropsException('Curso não informado')
 
@@ -67,12 +66,13 @@ export class CadastrarUsuarioUseCase {
             const usuario = Usuario.criar(
                 {
                     nome: props.nome,
-                    curso,
+                    curso: curso.getId(),
                     email: props.email,
                     senha: senha,
                     tipo: props.tipo,
                     numero: props.numero,
                     codigo: props.codigo,
+                    matricula: props.matricula,
                 },
                 id,
             )

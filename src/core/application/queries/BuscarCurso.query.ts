@@ -8,15 +8,13 @@ export interface BuscarCursoQueryProps {
 
 export class BuscarCursoQuery {
     constructor(
-        @Inject('UniversidadeRepository')
-        private readonly universidadeRepository: CursoRepository,
+        @Inject('CursoRepository')
+        private readonly cursoRepository: CursoRepository,
     ) {}
 
     async execute(props: BuscarCursoQueryProps): Promise<Error | CursoDTO> {
         try {
-            const curso = await this.universidadeRepository.buscarPorId(
-                props.id,
-            )
+            const curso = await this.cursoRepository.buscarPorId(props.id)
 
             if (curso instanceof Error) throw curso
 

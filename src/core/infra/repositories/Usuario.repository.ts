@@ -26,6 +26,7 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
                             link: true,
                             areasAtuacao: true,
                             projetos: true,
+                            usuarioId: true,
                         },
                     },
                 },
@@ -38,7 +39,10 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
                     `Usuário com o ID ${id} não existe!`,
                 )
 
-            const usuario = this.usuarioMapper.modelToDomain(model)
+            const usuario = this.usuarioMapper.modelToDomain({
+                ...model,
+                perfilProfessor: model.PerfilProfessor,
+            })
 
             return usuario
         } catch (error) {
@@ -58,6 +62,7 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
                             link: true,
                             areasAtuacao: true,
                             projetos: true,
+                            usuarioId: true,
                         },
                     },
                 },
@@ -69,7 +74,10 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
                 throw new RepositoryDataNotFoundException(
                     `Usuário com o email ${email} não existe!`,
                 )
-            const usuario = this.usuarioMapper.modelToDomain(model)
+            const usuario = this.usuarioMapper.modelToDomain({
+                ...model,
+                perfilProfessor: model.PerfilProfessor,
+            })
 
             return usuario
         } catch (error) {
@@ -91,6 +99,7 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
                             link: true,
                             areasAtuacao: true,
                             projetos: true,
+                            usuarioId: true,
                         },
                     },
                 },
@@ -105,6 +114,7 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
 
             const usuario = this.usuarioMapper.modelToDomain({
                 ...model,
+                perfilProfessor: model.PerfilProfessor,
             })
 
             return usuario
@@ -117,10 +127,26 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
         try {
             const usuarioModel = this.usuarioMapper.domainToModel(
                 usuario,
-                usuario.getCurso().getId(),
+                usuario.getCurso(),
             )
 
-            const usuarioSalvo = await usuarioModel.save()
+            const usuarioSalvo = await this.prismaService.usuario.upsert({
+                where: { id: usuarioModel.id },
+                update: usuarioModel,
+                create: usuarioModel,
+                include: {
+                    PerfilProfessor: {
+                        select: {
+                            id: true,
+                            descricao: true,
+                            link: true,
+                            areasAtuacao: true,
+                            projetos: true,
+                            usuarioId: true,
+                        },
+                    },
+                },
+            })
 
             if (usuarioSalvo instanceof Error)
                 throw new RepositoryException(usuarioSalvo.stack)
@@ -133,13 +159,31 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
 
     async buscarPorTipo(tipo: TIPO_USUARIO): Promise<Error | Usuario[]> {
         try {
-            const models = await UsuarioModel.find({ where: { tipo } })
+            const models = await this.prismaService.usuario.findMany({
+                where: { tipo },
+                include: {
+                    PerfilProfessor: {
+                        select: {
+                            id: true,
+                            descricao: true,
+                            link: true,
+                            areasAtuacao: true,
+                            projetos: true,
+                            usuarioId: true,
+                        },
+                    },
+                },
+            })
             if (!models || models.length === 0)
                 throw new RepositoryDataNotFoundException(
                     `Não foi possível encontrar nenhum usuario com o tipo: ${tipo}`,
                 )
+
             const usuarios = models.map((model) =>
-                this.usuarioMapper.modelToDomain(model),
+                this.usuarioMapper.modelToDomain({
+                    ...model,
+                    perfilProfessor: model.PerfilProfessor,
+                }),
             )
             return usuarios
         } catch (error) {

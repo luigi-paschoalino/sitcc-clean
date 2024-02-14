@@ -1,7 +1,7 @@
-export interface TccDTO {
+export interface TfgDTO {
     id: string
     titulo: string
-    palavras_chave: string[]
+    palavrasChave: string
     introducao: string
     objetivos: string
     bibliografia: string

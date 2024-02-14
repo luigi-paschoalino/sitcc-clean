@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { Tfg } from '../../domain/Tfg'
-import { TccDTO } from '../../application/dtos/Tcc.dto'
+import { TfgDTO } from '../../application/dtos/Tcc.dto'
 import { InvalidPropsException } from '../../domain/exceptions/InvalidProps.exception'
 import { TccRepository } from '../../domain/repositories/Tcc.repository'
 
@@ -11,15 +11,15 @@ export class BuscarTccQuery {
         private readonly tccRepository: TccRepository,
     ) {}
 
-    async execute(id: string): Promise<Error | TccDTO> {
+    async execute(id: string): Promise<Error | TfgDTO> {
         try {
             const tcc = await this.tccRepository.buscarTcc(id)
             if (tcc instanceof Error) throw tcc
 
-            const tccResult: TccDTO = {
+            const tccResult: TfgDTO = {
                 id: tcc.getId(),
                 titulo: tcc.getTitulo(),
-                palavras_chave: tcc.getPalavrasChave(),
+                palavrasChave: tcc.getPalavrasChave(),
                 introducao: tcc.getIntroducao(),
                 objetivos: tcc.getObjetivos(),
                 bibliografia: tcc.getBibliografia(),

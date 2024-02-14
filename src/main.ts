@@ -1,12 +1,10 @@
 import { NestFactory } from '@nestjs/core'
 import { AppModule } from './app.module'
-import { AppDataSource } from '../ormconfig'
 import { config } from 'dotenv'
 import * as cookieParser from 'cookie-parser'
 
 async function bootstrap() {
     config()
-    AppDataSource.initialize()
     const app = await NestFactory.create(AppModule, {
         logger: ['error', 'warn', 'debug', 'verbose', 'log'],
     })

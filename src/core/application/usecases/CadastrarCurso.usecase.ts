@@ -1,9 +1,8 @@
 import { Inject, Logger } from '@nestjs/common'
 import { UniqueIdService } from '../../domain/services/UniqueID.service'
-import { UniversidadeRepository } from '../../domain/repositories/Curso.repository'
 import { Curso } from '../../domain/Curso'
-import { UniversidadeException } from '../../domain/exceptions/Universidade.exception'
 import { EventPublisherService } from '../../domain/services/EventPublisher.service'
+import { CursoRepository } from '../../domain/repositories/Curso.repository'
 
 export interface CadastrarCursoUsecaseProps {
     nome: string
@@ -19,62 +18,26 @@ export class CadastrarCursoUsecase {
         private readonly publisher: EventPublisherService,
         @Inject('UniqueIdService')
         private readonly uniqueIdService: UniqueIdService,
-        @Inject('UniversidadeRepository')
-        private readonly universidadeRepository: UniversidadeRepository,
+        @Inject('CursoRepository')
+        private readonly cursoRepository: CursoRepository,
     ) {}
 
     async execute(props: CadastrarCursoUsecaseProps): Promise<Error | void> {
         try {
-            const uuid = this.uniqueIdService.gerarUuid()
-
-            const curso = Curso.criar(
-                {
-                    nome: props.nome,
-                    codigo: props.codigo,
-                },
-                uuid,
-            )
-
+            const curso = Curso.criar({
+                nome: props.nome,
+                codigo: props.codigo,
+            })
             if (curso instanceof Error) {
                 throw curso
             }
 
-            const universidade =
-                await this.universidadeRepository.buscarPorInstitutoId(
-                    props.institutoId,
-                )
-
-            if (universidade instanceof Error) {
-                throw universidade
-            }
-
-            const instituto = universidade
-                .getInstitutos()
-                .find((instituto) => instituto.getId() === props.institutoId)
-
-            if (!instituto) {
-                throw new UniversidadeException('Instituto não encontrado')
-            }
-
-            if (
-                instituto
-                    .getCursos()
-                    .find((c) => c.getCodigo() === props.codigo)
-            ) {
-                throw new UniversidadeException('Curso já cadastrado')
-            }
-
-            universidade.addCurso(instituto.getId(), curso)
-
-            const salvar = await this.universidadeRepository.salvarUniversidade(
-                universidade,
-            )
-
+            const salvar = await this.cursoRepository.salvarCurso(curso)
             if (salvar instanceof Error) {
                 throw salvar
             }
 
-            await this.publisher.publish(universidade)
+            await this.publisher.publish(curso)
         } catch (error) {
             return error
         }

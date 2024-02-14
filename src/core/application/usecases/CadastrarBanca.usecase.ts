@@ -7,6 +7,7 @@ import { EventPublisherService } from '../../domain/services/EventPublisher.serv
 
 export interface CadastrarBancaUsecaseProps {
     professorId: string
+    segundoProfessorId: string
     dia_hora: Date
     tccId: string
 }
@@ -31,6 +32,7 @@ export class CadastrarBancaUsecase {
                 {
                     professorId: props.professorId,
                     data: props.dia_hora,
+                    segundoProfessorId: props.segundoProfessorId,
                 },
                 uuid,
             )
