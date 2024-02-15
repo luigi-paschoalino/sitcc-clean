@@ -10,11 +10,12 @@ export class UsuarioMapper {
     ) {}
 
     domainToModel(domain: Usuario, cursoId: string): UsuarioModel {
-        const perfilProfessor =
-            this.perfilProfessorMapper.domainToModel(
-                domain.getPerfilProfessor(),
-                domain.getId(),
-            ) ?? null
+        const perfilProfessor = domain.getPerfilProfessor()
+            ? this.perfilProfessorMapper?.domainToModel(
+                  domain.getPerfilProfessor(),
+                  domain.getId(),
+              )
+            : null
 
         return {
             id: domain.getId(),
@@ -31,9 +32,9 @@ export class UsuarioMapper {
     }
 
     modelToDomain(model: UsuarioModel): Usuario {
-        const perfilProfessor =
-            this.perfilProfessorMapper.modelToDomain(model.perfilProfessor) ??
-            null
+        const perfilProfessor = model.perfilProfessor
+            ? this.perfilProfessorMapper.modelToDomain(model.perfilProfessor)
+            : null
 
         const usuario = Usuario.carregar(
             {
