@@ -26,6 +26,7 @@ import { Handlers } from './application/handlers'
 import { HttpModule } from '@nestjs/axios'
 import { PrismaService } from '../shared/infra/database/prisma/prisma.service'
 import { CursoMapper } from './infra/mappers/Curso.mapper'
+import DTOMappers from './application/mappers'
 
 @Module({
     imports: [
@@ -62,6 +63,7 @@ import { CursoMapper } from './infra/mappers/Curso.mapper'
         ...UseCases,
         ...Queries,
         ...Mappers,
+        ...DTOMappers,
         ...Handlers,
         {
             provide: 'PrismaService',
@@ -77,10 +79,7 @@ import { CursoMapper } from './infra/mappers/Curso.mapper'
         },
         {
             provide: 'CursoRepository',
-            useFactory(prismaService: PrismaService, cursoMapper: CursoMapper) {
-                return new CursoRepositoryImpl(prismaService, cursoMapper)
-            },
-            inject: ['PrismaService'],
+            useClass: CursoRepositoryImpl,
         },
         {
             provide: 'TccRepository',

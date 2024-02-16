@@ -1,4 +1,4 @@
-import { LoginDTO } from '../../application/dtos/login.dto'
+import { LoginDTO } from '../dtos/login.dto'
 import { TIPO_USUARIO } from '../Usuario'
 
 export interface LoginToken {

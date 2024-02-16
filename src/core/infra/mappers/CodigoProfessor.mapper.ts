@@ -11,11 +11,16 @@ export class CodigoProfessorMapper {
             id: domain.getId(),
             codigo: domain.getCodigo(),
             disponivel: domain.getDisponivel(),
+            professorId: domain.getProfessorId(),
         }
     }
 
     modelToDomain(model: CodigoProfessorModel): CodigoProfessor {
-        const domain = CodigoProfessor.gerar(model.codigo, model.id)
+        const domain = CodigoProfessor.criar({
+            id: model.id,
+            codigo: model.codigo,
+            professorId: model.professorId,
+        })
 
         return domain
     }

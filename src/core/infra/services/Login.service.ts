@@ -1,6 +1,6 @@
 import { Injectable, Inject, Logger } from '@nestjs/common'
 import * as jwt from 'jsonwebtoken'
-import { LoginDTO } from '../../application/dtos/login.dto'
+import { LoginDTO } from '../../domain/dtos/login.dto'
 import { UsuarioRepository } from '../../domain/repositories/Usuario.repository'
 import {
     AuthService,

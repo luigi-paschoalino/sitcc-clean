@@ -1,5 +1,5 @@
 import { Inject } from '@nestjs/common'
-import { CursoDTO } from '../dtos/Curso.dto'
+import { CursoDTO } from '../../domain/dtos/Curso.dto'
 import { CursoRepository } from '../../domain/repositories/Curso.repository'
 
 export class ListarCursosQuery {

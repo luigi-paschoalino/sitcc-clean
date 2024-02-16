@@ -22,22 +22,23 @@ model Curso {
 }
 
 model Usuario {
-  id                   String           @id @default(uuid()) @db.Uuid
-  nome                 String           @db.VarChar(255)
-  email                String           @unique @db.VarChar(255)
-  senha                String           @db.VarChar(100)
-  hashRecuperacaoSenha String?          @db.VarChar(100)
-  numero               String?          @db.VarChar(15)
-  matricula            String?          @db.VarChar(10)
-  curso                Curso            @relation(fields: [cursoId], references: [id])
+  id                   String            @id @default(uuid()) @db.Uuid
+  nome                 String            @db.VarChar(255)
+  email                String            @unique @db.VarChar(255)
+  senha                String            @db.VarChar(100)
+  hashRecuperacaoSenha String?           @db.Uuid
+  numero               String?           @db.VarChar(15)
+  matricula            String?           @db.VarChar(10)
+  curso                Curso             @relation(fields: [cursoId], references: [id])
   tipo                 TIPO_USUARIO
-  cursoId              String           @db.Uuid
+  cursoId              String            @db.Uuid
   PerfilProfessor      PerfilProfessor?
-  TfgAluno             Tfg[]            @relation(name: "AlunoRelation")
-  TfgOrientador        Tfg[]            @relation(name: "OrientadorRelation")
-  TfgCoorientador      Tfg[]            @relation(name: "CoorientadorRelation")
-  BancaPrimeiroProf    Banca[]          @relation(name: "PrimeiroProfessorRelation")
-  BancaSegundoProf     Banca[]          @relation(name: "SegundoProfessorRelation")
+  TfgAluno             Tfg[]             @relation(name: "AlunoRelation")
+  TfgOrientador        Tfg[]             @relation(name: "OrientadorRelation")
+  TfgCoorientador      Tfg[]             @relation(name: "CoorientadorRelation")
+  BancaPrimeiroProf    Banca[]           @relation(name: "PrimeiroProfessorRelation")
+  BancaSegundoProf     Banca[]           @relation(name: "SegundoProfessorRelation")
+  CodigoProfessor      CodigoProfessor[]
 
   @@map("usuarios")
 }
@@ -88,10 +89,13 @@ model PerfilProfessor {
 }
 
 model CodigoProfessor {
-  id         String  @id @default(uuid()) @db.Uuid
-  codigo     String  @unique @db.VarChar(12)
-  disponivel Boolean @default(true)
+  id          String  @id @default(uuid()) @db.Uuid
+  codigo      String  @unique @db.VarChar(12)
+  disponivel  Boolean @default(true)
+  professorId String  @db.Uuid
+  professor   Usuario @relation(fields: [professorId], references: [id])
 
+  @@unique([codigo, professorId])
   @@map("codigos_professores")
 }
 

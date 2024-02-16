@@ -7,7 +7,6 @@ export interface UsuarioResult {
     id: string
     nome: string
     email: string
-    senha: string
     curso: {
         id: string
         nome: string
@@ -15,6 +14,7 @@ export interface UsuarioResult {
     }
     tipo: TIPO_USUARIO
     numero: string
+    matricula?: string
 }
 
 @Injectable()
@@ -40,7 +40,6 @@ export class BuscarUsuarioQuery {
                 id: usuario.getId(),
                 nome: usuario.getNome(),
                 email: usuario.getEmail(),
-                senha: usuario.getSenha(),
                 curso: {
                     id: curso.getId(),
                     nome: curso.getNome(),
@@ -48,6 +47,7 @@ export class BuscarUsuarioQuery {
                 },
                 tipo: usuario.getTipo(),
                 numero: usuario.getNumero(),
+                matricula: usuario.getMatricula(),
             }
 
             return usuarioResult

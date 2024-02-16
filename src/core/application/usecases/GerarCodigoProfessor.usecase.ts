@@ -7,6 +7,11 @@ import { Inject, Logger } from '@nestjs/common'
 import { UsuarioRepository } from '../../domain/repositories/Usuario.repository'
 import { TIPO_USUARIO } from '../../domain/Usuario'
 
+export type GerarCodigoProfessorUsecaseProps = {
+    usuarioId: string
+    professorId: string
+}
+
 export class GerarCodigoProfessorUsecase {
     private logger = new Logger(GerarCodigoProfessorUsecase.name)
 
@@ -23,19 +28,38 @@ export class GerarCodigoProfessorUsecase {
         private readonly gerarCodigoService: GerarCodigoService,
     ) {}
 
-    async execute(usuarioId: string): Promise<Error | string> {
+    async execute(
+        props: GerarCodigoProfessorUsecaseProps,
+    ): Promise<Error | string> {
         try {
-            const usuario = await this.usuarioRepository.buscarPorId(usuarioId)
+            this.logger.warn(JSON.stringify(props, null, 2))
+            const usuario = await this.usuarioRepository.buscarPorId(
+                props.usuarioId,
+            )
             if (usuario instanceof Error) throw usuario
 
             if (usuario.getTipo() !== TIPO_USUARIO.ADMINISTRADOR)
                 throw new Error('Usuário não é um administrador')
 
+            if (!props.professorId)
+                throw new Error('É necessário informar o ID do professor')
+
+            const professor = await this.usuarioRepository.buscarPorId(
+                props.professorId,
+            )
+            if (professor instanceof Error) throw professor
+            // if (professor.getTipo() !== TIPO_USUARIO.PROFESSOR)
+            //     throw new Error('Usuário não é um professor')
+
             const id = this.uniqueIdService.gerarUuid()
 
             const codigo = this.gerarCodigoService.gerarCodigo()
 
-            const codigoProfessor = CodigoProfessor.gerar(codigo, id)
+            const codigoProfessor = CodigoProfessor.criar({
+                codigo,
+                id,
+                professorId: props.professorId,
+            })
 
             this.logger.debug(JSON.stringify(codigoProfessor, null, 2))
 

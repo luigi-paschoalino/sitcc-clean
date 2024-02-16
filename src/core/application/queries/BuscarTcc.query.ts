@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { Tfg } from '../../domain/Tfg'
-import { TfgDTO } from '../../application/dtos/Tcc.dto'
+import { TfgDTO } from '../../domain/dtos/Tcc.dto'
 import { InvalidPropsException } from '../../domain/exceptions/InvalidProps.exception'
 import { TccRepository } from '../../domain/repositories/Tcc.repository'
 

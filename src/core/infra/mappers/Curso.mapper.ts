@@ -1,16 +1,16 @@
-import { Curso as PrismaCurso } from '@prisma/client'
 import { Curso } from '../../domain/Curso'
 import { CursoInfraDTO } from '../../../shared/infra/database/prisma/dtos/Curso.dto'
 import { CronogramaMapper } from './Cronograma.mapper'
 import { NormaMapper } from './Norma.mapper'
+import { Injectable } from '@nestjs/common'
 
+@Injectable()
 export class CursoMapper {
     constructor(
         private readonly normaMapper: NormaMapper,
         private readonly cronogramaMapper: CronogramaMapper,
     ) {}
 
-    //TODO: Implementar o mapeamento de normas e cronogramas para o model
     domainToModel(domain: Curso): CursoInfraDTO {
         return {
             id: domain.getId(),
