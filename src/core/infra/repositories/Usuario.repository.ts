@@ -19,7 +19,7 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
             const model = await this.prismaService.usuario.findUnique({
                 where: { id },
                 include: {
-                    PerfilProfessor: {
+                    perfilProfessor: {
                         select: {
                             id: true,
                             descricao: true,
@@ -41,7 +41,6 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
 
             const usuario = this.usuarioMapper.modelToDomain({
                 ...model,
-                perfilProfessor: model.PerfilProfessor,
             })
 
             return usuario
@@ -55,7 +54,7 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
             const model = await this.prismaService.usuario.findUnique({
                 where: { email },
                 include: {
-                    PerfilProfessor: {
+                    perfilProfessor: {
                         select: {
                             id: true,
                             descricao: true,
@@ -76,7 +75,6 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
                 )
             const usuario = this.usuarioMapper.modelToDomain({
                 ...model,
-                perfilProfessor: model.PerfilProfessor,
             })
 
             return usuario
@@ -92,7 +90,7 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
                     hashRecuperacaoSenha: hash,
                 },
                 include: {
-                    PerfilProfessor: {
+                    perfilProfessor: {
                         select: {
                             id: true,
                             descricao: true,
@@ -114,7 +112,6 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
 
             const usuario = this.usuarioMapper.modelToDomain({
                 ...model,
-                perfilProfessor: model.PerfilProfessor,
             })
 
             return usuario
@@ -132,20 +129,69 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
 
             const usuarioSalvo = await this.prismaService.usuario.upsert({
                 where: { id: usuarioModel.id },
-                update: usuarioModel,
-                create: usuarioModel,
-                include: {
-                    PerfilProfessor: {
-                        select: {
-                            id: true,
-                            descricao: true,
-                            link: true,
-                            areasAtuacao: true,
-                            projetos: true,
-                            usuarioId: true,
-                        },
-                    },
+                update: {
+                    ...usuarioModel,
+                    perfilProfessor: usuarioModel.perfilProfessor
+                        ? {
+                              update: {
+                                  id: usuarioModel.perfilProfessor?.id,
+                                  areasAtuacao:
+                                      usuarioModel.perfilProfessor
+                                          ?.areasAtuacao,
+                                  descricao:
+                                      usuarioModel.perfilProfessor?.descricao,
+                                  link: usuarioModel.perfilProfessor?.link,
+                                  projetos: {
+                                      updateMany:
+                                          usuarioModel.perfilProfessor?.projetos?.map(
+                                              (projeto) => ({
+                                                  where: { id: projeto.id },
+                                                  data: {
+                                                      ...projeto,
+                                                  },
+                                              }),
+                                          ),
+                                  },
+                              },
+                          }
+                        : undefined,
                 },
+                create: {
+                    ...usuarioModel,
+                    perfilProfessor: usuarioModel.perfilProfessor
+                        ? {
+                              create: {
+                                  id: usuarioModel.perfilProfessor?.id,
+                                  descricao:
+                                      usuarioModel.perfilProfessor?.descricao,
+                                  link: usuarioModel.perfilProfessor?.link,
+                                  areasAtuacao:
+                                      usuarioModel.perfilProfessor
+                                          ?.areasAtuacao,
+                                  projetos: {
+                                      createMany: {
+                                          data: usuarioModel.perfilProfessor
+                                              ?.projetos,
+                                      },
+                                  },
+                              },
+                          }
+                        : undefined,
+                },
+                include: usuario.getPerfilProfessor()
+                    ? {
+                          perfilProfessor: {
+                              select: {
+                                  id: true,
+                                  descricao: true,
+                                  link: true,
+                                  areasAtuacao: true,
+                                  projetos: true,
+                                  usuarioId: true,
+                              },
+                          },
+                      }
+                    : undefined,
             })
 
             if (usuarioSalvo instanceof Error)
@@ -162,7 +208,7 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
             const models = await this.prismaService.usuario.findMany({
                 where: { tipo },
                 include: {
-                    PerfilProfessor: {
+                    perfilProfessor: {
                         select: {
                             id: true,
                             descricao: true,
@@ -182,7 +228,6 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
             const usuarios = models.map((model) =>
                 this.usuarioMapper.modelToDomain({
                     ...model,
-                    perfilProfessor: model.PerfilProfessor,
                 }),
             )
             return usuarios

@@ -47,13 +47,13 @@ export class Curso extends AggregateRoot {
         return instance
     }
 
-    private setNome(nome: string) {
+    private setNome(nome: string): InvalidPropsException | void {
         if (!nome)
             throw new InvalidPropsException('Nome do curso não pode ser vazio')
         this.nome = nome
     }
 
-    private setCodigo(codigo: string) {
+    private setCodigo(codigo: string): InvalidPropsException | void {
         if (!codigo)
             throw new InvalidPropsException(
                 'Código do curso não pode ser vazio',
@@ -61,7 +61,9 @@ export class Curso extends AggregateRoot {
         this.codigo = codigo
     }
 
-    private setCronogramas(cronogramas: Cronograma[]) {
+    private setCronogramas(
+        cronogramas: Cronograma[],
+    ): InvalidPropsException | void {
         if (!cronogramas)
             throw new InvalidPropsException(
                 'Cronogramas do curso não pode ser vazio',
@@ -75,6 +77,11 @@ export class Curso extends AggregateRoot {
 
     adicionarCronograma(cronograma: Cronograma) {
         this.cronogramas.push(cronograma)
+    }
+
+    editar(props: { nome?: string; codigo?: string }) {
+        if (props.nome) this.setNome(props.nome)
+        if (props.codigo) this.setCodigo(props.codigo)
     }
 
     getNome() {

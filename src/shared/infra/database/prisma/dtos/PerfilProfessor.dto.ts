@@ -4,5 +4,5 @@ import {
 } from '@prisma/client'
 
 export interface PerfilProfessorInfraDTO extends PrismaPerfilProfessor {
-    projetos: Projeto[]
+    projetos?: Projeto[]
 }

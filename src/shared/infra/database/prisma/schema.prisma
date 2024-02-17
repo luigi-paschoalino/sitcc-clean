@@ -32,13 +32,13 @@ model Usuario {
   curso                Curso             @relation(fields: [cursoId], references: [id])
   tipo                 TIPO_USUARIO
   cursoId              String            @db.Uuid
-  PerfilProfessor      PerfilProfessor?
-  TfgAluno             Tfg[]             @relation(name: "AlunoRelation")
-  TfgOrientador        Tfg[]             @relation(name: "OrientadorRelation")
-  TfgCoorientador      Tfg[]             @relation(name: "CoorientadorRelation")
-  BancaPrimeiroProf    Banca[]           @relation(name: "PrimeiroProfessorRelation")
-  BancaSegundoProf     Banca[]           @relation(name: "SegundoProfessorRelation")
-  CodigoProfessor      CodigoProfessor[]
+  perfilProfessor      PerfilProfessor?
+  tfgAluno             Tfg[]             @relation(name: "AlunoRelation")
+  tfgOrientador        Tfg[]             @relation(name: "OrientadorRelation")
+  tfgCoorientador      Tfg[]             @relation(name: "CoorientadorRelation")
+  bancaPrimeiroProf    Banca[]           @relation(name: "PrimeiroProfessorRelation")
+  bancaSegundoProf     Banca[]           @relation(name: "SegundoProfessorRelation")
+  codigoProfessor      CodigoProfessor[]
 
   @@map("usuarios")
 }
@@ -47,7 +47,7 @@ model Cronograma {
   id         String      @id @default(uuid()) @db.Uuid
   ano        Int
   semestre   SEMESTRE
-  Curso      Curso?      @relation(fields: [cursoId], references: [id])
+  curso      Curso?      @relation(fields: [cursoId], references: [id])
   cursoId    String?     @db.Uuid
   atividades Atividade[]
 
@@ -70,7 +70,7 @@ model Norma {
   titulo    String  @db.VarChar(100)
   descricao String  @db.VarChar()
   link      String  @db.VarChar(255)
-  Curso     Curso?  @relation(fields: [cursoId], references: [id])
+  curso     Curso?  @relation(fields: [cursoId], references: [id])
   cursoId   String? @db.Uuid
 
   @@map("normas")
@@ -105,7 +105,7 @@ model Projeto {
   descricao         String           @db.VarChar()
   preRequisitos     String           @db.VarChar()
   disponivel        Boolean          @default(true)
-  PerfilProfessor   PerfilProfessor? @relation(fields: [perfilProfessorId], references: [id])
+  perfilProfessor   PerfilProfessor? @relation(fields: [perfilProfessorId], references: [id])
   perfilProfessorId String?          @db.Uuid
 
   @@map("projetos")

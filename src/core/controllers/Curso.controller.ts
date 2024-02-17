@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Param, UseGuards } from '@nestjs/common'
+import {
+    Controller,
+    Get,
+    Post,
+    Body,
+    Param,
+    UseGuards,
+    Patch,
+} from '@nestjs/common'
 import {
     CadastrarCursoUsecase,
     CadastrarCursoUsecaseProps,
@@ -7,6 +15,7 @@ import { AbstractController } from './AbstractController'
 import { ListarCursosQuery } from '../application/queries/ListarCursos.query'
 import { BuscarCursoQuery } from '../application/queries/BuscarCurso.query'
 import { JwtAuthGuard } from '../../middlewares/AuthenticationMiddleware'
+import { EditarCursoUsecase } from '../application/usecases/EditarCurso.usecase'
 
 @Controller('cursos')
 export class CursoController extends AbstractController {
@@ -14,6 +23,7 @@ export class CursoController extends AbstractController {
         private readonly buscarCursoQuery: BuscarCursoQuery,
         private readonly listarCursosQuery: ListarCursosQuery,
         private readonly cadastrarCursoUsecase: CadastrarCursoUsecase,
+        private readonly editarCursoUsecase: EditarCursoUsecase,
     ) {
         super({
             RepositoryException: 500,
@@ -23,6 +33,7 @@ export class CursoController extends AbstractController {
         })
     }
 
+    @UseGuards(JwtAuthGuard)
     @Get()
     public async listCursos() {
         const result = await this.listarCursosQuery.execute()
@@ -30,6 +41,7 @@ export class CursoController extends AbstractController {
         return this.handleResponse(result)
     }
 
+    @UseGuards(JwtAuthGuard)
     @Get(':id')
     public async getCurso(@Param('id') id: string) {
         const result = await this.buscarCursoQuery.execute({
@@ -41,11 +53,20 @@ export class CursoController extends AbstractController {
 
     @Post()
     @UseGuards(JwtAuthGuard)
-    public async cadastrarCurso(@Body() request: CadastrarCursoUsecaseProps) {
-        const result = await this.cadastrarCursoUsecase.execute(request)
+    public async cadastrarCurso(@Body() body: CadastrarCursoUsecaseProps) {
+        const result = await this.cadastrarCursoUsecase.execute(body)
 
         return this.handleResponse(result)
     }
 
     //TODO: rota para editar curso
+    @Patch(':id')
+    public async editarCurso(@Param('id') id: string, @Body() body: any) {
+        const result = await this.editarCursoUsecase.execute({
+            id,
+            ...body,
+        })
+
+        return this.handleResponse(result)
+    }
 }

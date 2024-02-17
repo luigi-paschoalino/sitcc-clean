@@ -8,6 +8,7 @@ import { CadastrarBancaUsecase } from './CadastrarBanca.usecase'
 import { CadastrarCursoUsecase } from './CadastrarCurso.usecase'
 import { CadastrarTccUsecase } from './CadastrarTcc.usecase'
 import { CadastrarUsuarioUseCase } from './CadastrarUsuario.usecase'
+import { EditarCursoUsecase } from './EditarCurso.usecase'
 import { EnviarTccParcialUsecase } from './EnviarTccParcial.usecase'
 import { GerarCodigoProfessorUsecase } from './GerarCodigoProfessor.usecase'
 import { RecuperarSenhaUsecase } from './RecuperarSenha.usecase'
@@ -28,6 +29,7 @@ const UseCases = [
     AvaliarNotaParcialUsecase,
     AvaliarNotaFinalUsecase,
     ValidarTokenUsecase,
+    EditarCursoUsecase,
 ]
 
 export default UseCases
