@@ -13,7 +13,7 @@ import {
     UseGuards,
 } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
-import { BuscarTccQuery } from '../application/queries/BuscarTcc.query'
+import { BuscarTccQuery } from '../application/queries/BuscarTfg.query'
 import {
     CadastrarTfgUsecase,
     CadastrarTfgUsecaseProps,

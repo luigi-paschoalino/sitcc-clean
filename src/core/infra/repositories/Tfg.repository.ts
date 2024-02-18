@@ -3,7 +3,7 @@ import { TfgRepository } from '../../domain/repositories/Tfg.repository'
 import { Tfg } from '../../domain/Tfg'
 import { RepositoryException } from '../../domain/exceptions/Repository.exception'
 import { RepositoryDataNotFoundException } from '../../domain/exceptions/RepositoryDataNotFound.exception'
-import { TccMapper } from '../mappers/Tcc.mapper'
+import { TfgMapper } from '../mappers/Tfg.mapper'
 import { PrismaService } from '../../../shared/infra/database/prisma/prisma.service'
 
 @Injectable()
@@ -11,7 +11,7 @@ export class TfgRepositoryImpl implements TfgRepository {
     constructor(
         @Inject('PrismaService')
         private readonly prismaService: PrismaService,
-        private readonly tccMapper: TccMapper,
+        private readonly tccMapper: TfgMapper,
     ) {}
 
     async buscarTfg(id: string): Promise<Error | Tfg> {
