@@ -1,12 +1,12 @@
-import { TIPO_USUARIO, Usuario } from '../../domain/Usuario'
-import { UsuarioRepository } from '../../domain/repositories/Usuario.repository'
-import { UniqueIdService } from '../../domain/services/UniqueID.service'
+import { TIPO_USUARIO, Usuario } from '../../../domain/Usuario'
+import { UsuarioRepository } from '../../../domain/repositories/Usuario.repository'
+import { UniqueIdService } from '../../../domain/services/UniqueID.service'
 import { Inject, Logger } from '@nestjs/common'
-import { EventPublisherService } from '../../domain/services/EventPublisher.service'
-import { EncriptarSenhaService } from '../../domain/services/EncriptarSenha.service'
-import { InvalidPropsException } from '../../domain/exceptions/InvalidProps.exception'
-import { CodigoProfessorRepository } from '../../domain/repositories/CodigoProfessor.repository'
-import { CursoRepository } from '../../domain/repositories/Curso.repository'
+import { EventPublisherService } from '../../../domain/services/EventPublisher.service'
+import { EncriptarSenhaService } from '../../../domain/services/EncriptarSenha.service'
+import { InvalidPropsException } from '../../../domain/exceptions/InvalidProps.exception'
+import { CodigoProfessorRepository } from '../../../domain/repositories/CodigoProfessor.repository'
+import { CursoRepository } from '../../../domain/repositories/Curso.repository'
 
 export interface CadastrarUsuarioUsecaseProps {
     nome: string

@@ -1,18 +1,18 @@
 import { Inject, Logger } from '@nestjs/common'
-import { TccRepository } from '../../domain/repositories/Tcc.repository'
+import { TfgRepository } from '../../../domain/repositories/Tfg.repository'
 
 export class BaixarTccUsecase {
     private logger = new Logger(BaixarTccUsecase.name)
 
     constructor(
-        @Inject('TccRepository') private readonly tccRepository: TccRepository,
+        @Inject('TfgRepository') private readonly tccRepository: TfgRepository,
     ) {}
 
     async execute(id: string): Promise<Error | string> {
         try {
             this.logger.log(`Baixando TCC de id: ${id}`)
 
-            const tcc = await this.tccRepository.buscarTcc(id)
+            const tcc = await this.tccRepository.buscarTfg(id)
 
             if (tcc instanceof Error) {
                 throw tcc

@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common'
-import { TccRepository } from '../../domain/repositories/Tcc.repository'
+import { TfgRepository } from '../../domain/repositories/Tfg.repository'
 import { Tfg } from '../../domain/Tfg'
 import { RepositoryException } from '../../domain/exceptions/Repository.exception'
 import { RepositoryDataNotFoundException } from '../../domain/exceptions/RepositoryDataNotFound.exception'
@@ -7,14 +7,14 @@ import { TccMapper } from '../mappers/Tcc.mapper'
 import { PrismaService } from '../../../shared/infra/database/prisma/prisma.service'
 
 @Injectable()
-export class TccRepositoryImpl implements TccRepository {
+export class TfgRepositoryImpl implements TfgRepository {
     constructor(
         @Inject('PrismaService')
         private readonly prismaService: PrismaService,
         private readonly tccMapper: TccMapper,
     ) {}
 
-    async buscarTcc(id: string): Promise<Error | Tfg> {
+    async buscarTfg(id: string): Promise<Error | Tfg> {
         try {
             const model = await this.prismaService.tfg.findUnique({
                 where: {
@@ -38,7 +38,7 @@ export class TccRepositoryImpl implements TccRepository {
         }
     }
 
-    async salvarTcc(tcc: Tfg): Promise<Error | void> {
+    async salvarTfg(tcc: Tfg): Promise<Error | void> {
         try {
             const model = this.tccMapper.domainToModel(tcc)
 

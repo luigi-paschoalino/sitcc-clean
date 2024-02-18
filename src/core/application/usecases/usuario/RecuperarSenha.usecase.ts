@@ -1,7 +1,7 @@
 import { Inject, Logger } from '@nestjs/common'
-import { UsuarioRepository } from '../../domain/repositories/Usuario.repository'
-import { EventPublisherService } from '../../domain/services/EventPublisher.service'
-import { UniqueIdService } from '../../domain/services/UniqueID.service'
+import { UsuarioRepository } from '../../../domain/repositories/Usuario.repository'
+import { EventPublisherService } from '../../../domain/services/EventPublisher.service'
+import { UniqueIdService } from '../../../domain/services/UniqueID.service'
 
 export interface RecuperarSenhaUsecaseProps {
     email: string

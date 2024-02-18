@@ -1,16 +1,16 @@
 import { AggregateRoot } from '@nestjs/cqrs'
-import { TccCadastradoEvent } from './events/TccCadastrado.event'
+import { TfgCadastradoEvent } from './events/TfgCadastrado.event'
 import { Banca } from './Banca'
 import { TIPO_USUARIO, Usuario } from './Usuario'
 import { UsuarioException } from './exceptions/Usuario.exception'
-import { TccOrientacaoAprovadaEvent } from './events/TccOrientacaoAprovada.event'
-import { TccOrientacaoReprovadaEvent } from './events/TccOrientacaoReprovada.event'
+import { TfgOrientacaoAprovadaEvent } from './events/TfgOrientacaoAprovada.event'
+import { TfgOrientacaoReprovadaEvent } from './events/TfgOrientacaoReprovada.event'
 import { InvalidPropsException } from './exceptions/InvalidProps.exception'
-import { TccNotaParcialAvaliadaEvent } from './events/TccNotaParcialAvaliada.event'
-import { TccNotaFinalAvaliadaEvent } from './events/TccNotaFinalEvent.event'
+import { TfgNotaParcialAvaliadaEvent } from './events/TfgNotaParcialAvaliada.event'
+import { TfgNotaFinalAvaliadaEvent } from './events/TfgNotaFinalEvent.event'
 import { BancaAdicionadaEvent } from './events/BancaAdicionada.event'
-import { TccEnviadoEvent } from './events/TccEnviado.event'
-import { TIPO_ENTREGA } from './services/MoverTcc.service'
+import { TfgEnviadoEvent } from './events/TfgEnviado.event'
+import { TIPO_ENTREGA } from './services/MoverTfg.service'
 
 export enum STATUS_TFG {
     MATRICULA_REALIZADA = 'MATRICULA_REALIZADA',
@@ -22,7 +22,7 @@ export enum STATUS_TFG {
     REPROVADO = 'REPROVADO',
 }
 
-export interface CriarTccProps {
+export interface CriarTfgProps {
     aluno: Usuario
     orientador: Usuario
     coorientador?: Usuario
@@ -35,7 +35,7 @@ export interface CriarTccProps {
     resultados?: string
 }
 
-export interface CarregarTccProps {
+export interface CarregarTfgProps {
     aluno: string
     orientador: string
     coorientador?: string
@@ -76,7 +76,7 @@ export class Tfg extends AggregateRoot {
         this.id = id
     }
 
-    static criar(props: CriarTccProps, id: string): Error | Tfg {
+    static criar(props: CriarTfgProps, id: string): Error | Tfg {
         const tcc = new Tfg(id)
 
         tcc.setStatus(STATUS_TFG.MATRICULA_REALIZADA)
@@ -85,7 +85,7 @@ export class Tfg extends AggregateRoot {
         tcc.setCoorientador(props.coorientador)
 
         tcc.apply(
-            new TccCadastradoEvent({
+            new TfgCadastradoEvent({
                 id: tcc.id,
                 titulo: tcc.titulo,
             }),
@@ -93,7 +93,7 @@ export class Tfg extends AggregateRoot {
         return tcc
     }
 
-    static carregar(props: CarregarTccProps, id: string): Tfg {
+    static carregar(props: CarregarTfgProps, id: string): Tfg {
         const tcc = new Tfg(id)
 
         tcc.status = props.status
@@ -315,7 +315,7 @@ export class Tfg extends AggregateRoot {
                 )
             this.setStatus(STATUS_TFG.ORIENTACAO_ACEITA)
             this.apply(
-                new TccOrientacaoAprovadaEvent({
+                new TfgOrientacaoAprovadaEvent({
                     id: this.id,
                     alunoId: this.alunoId,
                     orientadorId: this.orientadorId,
@@ -328,7 +328,7 @@ export class Tfg extends AggregateRoot {
                 )
             this.setStatus(STATUS_TFG.ORIENTACAO_RECUSADA)
             this.apply(
-                new TccOrientacaoReprovadaEvent({
+                new TfgOrientacaoReprovadaEvent({
                     id: this.id,
                     alunoId: this.alunoId,
                     orientadorId: this.orientadorId,
@@ -346,7 +346,7 @@ export class Tfg extends AggregateRoot {
 
         this.setNotaParcial(nota)
 
-        new TccNotaParcialAvaliadaEvent({
+        new TfgNotaParcialAvaliadaEvent({
             tccId: this.id,
             nota: nota,
         })
@@ -366,13 +366,13 @@ export class Tfg extends AggregateRoot {
 
         banca.avaliarNotaTcc(notaApresentacao, notaTrabalho)
 
-        new TccNotaFinalAvaliadaEvent({
+        new TfgNotaFinalAvaliadaEvent({
             bancaId: banca.getId(),
-            tccId: this.id,
+            tfgId: this.id,
         })
     }
 
-    public enviarTcc(path: string, tipoEntrega: TIPO_ENTREGA): Error | void {
+    public enviarTfg(path: string, tipoEntrega: TIPO_ENTREGA): Error | void {
         if (!path.trim()) {
             throw new Error('Caminho do arquivo não informado')
         }
@@ -381,8 +381,8 @@ export class Tfg extends AggregateRoot {
         this.setStatus(STATUS_TFG.ENTREGA_PARCIAL)
 
         this.apply(
-            new TccEnviadoEvent({
-                tccId: this.id,
+            new TfgEnviadoEvent({
+                tfgId: this.id,
                 path: path,
                 tipoEntrega,
             }),

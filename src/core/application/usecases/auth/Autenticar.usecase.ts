@@ -1,5 +1,5 @@
 import { Inject } from '@nestjs/common'
-import { AuthService, LoginToken } from '../../domain/services/Login.service'
+import { AuthService, LoginToken } from '../../../domain/services/Login.service'
 
 export interface AutenticarUsecaseProps {
     email: string

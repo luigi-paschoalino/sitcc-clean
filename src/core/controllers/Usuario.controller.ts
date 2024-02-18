@@ -1,7 +1,7 @@
 import {
     CadastrarUsuarioUseCase,
     CadastrarUsuarioUsecaseProps,
-} from '../application/usecases/CadastrarUsuario.usecase'
+} from '../application/usecases/usuario/CadastrarUsuario.usecase'
 import {
     Controller,
     Get,
@@ -16,11 +16,11 @@ import { BuscarUsuarioQuery } from '../application/queries/BuscarUsuario.query'
 import {
     RecuperarSenhaUsecase,
     RecuperarSenhaUsecaseProps,
-} from '../application/usecases/RecuperarSenha.usecase'
+} from '../application/usecases/usuario/RecuperarSenha.usecase'
 import {
     AlterarSenhaUsecase,
     AlterarSenhaUsecaseProps,
-} from '../application/usecases/AlterarSenha.usecase'
+} from '../application/usecases/usuario/AlterarSenha.usecase'
 import { JwtAuthGuard } from 'src/middlewares/AuthenticationMiddleware'
 import { ListarProfessoresQuery } from '../application/queries/ListarProfessores.query'
 import { BuscarUsuarioHashQuery } from '../application/queries/BuscarUsuarioHash.query'

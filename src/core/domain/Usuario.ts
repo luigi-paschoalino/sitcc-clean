@@ -161,7 +161,7 @@ export class Usuario extends AggregateRoot {
         this.numero = numero
     }
 
-    setPerfilProfessor(perfilProfessor: PerfilProfessor) {
+    public setPerfilProfessor(perfilProfessor: PerfilProfessor) {
         if (this.getTipo() === TIPO_USUARIO.PROFESSOR)
             this.perfilProfessor = perfilProfessor
     }

@@ -1,20 +1,20 @@
 import { Inject } from '@nestjs/common'
-import { TccRepository } from '../../domain/repositories/Tcc.repository'
-import { UsuarioRepository } from '../../domain/repositories/Usuario.repository'
-import { TIPO_USUARIO } from '../../domain/Usuario'
-import { UsuarioException } from '../../domain/exceptions/Usuario.exception'
-import { EventPublisherService } from '../../domain/services/EventPublisher.service'
+import { TfgRepository } from '../../../domain/repositories/Tfg.repository'
+import { UsuarioRepository } from '../../../domain/repositories/Usuario.repository'
+import { TIPO_USUARIO } from '../../../domain/Usuario'
+import { UsuarioException } from '../../../domain/exceptions/Usuario.exception'
+import { EventPublisherService } from '../../../domain/services/EventPublisher.service'
 
 export interface AvaliarOrientacaoUsecaseProps {
     professorId: string
-    tccId: string
+    tfgId: string
     status: boolean
     justificativa?: string
 }
 
 export class AvaliarOrientacaoUsecase {
     constructor(
-        @Inject('TccRepository') private readonly tccRepository: TccRepository,
+        @Inject('TfgRepository') private readonly tfgRepository: TfgRepository,
         @Inject('UsuarioRepository')
         private readonly usuarioRepository: UsuarioRepository,
         @Inject('EventPublisherService')
@@ -30,7 +30,7 @@ export class AvaliarOrientacaoUsecase {
             if (professor.getTipo() !== TIPO_USUARIO.PROFESSOR)
                 throw new UsuarioException('Usuário não é um professor')
 
-            const tcc = await this.tccRepository.buscarTcc(props.tccId)
+            const tcc = await this.tfgRepository.buscarTfg(props.tfgId)
             if (tcc instanceof Error) throw tcc
 
             const avaliar = tcc.avaliarOrientacao(
@@ -40,7 +40,7 @@ export class AvaliarOrientacaoUsecase {
             )
             if (avaliar instanceof Error) throw avaliar
 
-            const salvar = this.tccRepository.salvarTcc(tcc)
+            const salvar = this.tfgRepository.salvarTfg(tcc)
             if (salvar instanceof Error) throw salvar
 
             await this.publisher.publish(tcc)

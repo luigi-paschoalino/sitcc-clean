@@ -1,21 +1,21 @@
 import {
-    MoverTccService,
-    MoverTccServiceProps,
-} from '../../domain/services/MoverTcc.service'
+    MoverTfgService,
+    MoverTfgServiceProps,
+} from '../../domain/services/MoverTfg.service'
 import * as path from 'path'
 import * as fs from 'fs'
 
-export class MoverTccServiceImpl implements MoverTccService {
+export class MoverTfgServiceImpl implements MoverTfgService {
     constructor(private readonly TCC_FINAL_PATH: string) {}
 
-    async execute(props: MoverTccServiceProps): Promise<Error | string> {
+    async execute(props: MoverTfgServiceProps): Promise<Error | string> {
         try {
             const tccFinalPath = path.join(
-                this.TCC_FINAL_PATH.replace('$tfgId', props.tccId).replace(
+                this.TCC_FINAL_PATH.replace('$tfgId', props.tfgId).replace(
                     '$tfgEntrega',
                     props.tipoEntrega,
                 ),
-                props.tccId + '.pdf',
+                props.tfgId + '.pdf',
             )
 
             if (!fs.existsSync(path.dirname(tccFinalPath)))

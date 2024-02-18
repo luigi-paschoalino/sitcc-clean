@@ -1,5 +1,5 @@
 import { Inject } from '@nestjs/common'
-import { AuthService, Validation } from '../../domain/services/Login.service'
+import { AuthService, Validation } from '../../../domain/services/Login.service'
 
 export interface ValidarTokenUsecaseProps {
     token: string

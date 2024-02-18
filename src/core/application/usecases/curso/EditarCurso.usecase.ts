@@ -1,5 +1,5 @@
 import { Inject, Logger } from '@nestjs/common'
-import { CursoRepository } from '../../domain/repositories/Curso.repository'
+import { CursoRepository } from '../../../domain/repositories/Curso.repository'
 
 export interface EditarCursoUsecaseProps {
     id: string

@@ -15,44 +15,44 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express'
 import { BuscarTccQuery } from '../application/queries/BuscarTcc.query'
 import {
-    CadastrarTccUsecase,
-    CadastrarTccUsecaseProps,
-} from '../application/usecases/CadastrarTcc.usecase'
+    CadastrarTfgUsecase,
+    CadastrarTfgUsecaseProps,
+} from '../application/usecases/tfg/CadastrarTfg.usecase'
 import { Tfg } from '../domain/Tfg'
 import { AbstractController } from './AbstractController'
 import {
     AvaliarOrientacaoUsecase,
     AvaliarOrientacaoUsecaseProps,
-} from '../application/usecases/AvaliarOrientacao.usecase'
+} from '../application/usecases/tfg/AvaliarOrientacao.usecase'
 import {
     CadastrarBancaUsecase,
     CadastrarBancaUsecaseProps,
-} from '../application/usecases/CadastrarBanca.usecase'
+} from '../application/usecases/tfg/CadastrarBanca.usecase'
 import {
-    EnviarTccParcialUsecase,
-    EnviarTccParcialUsecaseProps,
-} from '../application/usecases/EnviarTccParcial.usecase'
+    EnviarTfgParcialUsecase,
+    EnviarTfgParcialUsecaseProps,
+} from '../application/usecases/tfg/EnviarTfgParcial.usecase'
 import { Response } from 'express'
-import { BaixarTccUsecase } from '../application/usecases/BaixarTcc.usecase'
+import { BaixarTccUsecase } from '../application/usecases/tfg/BaixarTfg.usecase'
 import { JwtAuthGuard } from 'src/middlewares/AuthenticationMiddleware'
 import {
     AvaliarNotaParcialUsecase,
     AvaliarNotaParcialUsecaseProps,
-} from '../application/usecases/AvaliarNotaParcial.usecase'
+} from '../application/usecases/tfg/AvaliarNotaParcial.usecase'
 import {
     AvaliarNotaFinalUsecase,
     AvaliarNotaFinalUsecaseProps,
-} from '../application/usecases/AvaliarNotaFinal.usecase'
+} from '../application/usecases/tfg/AvaliarNotaFinal.usecase'
 import { TokenInterceptor } from '../../middlewares/TokenCaptureMiddleware'
 
 @Controller('tcc')
 export class TccController extends AbstractController {
     constructor(
         private readonly buscarTccQuery: BuscarTccQuery,
-        private readonly cadastrarTccUsecase: CadastrarTccUsecase,
+        private readonly cadastrarTccUsecase: CadastrarTfgUsecase,
         private readonly avaliarOrientacaoUsecase: AvaliarOrientacaoUsecase,
         private readonly cadastrarBancaUsecase: CadastrarBancaUsecase,
-        private readonly enviarTccParcialUsecase: EnviarTccParcialUsecase,
+        private readonly enviarTfgParcialUsecase: EnviarTfgParcialUsecase,
         private readonly baixarTccUsecase: BaixarTccUsecase,
         private readonly avaliarNotaParcial: AvaliarNotaParcialUsecase,
         private readonly avaliarNotaFinal: AvaliarNotaFinalUsecase,
@@ -78,7 +78,7 @@ export class TccController extends AbstractController {
     @UseInterceptors(TokenInterceptor)
     public async postTcc(
         @Req() req: any,
-        @Body() body: CadastrarTccUsecaseProps,
+        @Body() body: CadastrarTfgUsecaseProps,
     ): Promise<void> {
         const result = await this.cadastrarTccUsecase.execute({
             ...body,
@@ -96,7 +96,7 @@ export class TccController extends AbstractController {
     ) {
         const result = await this.avaliarOrientacaoUsecase.execute({
             ...body,
-            tccId: id,
+            tfgId: id,
         })
 
         return this.handleResponse(result)
@@ -155,12 +155,12 @@ export class TccController extends AbstractController {
     public async enviarTccParcial(
         @Param('id') id: string,
         @UploadedFile() file: Express.Multer.File,
-        @Body() body: EnviarTccParcialUsecaseProps,
+        @Body() body: EnviarTfgParcialUsecaseProps,
     ) {
-        const result = await this.enviarTccParcialUsecase.execute({
+        const result = await this.enviarTfgParcialUsecase.execute({
             usuarioId: body.usuarioId, // TODO: pegar o usuário logado
             titulo: body.titulo,
-            tccId: id,
+            tfgId: id,
             path: file.path,
         })
 

@@ -1,21 +1,21 @@
-import { AlterarSenhaUsecase } from './AlterarSenha.usecase'
-import { AutenticarUsecase } from './Autenticar.usecase'
-import { AvaliarNotaFinalUsecase } from './AvaliarNotaFinal.usecase'
-import { AvaliarNotaParcialUsecase } from './AvaliarNotaParcial.usecase'
-import { AvaliarOrientacaoUsecase } from './AvaliarOrientacao.usecase'
-import { BaixarTccUsecase } from './BaixarTcc.usecase'
-import { CadastrarBancaUsecase } from './CadastrarBanca.usecase'
-import { CadastrarCursoUsecase } from './CadastrarCurso.usecase'
-import { CadastrarTccUsecase } from './CadastrarTcc.usecase'
-import { CadastrarUsuarioUseCase } from './CadastrarUsuario.usecase'
-import { EditarCursoUsecase } from './EditarCurso.usecase'
-import { EnviarTccParcialUsecase } from './EnviarTccParcial.usecase'
-import { GerarCodigoProfessorUsecase } from './GerarCodigoProfessor.usecase'
-import { RecuperarSenhaUsecase } from './RecuperarSenha.usecase'
-import { ValidarTokenUsecase } from './ValidarToken.usecase'
+import { AlterarSenhaUsecase } from './usuario/AlterarSenha.usecase'
+import { AutenticarUsecase } from './auth/Autenticar.usecase'
+import { AvaliarNotaFinalUsecase } from './tfg/AvaliarNotaFinal.usecase'
+import { AvaliarNotaParcialUsecase } from './tfg/AvaliarNotaParcial.usecase'
+import { AvaliarOrientacaoUsecase } from './tfg/AvaliarOrientacao.usecase'
+import { BaixarTccUsecase } from './tfg/BaixarTfg.usecase'
+import { CadastrarBancaUsecase } from './tfg/CadastrarBanca.usecase'
+import { CadastrarCursoUsecase } from './curso/CadastrarCurso.usecase'
+import { CadastrarTfgUsecase } from './tfg/CadastrarTfg.usecase'
+import { CadastrarUsuarioUseCase } from './usuario/CadastrarUsuario.usecase'
+import { EditarCursoUsecase } from './curso/EditarCurso.usecase'
+import { EnviarTfgParcialUsecase } from './tfg/EnviarTfgParcial.usecase'
+import { GerarCodigoProfessorUsecase } from './codigoProfessor/GerarCodigoProfessor.usecase'
+import { RecuperarSenhaUsecase } from './usuario/RecuperarSenha.usecase'
+import { ValidarTokenUsecase } from './auth/ValidarToken.usecase'
 
 const UseCases = [
-    CadastrarTccUsecase,
+    CadastrarTfgUsecase,
     CadastrarUsuarioUseCase,
     CadastrarCursoUsecase,
     AutenticarUsecase,
@@ -24,7 +24,7 @@ const UseCases = [
     RecuperarSenhaUsecase,
     AlterarSenhaUsecase,
     GerarCodigoProfessorUsecase,
-    EnviarTccParcialUsecase,
+    EnviarTfgParcialUsecase,
     BaixarTccUsecase,
     AvaliarNotaParcialUsecase,
     AvaliarNotaFinalUsecase,

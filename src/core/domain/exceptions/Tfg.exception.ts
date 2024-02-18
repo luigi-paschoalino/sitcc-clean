@@ -1,8 +1,8 @@
 import { Exception } from './Exception'
 
-export class TccException extends Exception {
+export class TfgException extends Exception {
     constructor(message: string) {
         super(message)
-        this.name = TccException.name
+        this.name = TfgException.name
     }
 }

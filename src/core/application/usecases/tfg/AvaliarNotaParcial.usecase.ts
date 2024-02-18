@@ -1,10 +1,10 @@
 import { Inject, Logger } from '@nestjs/common'
-import { TccRepository } from '../../domain/repositories/Tcc.repository'
-import { UsuarioRepository } from '../../domain/repositories/Usuario.repository'
+import { TfgRepository } from '../../../domain/repositories/Tfg.repository'
+import { UsuarioRepository } from '../../../domain/repositories/Usuario.repository'
 import { EventPublisher } from '@nestjs/cqrs'
 import { TIPO_USUARIO } from 'src/core/domain/Usuario'
 import { UsuarioException } from 'src/core/domain/exceptions/Usuario.exception'
-import { EventPublisherService } from '../../domain/services/EventPublisher.service'
+import { EventPublisherService } from '../../../domain/services/EventPublisher.service'
 
 export interface AvaliarNotaParcialUsecaseProps {
     professorId: string
@@ -15,7 +15,7 @@ export interface AvaliarNotaParcialUsecaseProps {
 export class AvaliarNotaParcialUsecase {
     private logger = new Logger(AvaliarNotaParcialUsecase.name)
     constructor(
-        @Inject('TccRepository') private readonly tccRepository: TccRepository,
+        @Inject('TfgRepository') private readonly tccRepository: TfgRepository,
         @Inject('UsuarioRepository')
         private readonly usuarioRepository: UsuarioRepository,
         @Inject('EventPublisherService')
@@ -36,7 +36,7 @@ export class AvaliarNotaParcialUsecase {
             if (professor.getTipo() !== TIPO_USUARIO.PROFESSOR)
                 throw new UsuarioException('Usuário não é um professor')
 
-            const tcc = await this.tccRepository.buscarTcc(props.tccId)
+            const tcc = await this.tccRepository.buscarTfg(props.tccId)
             if (tcc instanceof Error) throw tcc
 
             const aplicar_nota = tcc.avaliarNotaParcial(
@@ -45,7 +45,7 @@ export class AvaliarNotaParcialUsecase {
             )
             if (aplicar_nota instanceof Error) throw aplicar_nota
 
-            const salvar = await this.tccRepository.salvarTcc(tcc)
+            const salvar = await this.tccRepository.salvarTfg(tcc)
             if (salvar instanceof Error) throw salvar
 
             await this.publisher.publish(tcc)

@@ -10,12 +10,12 @@ import {
 import {
     CadastrarCursoUsecase,
     CadastrarCursoUsecaseProps,
-} from '../application/usecases/CadastrarCurso.usecase'
+} from '../application/usecases/curso/CadastrarCurso.usecase'
 import { AbstractController } from './AbstractController'
 import { ListarCursosQuery } from '../application/queries/ListarCursos.query'
 import { BuscarCursoQuery } from '../application/queries/BuscarCurso.query'
 import { JwtAuthGuard } from '../../middlewares/AuthenticationMiddleware'
-import { EditarCursoUsecase } from '../application/usecases/EditarCurso.usecase'
+import { EditarCursoUsecase } from '../application/usecases/curso/EditarCurso.usecase'
 
 @Controller('cursos')
 export class CursoController extends AbstractController {

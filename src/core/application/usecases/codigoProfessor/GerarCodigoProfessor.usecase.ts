@@ -1,11 +1,11 @@
-import { CodigoProfessor } from '../../domain/CodigoProfessor'
-import { EventPublisherService } from '../../domain/services/EventPublisher.service'
-import { GerarCodigoService } from '../../domain/services/GerarCodigo.service'
-import { UniqueIdService } from '../../domain/services/UniqueID.service'
-import { CodigoProfessorRepository } from '../../domain/repositories/CodigoProfessor.repository'
+import { CodigoProfessor } from '../../../domain/CodigoProfessor'
+import { EventPublisherService } from '../../../domain/services/EventPublisher.service'
+import { GerarCodigoService } from '../../../domain/services/GerarCodigo.service'
+import { UniqueIdService } from '../../../domain/services/UniqueID.service'
+import { CodigoProfessorRepository } from '../../../domain/repositories/CodigoProfessor.repository'
 import { Inject, Logger } from '@nestjs/common'
-import { UsuarioRepository } from '../../domain/repositories/Usuario.repository'
-import { TIPO_USUARIO } from '../../domain/Usuario'
+import { UsuarioRepository } from '../../../domain/repositories/Usuario.repository'
+import { TIPO_USUARIO } from '../../../domain/Usuario'
 
 export type GerarCodigoProfessorUsecaseProps = {
     usuarioId: string

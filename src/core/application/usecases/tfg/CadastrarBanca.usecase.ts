@@ -1,9 +1,9 @@
 import { Inject, Logger } from '@nestjs/common'
 import { EventPublisher } from '@nestjs/cqrs'
 import { Banca } from 'src/core/domain/Banca'
-import { TccRepository } from 'src/core/domain/repositories/Tcc.repository'
+import { TfgRepository } from 'src/core/domain/repositories/Tfg.repository'
 import { UniqueIdService } from 'src/core/domain/services/UniqueID.service'
-import { EventPublisherService } from '../../domain/services/EventPublisher.service'
+import { EventPublisherService } from '../../../domain/services/EventPublisher.service'
 
 export interface CadastrarBancaUsecaseProps {
     professorId: string
@@ -20,8 +20,8 @@ export class CadastrarBancaUsecase {
         private readonly publisher: EventPublisherService,
         @Inject('UniqueIdService')
         private readonly uniqueIdService: UniqueIdService,
-        @Inject('TccRepository')
-        private readonly tccRepository: TccRepository,
+        @Inject('TfgRepository')
+        private readonly tccRepository: TfgRepository,
     ) {}
 
     async execute(props: CadastrarBancaUsecaseProps): Promise<Error | void> {
@@ -43,7 +43,7 @@ export class CadastrarBancaUsecase {
                 throw banca
             }
 
-            const tcc = await this.tccRepository.buscarTcc(props.tccId)
+            const tcc = await this.tccRepository.buscarTfg(props.tccId)
 
             if (tcc instanceof Error) {
                 throw tcc
@@ -55,7 +55,7 @@ export class CadastrarBancaUsecase {
 
             this.logger.debug(JSON.stringify(tcc, null, 2))
 
-            const salvar = await this.tccRepository.salvarTcc(tcc)
+            const salvar = await this.tccRepository.salvarTfg(tcc)
 
             if (salvar instanceof Error) {
                 throw salvar
