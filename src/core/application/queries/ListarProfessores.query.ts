@@ -15,7 +15,6 @@ export class ListarProfessoresQuery {
                 TIPO_USUARIO.PROFESSOR,
             )
             if (professores instanceof Error) throw professores
-            console.log(professores)
 
             const professoresDTO: ProfessoresDTO[] = professores.map(
                 (professor) => {

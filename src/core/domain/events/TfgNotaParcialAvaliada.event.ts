@@ -1,7 +1,7 @@
 import { AbstractEvent } from './AbstractEvent'
 
 export interface TfgNotaParcialAvaliadaEventProps {
-    tccId: string
+    tfgId: string
     nota: number
 }
 

@@ -3,31 +3,31 @@ import { TfgDTO } from '../../domain/dtos/Tfg.dto'
 import { TfgRepository } from '../../domain/repositories/Tfg.repository'
 
 @Injectable()
-export class BuscarTccQuery {
+export class BuscarTfgQuery {
     constructor(
         @Inject('TfgRepository')
-        private readonly tccRepository: TfgRepository,
+        private readonly tfgRepository: TfgRepository,
     ) {}
 
     async execute(id: string): Promise<Error | TfgDTO> {
         try {
-            const tcc = await this.tccRepository.buscarTfg(id)
-            if (tcc instanceof Error) throw tcc
+            const tfg = await this.tfgRepository.buscarTfg(id)
+            if (tfg instanceof Error) throw tfg
 
-            const tccResult: TfgDTO = {
-                id: tcc.getId(),
-                titulo: tcc.getTitulo(),
-                palavrasChave: tcc.getPalavrasChave(),
-                introducao: tcc.getIntroducao(),
-                objetivos: tcc.getObjetivos(),
-                bibliografia: tcc.getBibliografia(),
-                metodologia: tcc.getMetodologia(),
-                resultados: tcc.getResultados(),
-                notaParcial: tcc.getNotaParcial(),
-                notaFinal: tcc.getNotaFinal(),
+            const tfgResult: TfgDTO = {
+                id: tfg.getId(),
+                titulo: tfg.getTitulo(),
+                palavrasChave: tfg.getPalavrasChave(),
+                introducao: tfg.getIntroducao(),
+                objetivos: tfg.getObjetivos(),
+                bibliografia: tfg.getBibliografia(),
+                metodologia: tfg.getDescricaoMetodologia(),
+                resultados: tfg.getResultados(),
+                notaParcial: tfg.getNotaParcial(),
+                notaFinal: tfg.getNotaFinal(),
             }
 
-            return tccResult
+            return tfgResult
         } catch (error) {
             return error
         }

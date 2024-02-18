@@ -1,7 +1,7 @@
 import { AbstractEvent } from './AbstractEvent'
 
 export interface BancaAdicionadaEventProps {
-    tccId: string
+    tfgId: string
     bancaId: string
 }
 

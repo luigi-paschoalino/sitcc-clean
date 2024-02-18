@@ -90,7 +90,7 @@ export class Banca {
         return this.versao
     }
 
-    avaliarNotaTcc(
+    avaliarNotaTfg(
         notaApresentacao: number,
         notaTrabalho: number,
     ): Error | void {

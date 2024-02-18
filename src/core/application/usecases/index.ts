@@ -3,7 +3,7 @@ import { AutenticarUsecase } from './auth/Autenticar.usecase'
 import { AvaliarNotaFinalUsecase } from './tfg/AvaliarNotaFinal.usecase'
 import { AvaliarNotaParcialUsecase } from './tfg/AvaliarNotaParcial.usecase'
 import { AvaliarOrientacaoUsecase } from './tfg/AvaliarOrientacao.usecase'
-import { BaixarTccUsecase } from './tfg/BaixarTfg.usecase'
+import { BaixarTfgUsecase } from './tfg/BaixarTfg.usecase'
 import { CadastrarBancaUsecase } from './tfg/CadastrarBanca.usecase'
 import { CadastrarCursoUsecase } from './curso/CadastrarCurso.usecase'
 import { CadastrarTfgUsecase } from './tfg/CadastrarTfg.usecase'
@@ -25,7 +25,7 @@ const UseCases = [
     AlterarSenhaUsecase,
     GerarCodigoProfessorUsecase,
     EnviarTfgParcialUsecase,
-    BaixarTccUsecase,
+    BaixarTfgUsecase,
     AvaliarNotaParcialUsecase,
     AvaliarNotaFinalUsecase,
     ValidarTokenUsecase,

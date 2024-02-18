@@ -18,7 +18,7 @@ export class CursoMapper {
             codigo: domain.getCodigo(),
             cronogramas: domain
                 .getCronogramas()
-                .map((cronograma) =>
+                ?.map((cronograma) =>
                     this.cronogramaMapper.domainToModel(
                         cronograma,
                         domain.getId(),
@@ -26,7 +26,7 @@ export class CursoMapper {
                 ),
             normas: domain
                 .getNormas()
-                .map((norma) =>
+                ?.map((norma) =>
                     this.normaMapper.domainToModel(norma, domain.getId()),
                 ),
         }

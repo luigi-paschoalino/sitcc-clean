@@ -26,27 +26,31 @@ export interface CriarTfgProps {
     aluno: Usuario
     orientador: Usuario
     coorientador?: Usuario
-    titulo?: string
-    palavrasChave?: string
-    introducao?: string
-    objetivos?: string
-    bibliografia?: string
-    metodologia?: string
-    resultados?: string
+    titulo: string
+    palavrasChave: string
+    introducao: string
+    objetivos: string
+    bibliografia: string
+    metodoPesquisa: string
+    tecnicaPesquisa: string
+    descricaoMetodologia: string
+    resultadosEsperados: string
 }
 
 export interface CarregarTfgProps {
     aluno: string
     orientador: string
     coorientador?: string
-    titulo?: string
-    palavrasChave?: string
-    introducao?: string
-    objetivos?: string
-    bibliografia?: string
-    metodologia?: string
-    resultados?: string
-    status?: STATUS_TFG
+    titulo: string
+    palavrasChave: string
+    introducao: string
+    objetivos: string
+    bibliografia: string
+    metodoPesquisa: string
+    tecnicaPesquisa: string
+    descricaoMetodologia: string
+    resultadosEsperados: string
+    status: STATUS_TFG
     notaParcial?: number
     notaFinal?: number
     banca?: Banca[]
@@ -59,13 +63,15 @@ export class Tfg extends AggregateRoot {
     private orientadorId: string
     private coorientadorId?: string
     private status: STATUS_TFG
-    private titulo?: string
-    private palavrasChave?: string
-    private introducao?: string
-    private objetivos?: string
-    private bibliografia?: string
-    private metodologia?: string
-    private resultados?: string
+    private titulo: string
+    private palavrasChave: string
+    private introducao: string
+    private objetivos: string
+    private bibliografia: string
+    private metodoPesquisa: string
+    private tecnicaPesquisa: string
+    private descricaoMetodologia: string
+    private resultadosEsperados: string
     private notaParcial?: number
     private notaFinal?: number
     private banca?: Banca[]
@@ -77,43 +83,59 @@ export class Tfg extends AggregateRoot {
     }
 
     static criar(props: CriarTfgProps, id: string): Error | Tfg {
-        const tcc = new Tfg(id)
+        const tfg = new Tfg(id)
 
-        tcc.setStatus(STATUS_TFG.MATRICULA_REALIZADA)
-        tcc.setAluno(props.aluno)
-        tcc.setOrientador(props.orientador)
-        tcc.setCoorientador(props.coorientador)
+        if (props.coorientador && props.coorientador === props.orientador)
+            throw new InvalidPropsException(
+                'O coorientador não pode ser o mesmo que o orientador',
+            )
 
-        tcc.apply(
+        tfg.setStatus(STATUS_TFG.MATRICULA_REALIZADA)
+        tfg.setAluno(props.aluno)
+        tfg.setOrientador(props.orientador)
+        tfg.setCoorientador(props.coorientador)
+        tfg.setTitulo(props.titulo)
+        tfg.setPalavrasChave(props.palavrasChave)
+        tfg.setIntroducao(props.introducao)
+        tfg.setObjetivos(props.objetivos)
+        tfg.setBibliografia(props.bibliografia)
+        tfg.setMetodoPesquisa(props.metodoPesquisa)
+        tfg.setTecnicaPesquisa(props.tecnicaPesquisa)
+        tfg.setDescricaoMetodologia(props.descricaoMetodologia)
+        tfg.setResultados(props.resultadosEsperados)
+
+        tfg.apply(
             new TfgCadastradoEvent({
-                id: tcc.id,
-                titulo: tcc.titulo,
+                id: tfg.id,
+                titulo: tfg.titulo,
             }),
         )
-        return tcc
+        return tfg
     }
 
     static carregar(props: CarregarTfgProps, id: string): Tfg {
-        const tcc = new Tfg(id)
+        const tfg = new Tfg(id)
 
-        tcc.status = props.status
-        tcc.titulo = props.titulo
-        tcc.palavrasChave = props.palavrasChave
-        tcc.introducao = props.introducao
-        tcc.objetivos = props.objetivos
-        tcc.bibliografia = props.bibliografia
-        tcc.metodologia = props.metodologia
-        tcc.resultados = props.resultados
-        tcc.notaParcial = props.notaParcial
-        tcc.notaFinal = props.notaFinal
-        tcc.banca = props.banca
-        tcc.path = props.path
+        tfg.status = props.status
+        tfg.titulo = props.titulo
+        tfg.palavrasChave = props.palavrasChave
+        tfg.introducao = props.introducao
+        tfg.objetivos = props.objetivos
+        tfg.bibliografia = props.bibliografia
+        tfg.metodoPesquisa = props.metodoPesquisa
+        tfg.tecnicaPesquisa = props.tecnicaPesquisa
+        tfg.descricaoMetodologia = props.descricaoMetodologia
+        tfg.resultadosEsperados = props.resultadosEsperados
+        tfg.notaParcial = props.notaParcial
+        tfg.notaFinal = props.notaFinal
+        tfg.banca = props.banca
+        tfg.path = props.path
 
-        tcc.alunoId = props.aluno
-        tcc.orientadorId = props.orientador
-        tcc.coorientadorId = props.coorientador
+        tfg.alunoId = props.aluno
+        tfg.orientadorId = props.orientador
+        tfg.coorientadorId = props.coorientador
 
-        return tcc
+        return tfg
     }
 
     public getId(): string {
@@ -156,12 +178,20 @@ export class Tfg extends AggregateRoot {
         return this.bibliografia
     }
 
-    public getMetodologia(): string {
-        return this.metodologia
+    public getMetodoPesquisa(): string {
+        return this.metodoPesquisa
+    }
+
+    public getTecnicaPesquisa(): string {
+        return this.tecnicaPesquisa
+    }
+
+    public getDescricaoMetodologia(): string {
+        return this.descricaoMetodologia
     }
 
     public getResultados(): string {
-        return this.resultados
+        return this.resultadosEsperados
     }
 
     public getNotaParcial(): number {
@@ -204,12 +234,20 @@ export class Tfg extends AggregateRoot {
         this.bibliografia = bibliografia
     }
 
-    private setMetodologia(metodologia: string): void {
-        this.metodologia = metodologia
+    private setMetodoPesquisa(metodo: string): void {
+        this.metodoPesquisa = metodo
+    }
+
+    private setTecnicaPesquisa(tecnica: string): void {
+        this.tecnicaPesquisa = tecnica
+    }
+
+    private setDescricaoMetodologia(descricao: string): void {
+        this.descricaoMetodologia = descricao
     }
 
     private setResultados(resultados: string): void {
-        this.resultados = resultados
+        this.resultadosEsperados = resultados
     }
 
     private setAluno(aluno: Usuario): Error | void {
@@ -271,7 +309,7 @@ export class Tfg extends AggregateRoot {
         this.notaFinal = notaFinal
     }
 
-    // TODO: adicionar evento TccBancaAtribuidaEvent
+    // TODO: adicionar evento TfgBancaAtribuidaEvent
     public atribuirBanca(banca: Banca): void {
         try {
             if (!this.banca) this.banca = []
@@ -282,14 +320,14 @@ export class Tfg extends AggregateRoot {
                 )
             )
                 throw new UsuarioException(
-                    'Este professor já esta avaliando este TCC',
+                    'Este professor já esta avaliando este TFG',
                 )
 
             this.banca.push(banca)
 
             this.apply(
                 new BancaAdicionadaEvent({
-                    tccId: this.id,
+                    tfgId: this.id,
                     bancaId: banca.getId(),
                 }),
             )
@@ -305,7 +343,7 @@ export class Tfg extends AggregateRoot {
     ): Error | void {
         if (professorId !== this.orientadorId)
             throw new UsuarioException(
-                'O professor que está avaliando não é orientador deste TCC',
+                'O professor que está avaliando não é orientador deste TFG',
             )
 
         if (status) {
@@ -341,13 +379,13 @@ export class Tfg extends AggregateRoot {
     public avaliarNotaParcial(professorId: string, nota: number): Error | void {
         if (professorId !== this.orientadorId)
             throw new UsuarioException(
-                'O professor que está avaliando não é orientador deste TCC',
+                'O professor que está avaliando não é orientador deste TFG',
             )
 
         this.setNotaParcial(nota)
 
         new TfgNotaParcialAvaliadaEvent({
-            tccId: this.id,
+            tfgId: this.id,
             nota: nota,
         })
     }
@@ -361,10 +399,10 @@ export class Tfg extends AggregateRoot {
 
         if (!banca)
             throw new UsuarioException(
-                'Professor informado não possui registro na banca deste TCC',
+                'Professor informado não possui registro na banca deste TFG',
             )
 
-        banca.avaliarNotaTcc(notaApresentacao, notaTrabalho)
+        banca.avaliarNotaTfg(notaApresentacao, notaTrabalho)
 
         new TfgNotaFinalAvaliadaEvent({
             bancaId: banca.getId(),
@@ -401,8 +439,10 @@ export class Tfg extends AggregateRoot {
             introducao: this.introducao,
             objetivos: this.objetivos,
             bibliografia: this.bibliografia,
-            metodologia: this.metodologia,
-            resultados: this.resultados,
+            metodoPesquisa: this.metodoPesquisa,
+            tecnicaPesquisa: this.tecnicaPesquisa,
+            descricaoMetodologia: this.descricaoMetodologia,
+            resultados: this.resultadosEsperados,
             notaParcial: this.notaParcial,
             notaFinal: this.notaFinal,
             banca: this.banca,

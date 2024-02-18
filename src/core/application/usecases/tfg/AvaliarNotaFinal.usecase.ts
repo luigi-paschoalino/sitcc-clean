@@ -7,7 +7,7 @@ import { EventPublisherService } from '../../../domain/services/EventPublisher.s
 
 export interface AvaliarNotaFinalUsecaseProps {
     id: string
-    tccId: string
+    tfgId: string
     notaApresentacao: number
     notaTrabalho: number
 }
@@ -29,20 +29,20 @@ export class AvaliarNotaFinalUsecase {
             if (professor.getTipo() !== TIPO_USUARIO.PROFESSOR)
                 throw new UsuarioException('Usuário não é um professor')
 
-            const tcc = await this.tccRepository.buscarTfg(props.tccId)
-            if (tcc instanceof Error) throw tcc
+            const tfg = await this.tccRepository.buscarTfg(props.tfgId)
+            if (tfg instanceof Error) throw tfg
 
-            const aplicar_nota = tcc.avaliarNotaFinalBanca(
+            const aplicar_nota = tfg.avaliarNotaFinalBanca(
                 props.id,
                 props.notaApresentacao,
                 props.notaTrabalho,
             )
             if (aplicar_nota instanceof Error) throw aplicar_nota
 
-            const salvar = await this.tccRepository.salvarTfg(tcc)
+            const salvar = await this.tccRepository.salvarTfg(tfg)
             if (salvar instanceof Error) throw salvar
 
-            await this.publisher.publish(tcc)
+            await this.publisher.publish(tfg)
         } catch (error) {
             return error
         }

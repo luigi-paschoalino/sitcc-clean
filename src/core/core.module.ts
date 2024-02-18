@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common'
-import { TccController } from './controllers/Tfg.controller'
+import { TfgController } from './controllers/Tfg.controller'
 import { CursoController } from './controllers/Curso.controller'
 import { UsuarioController } from './controllers/Usuario.controller'
 import { CqrsModule } from '@nestjs/cqrs'
@@ -52,7 +52,7 @@ import DTOMappers from './application/mappers'
         }),
     ],
     controllers: [
-        TccController,
+        TfgController,
         CursoController,
         UsuarioController,
         AuthController,

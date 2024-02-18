@@ -11,7 +11,7 @@ export class TfgRepositoryImpl implements TfgRepository {
     constructor(
         @Inject('PrismaService')
         private readonly prismaService: PrismaService,
-        private readonly tccMapper: TfgMapper,
+        private readonly tfgMapper: TfgMapper,
     ) {}
 
     async buscarTfg(id: string): Promise<Error | Tfg> {
@@ -29,18 +29,18 @@ export class TfgRepositoryImpl implements TfgRepository {
                 throw new RepositoryException(model.stack)
             else if (!model)
                 throw new RepositoryDataNotFoundException(
-                    `TCC com ID ${id} não existe!`,
+                    `TFG com ID ${id} não existe!`,
                 )
-            const tcc = this.tccMapper.modelToDomain(model)
-            return tcc
+            const tfg = this.tfgMapper.modelToDomain(model)
+            return tfg
         } catch (error) {
             return error
         }
     }
 
-    async salvarTfg(tcc: Tfg): Promise<Error | void> {
+    async salvarTfg(tfg: Tfg): Promise<Error | void> {
         try {
-            const model = this.tccMapper.domainToModel(tcc)
+            const model = this.tfgMapper.domainToModel(tfg)
 
             await this.prismaService.tfg.upsert({
                 where: {
@@ -49,7 +49,7 @@ export class TfgRepositoryImpl implements TfgRepository {
                 update: {
                     ...model,
                     banca: {
-                        upsert: model.banca.map((banca) => ({
+                        upsert: model.banca?.map((banca) => ({
                             where: {
                                 id: banca.id,
                             },
@@ -62,7 +62,7 @@ export class TfgRepositoryImpl implements TfgRepository {
                     ...model,
                     banca: {
                         create: model.banca
-                            .filter((n) => !n.id)
+                            ?.filter((n) => !n.id)
                             .map((banca) => ({
                                 professorId: banca.professorId,
                                 segundoProfessorId: banca.segundoProfessorId,

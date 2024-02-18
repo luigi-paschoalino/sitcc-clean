@@ -10,6 +10,15 @@ export interface CadastrarTfgUsecaseProps {
     aluno: string
     orientador: string
     coorientador?: string
+    titulo: string
+    palavrasChave: string
+    introducao: string
+    objetivos: string
+    bibliografia: string
+    metodoPesquisa: string
+    tecnicaPesquisa: string
+    descricaoMetodologia: string
+    resultadosEsperados: string
 }
 
 export class CadastrarTfgUsecase {
@@ -21,7 +30,7 @@ export class CadastrarTfgUsecase {
         @Inject('UniqueIdService')
         private readonly uniqueIdService: UniqueIdService,
         @Inject('TfgRepository')
-        private readonly tccRepository: TfgRepository,
+        private readonly tfgRepository: TfgRepository,
         @Inject('UsuarioRepository')
         private readonly usuarioRepository: UsuarioRepository,
     ) {}
@@ -33,13 +42,6 @@ export class CadastrarTfgUsecase {
 
             const aluno = await this.usuarioRepository.buscarPorId(props.aluno)
             if (aluno instanceof Error) throw aluno
-
-            this.logger.debug(aluno)
-
-            if (props.orientador === props.coorientador)
-                throw new Error(
-                    'Orientador e coorientador não podem ser iguais',
-                )
 
             const orientador = await this.usuarioRepository.buscarPorId(
                 props.orientador,
@@ -56,21 +58,30 @@ export class CadastrarTfgUsecase {
                 coorientador = busca
             }
 
-            const tcc = Tfg.criar(
+            const tfg = Tfg.criar(
                 {
                     aluno: aluno,
                     orientador: orientador,
                     coorientador: coorientador ?? null,
+                    titulo: props.titulo,
+                    palavrasChave: props.palavrasChave,
+                    introducao: props.introducao,
+                    objetivos: props.objetivos,
+                    bibliografia: props.bibliografia,
+                    metodoPesquisa: props.metodoPesquisa,
+                    tecnicaPesquisa: props.tecnicaPesquisa,
+                    descricaoMetodologia: props.descricaoMetodologia,
+                    resultadosEsperados: props.resultadosEsperados,
                 },
                 uuid,
             )
 
-            if (tcc instanceof Error) throw tcc
+            if (tfg instanceof Error) throw tfg
 
-            const salvar = await this.tccRepository.salvarTfg(tcc)
+            const salvar = await this.tfgRepository.salvarTfg(tfg)
             if (salvar instanceof Error) throw salvar
 
-            await this.publisher.publish(tcc)
+            await this.publisher.publish(tfg)
         } catch (error) {
             return error
         }

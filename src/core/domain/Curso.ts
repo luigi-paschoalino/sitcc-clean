@@ -29,8 +29,8 @@ export class Curso extends AggregateRoot {
     }
 
     //TODO: criar função pra gerar UUID por conta
-    static criar(props: CriarCursoProps): Curso {
-        const instance = new Curso('')
+    static criar(props: CriarCursoProps, id: string): Curso {
+        const instance = new Curso(id)
         instance.setNome(props.nome)
         instance.setCodigo(props.codigo)
 

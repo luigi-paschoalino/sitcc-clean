@@ -8,14 +8,14 @@ import { EventPublisherService } from '../../../domain/services/EventPublisher.s
 
 export interface AvaliarNotaParcialUsecaseProps {
     professorId: string
-    tccId: string
+    tfgId: string
     nota: number
 }
 
 export class AvaliarNotaParcialUsecase {
     private logger = new Logger(AvaliarNotaParcialUsecase.name)
     constructor(
-        @Inject('TfgRepository') private readonly tccRepository: TfgRepository,
+        @Inject('TfgRepository') private readonly tfgRepository: TfgRepository,
         @Inject('UsuarioRepository')
         private readonly usuarioRepository: UsuarioRepository,
         @Inject('EventPublisherService')
@@ -36,19 +36,19 @@ export class AvaliarNotaParcialUsecase {
             if (professor.getTipo() !== TIPO_USUARIO.PROFESSOR)
                 throw new UsuarioException('Usuário não é um professor')
 
-            const tcc = await this.tccRepository.buscarTfg(props.tccId)
-            if (tcc instanceof Error) throw tcc
+            const tfg = await this.tfgRepository.buscarTfg(props.tfgId)
+            if (tfg instanceof Error) throw tfg
 
-            const aplicar_nota = tcc.avaliarNotaParcial(
+            const aplicar_nota = tfg.avaliarNotaParcial(
                 props.professorId,
                 props.nota,
             )
             if (aplicar_nota instanceof Error) throw aplicar_nota
 
-            const salvar = await this.tccRepository.salvarTfg(tcc)
+            const salvar = await this.tfgRepository.salvarTfg(tfg)
             if (salvar instanceof Error) throw salvar
 
-            await this.publisher.publish(tcc)
+            await this.publisher.publish(tfg)
         } catch (error) {
             return error
         }

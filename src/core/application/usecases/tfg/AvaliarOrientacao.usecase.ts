@@ -30,20 +30,20 @@ export class AvaliarOrientacaoUsecase {
             if (professor.getTipo() !== TIPO_USUARIO.PROFESSOR)
                 throw new UsuarioException('Usuário não é um professor')
 
-            const tcc = await this.tfgRepository.buscarTfg(props.tfgId)
-            if (tcc instanceof Error) throw tcc
+            const tfg = await this.tfgRepository.buscarTfg(props.tfgId)
+            if (tfg instanceof Error) throw tfg
 
-            const avaliar = tcc.avaliarOrientacao(
+            const avaliar = tfg.avaliarOrientacao(
                 professor.getId(),
                 props.status,
                 props.justificativa,
             )
             if (avaliar instanceof Error) throw avaliar
 
-            const salvar = this.tfgRepository.salvarTfg(tcc)
+            const salvar = this.tfgRepository.salvarTfg(tfg)
             if (salvar instanceof Error) throw salvar
 
-            await this.publisher.publish(tcc)
+            await this.publisher.publish(tfg)
         } catch (error) {
             return error
         }

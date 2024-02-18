@@ -21,7 +21,7 @@ import {
     AlterarSenhaUsecase,
     AlterarSenhaUsecaseProps,
 } from '../application/usecases/usuario/AlterarSenha.usecase'
-import { JwtAuthGuard } from 'src/middlewares/AuthenticationMiddleware'
+import { JwtAuthGuard } from 'src/shared/middlewares/AuthenticationMiddleware'
 import { ListarProfessoresQuery } from '../application/queries/ListarProfessores.query'
 import { BuscarUsuarioHashQuery } from '../application/queries/BuscarUsuarioHash.query'
 

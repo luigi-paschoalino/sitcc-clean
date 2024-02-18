@@ -9,7 +9,7 @@ export interface CadastrarBancaUsecaseProps {
     professorId: string
     segundoProfessorId: string
     dia_hora: Date
-    tccId: string
+    tfgId: string
 }
 
 export class CadastrarBancaUsecase {
@@ -21,7 +21,7 @@ export class CadastrarBancaUsecase {
         @Inject('UniqueIdService')
         private readonly uniqueIdService: UniqueIdService,
         @Inject('TfgRepository')
-        private readonly tccRepository: TfgRepository,
+        private readonly tfgRepository: TfgRepository,
     ) {}
 
     async execute(props: CadastrarBancaUsecaseProps): Promise<Error | void> {
@@ -43,25 +43,25 @@ export class CadastrarBancaUsecase {
                 throw banca
             }
 
-            const tcc = await this.tccRepository.buscarTfg(props.tccId)
+            const tfg = await this.tfgRepository.buscarTfg(props.tfgId)
 
-            if (tcc instanceof Error) {
-                throw tcc
+            if (tfg instanceof Error) {
+                throw tfg
             }
 
-            this.logger.debug(JSON.stringify(tcc, null, 2))
+            this.logger.debug(JSON.stringify(tfg, null, 2))
 
-            tcc.atribuirBanca(banca)
+            tfg.atribuirBanca(banca)
 
-            this.logger.debug(JSON.stringify(tcc, null, 2))
+            this.logger.debug(JSON.stringify(tfg, null, 2))
 
-            const salvar = await this.tccRepository.salvarTfg(tcc)
+            const salvar = await this.tfgRepository.salvarTfg(tfg)
 
             if (salvar instanceof Error) {
                 throw salvar
             }
 
-            await this.publisher.publish(tcc)
+            await this.publisher.publish(tfg)
         } catch (error) {
             return error
         }

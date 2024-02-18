@@ -16,8 +16,6 @@ export class TokenInterceptor implements NestInterceptor {
     intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
         const request = context.switchToHttp().getRequest()
 
-        console.log(request.headers)
-
         const token = request.headers.authorization
         if (!token) {
             throw new BadRequestException(
@@ -35,8 +33,6 @@ export class TokenInterceptor implements NestInterceptor {
 
                     const id = response.data.id
                     request.body.id = id
-
-                    console.log(request.body)
 
                     return next.handle()
                 }),

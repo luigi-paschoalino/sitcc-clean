@@ -1,24 +1,24 @@
 import { Inject, Logger } from '@nestjs/common'
 import { TfgRepository } from '../../../domain/repositories/Tfg.repository'
 
-export class BaixarTccUsecase {
-    private logger = new Logger(BaixarTccUsecase.name)
+export class BaixarTfgUsecase {
+    private logger = new Logger(BaixarTfgUsecase.name)
 
     constructor(
-        @Inject('TfgRepository') private readonly tccRepository: TfgRepository,
+        @Inject('TfgRepository') private readonly tfgRepository: TfgRepository,
     ) {}
 
     async execute(id: string): Promise<Error | string> {
         try {
-            this.logger.log(`Baixando TCC de id: ${id}`)
+            this.logger.log(`Baixando TFG de id: ${id}`)
 
-            const tcc = await this.tccRepository.buscarTfg(id)
+            const tfg = await this.tfgRepository.buscarTfg(id)
 
-            if (tcc instanceof Error) {
-                throw tcc
+            if (tfg instanceof Error) {
+                throw tfg
             }
 
-            return tcc.getPath()
+            return tfg.getPath()
         } catch (error) {
             return error
         }

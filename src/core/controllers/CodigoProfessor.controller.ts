@@ -1,7 +1,7 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common'
 import { AbstractController } from './AbstractController'
 import { GerarCodigoProfessorUsecase } from '../application/usecases/codigoProfessor/GerarCodigoProfessor.usecase'
-import { JwtAuthGuard } from '../../middlewares/AuthenticationMiddleware'
+import { JwtAuthGuard } from '../../shared/middlewares/AuthenticationMiddleware'
 
 @Controller('codigo')
 export class CodigoProfessorController extends AbstractController {

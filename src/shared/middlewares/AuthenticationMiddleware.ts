@@ -17,6 +17,7 @@ const secretToken = process.env.SECRET_TOKEN
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
     private logger = new Logger(JwtAuthGuard.name)
+    // TODO: tirar o token do header e colocar no bearer
     canActivate(
         context: ExecutionContext,
     ): boolean | Promise<boolean> | Observable<boolean> {
@@ -31,11 +32,10 @@ export class JwtAuthGuard implements CanActivate {
         }
 
         try {
-            jwt.verify(token, secretToken)
+            request.user = jwt.verify(token, secretToken)
+            return true
         } catch (err) {
-            throw new ForbiddenException()
+            throw new ForbiddenException(null, 'Token inválido ou expirado')
         }
-
-        return true
     }
 }

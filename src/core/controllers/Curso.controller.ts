@@ -14,8 +14,11 @@ import {
 import { AbstractController } from './AbstractController'
 import { ListarCursosQuery } from '../application/queries/ListarCursos.query'
 import { BuscarCursoQuery } from '../application/queries/BuscarCurso.query'
-import { JwtAuthGuard } from '../../middlewares/AuthenticationMiddleware'
-import { EditarCursoUsecase } from '../application/usecases/curso/EditarCurso.usecase'
+import { JwtAuthGuard } from '../../shared/middlewares/AuthenticationMiddleware'
+import {
+    EditarCursoUsecase,
+    EditarCursoUsecaseProps,
+} from '../application/usecases/curso/EditarCurso.usecase'
 
 @Controller('cursos')
 export class CursoController extends AbstractController {
@@ -61,7 +64,11 @@ export class CursoController extends AbstractController {
 
     //TODO: rota para editar curso
     @Patch(':id')
-    public async editarCurso(@Param('id') id: string, @Body() body: any) {
+    @UseGuards(JwtAuthGuard)
+    public async editarCurso(
+        @Param('id') id: string,
+        @Body() body: EditarCursoUsecaseProps,
+    ) {
         const result = await this.editarCursoUsecase.execute({
             id,
             ...body,

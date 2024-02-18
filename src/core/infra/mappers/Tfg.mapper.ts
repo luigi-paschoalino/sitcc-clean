@@ -17,17 +17,23 @@ export class TfgMapper {
             bibliografia: tfg.getBibliografia(),
             palavrasChave: tfg.getPalavrasChave(),
             introducao: tfg.getIntroducao(),
-            metodologia: tfg.getMetodologia(),
+            metodoPesquisa: tfg.getMetodoPesquisa(),
+            tecnicaPesquisa: tfg.getTecnicaPesquisa(),
+            descricaoMetodologia: tfg.getDescricaoMetodologia(),
             objetivos: tfg.getObjetivos(),
             resultados: tfg.getResultados(),
             titulo: tfg.getTitulo(),
             status: tfg.getStatus(),
-            notaFinal: new Prisma.Decimal(tfg.getNotaFinal()),
-            notaParcial: new Prisma.Decimal(tfg.getNotaParcial()),
+            notaFinal: tfg.getNotaFinal()
+                ? new Prisma.Decimal(tfg.getNotaFinal())
+                : null,
+            notaParcial: tfg.getNotaParcial()
+                ? new Prisma.Decimal(tfg.getNotaParcial())
+                : null,
             path: tfg.getPath(),
             banca: tfg
                 .getBanca()
-                .map((banca) =>
+                ?.map((banca) =>
                     this.bancaMapper.domainToModel(banca, tfg.getId()),
                 ),
         }
@@ -39,12 +45,14 @@ export class TfgMapper {
                 bibliografia: tfgModel.bibliografia,
                 titulo: tfgModel.titulo,
                 introducao: tfgModel.introducao,
-                metodologia: tfgModel.metodologia,
+                metodoPesquisa: tfgModel.metodoPesquisa,
+                tecnicaPesquisa: tfgModel.tecnicaPesquisa,
+                descricaoMetodologia: tfgModel.descricaoMetodologia,
                 notaFinal: Number(tfgModel.notaFinal),
                 notaParcial: Number(tfgModel.notaParcial),
                 objetivos: tfgModel.objetivos,
                 palavrasChave: tfgModel.palavrasChave,
-                resultados: tfgModel.resultados,
+                resultadosEsperados: tfgModel.resultados,
                 status: tfgModel.status as STATUS_TFG,
                 aluno: tfgModel.alunoId,
                 orientador: tfgModel.orientadorId,

@@ -19,7 +19,7 @@ export class CursoRepositoryImpl implements CursoRepository {
             const model = await this.prismaService.curso.findUnique({
                 where: { id },
                 include: {
-                    cronograma: {
+                    cronogramas: {
                         select: {
                             id: true,
                             ano: true,
@@ -49,7 +49,7 @@ export class CursoRepositoryImpl implements CursoRepository {
             const model = await this.prismaService.curso.findUnique({
                 where: { nome },
                 include: {
-                    cronograma: {
+                    cronogramas: {
                         select: {
                             id: true,
                             ano: true,
@@ -75,6 +75,37 @@ export class CursoRepositoryImpl implements CursoRepository {
         }
     }
 
+    async buscarPorCodigo(codigo: string): Promise<Error | Curso> {
+        try {
+            const model = await this.prismaService.curso.findUnique({
+                where: { codigo },
+                include: {
+                    cronogramas: {
+                        select: {
+                            id: true,
+                            ano: true,
+                            semestre: true,
+                            atividades: true,
+                            cursoId: true,
+                        },
+                    },
+                    normas: true,
+                },
+            })
+
+            if (!model)
+                throw new RepositoryDataNotFoundException(
+                    `Não foi possível encontrar um curso com o código '${codigo}'`,
+                )
+
+            const curso = this.cursoMapper.modelToDomain(model)
+
+            return curso
+        } catch (error) {
+            return error
+        }
+    }
+
     async listarCursos(ids?: string[]): Promise<Error | Curso[]> {
         try {
             const filter = {}
@@ -84,7 +115,7 @@ export class CursoRepositoryImpl implements CursoRepository {
             const models = await this.prismaService.curso.findMany({
                 where: filter,
                 include: {
-                    cronograma: {
+                    cronogramas: {
                         select: {
                             id: true,
                             ano: true,
@@ -120,36 +151,104 @@ export class CursoRepositoryImpl implements CursoRepository {
                 where: { id: model.id },
                 create: {
                     ...model,
-                    normas: {
-                        create: model.normas
-                            .filter((n) => !n.id)
-                            .map((norma) => ({
-                                titulo: norma.titulo,
-                                descricao: norma.descricao,
-                                link: norma.link,
-                            })),
-                    },
+                    normas: model.normas
+                        ? {
+                              create: model.normas
+                                  .filter((n) => !n.id)
+                                  .map((norma) => ({
+                                      titulo: norma.titulo,
+                                      descricao: norma.descricao,
+                                      link: norma.link,
+                                  })),
+                          }
+                        : undefined,
+                    cronogramas: model.cronogramas
+                        ? {
+                              create: model.cronogramas
+                                  .filter((c) => !c.id)
+                                  .map((cronogramas) => ({
+                                      ano: cronogramas.ano,
+                                      semestre: cronogramas.semestre,
+                                      atividades: {
+                                          create: cronogramas.atividades.map(
+                                              (atividade) => ({
+                                                  titulo: atividade.titulo,
+                                                  descricao:
+                                                      atividade.descricao,
+                                                  data: atividade.data,
+                                              }),
+                                          ),
+                                      },
+                                  })),
+                          }
+                        : undefined,
                 },
                 update: {
                     ...model,
-                    normas: {
-                        upsert: model.normas.map((norma) => ({
-                            where: { id: norma.id },
-                            create: {
-                                titulo: norma.titulo,
-                                descricao: norma.descricao,
-                                link: norma.link,
-                            },
-                            update: {
-                                titulo: norma.titulo,
-                                descricao: norma.descricao,
-                                link: norma.link,
-                            },
-                        })),
-                    },
+                    normas: model.normas
+                        ? {
+                              upsert: model.normas.map((norma) => ({
+                                  where: { id: norma.id },
+                                  create: {
+                                      titulo: norma.titulo,
+                                      descricao: norma.descricao,
+                                      link: norma.link,
+                                  },
+                                  update: {
+                                      titulo: norma.titulo,
+                                      descricao: norma.descricao,
+                                      link: norma.link,
+                                  },
+                              })),
+                          }
+                        : undefined,
+                    cronogramas: model.cronogramas
+                        ? {
+                              upsert: model.cronogramas.map((cronogramas) => ({
+                                  where: { id: cronogramas.id },
+                                  create: {
+                                      ano: cronogramas.ano,
+                                      semestre: cronogramas.semestre,
+                                      atividades: {
+                                          create: cronogramas.atividades.map(
+                                              (atividade) => ({
+                                                  titulo: atividade.titulo,
+                                                  descricao:
+                                                      atividade.descricao,
+                                                  data: atividade.data,
+                                              }),
+                                          ),
+                                      },
+                                  },
+                                  update: {
+                                      ano: cronogramas.ano,
+                                      semestre: cronogramas.semestre,
+                                      atividades: {
+                                          upsert: cronogramas.atividades.map(
+                                              (atividade) => ({
+                                                  where: { id: atividade.id },
+                                                  create: {
+                                                      titulo: atividade.titulo,
+                                                      descricao:
+                                                          atividade.descricao,
+                                                      data: atividade.data,
+                                                  },
+                                                  update: {
+                                                      titulo: atividade.titulo,
+                                                      descricao:
+                                                          atividade.descricao,
+                                                      data: atividade.data,
+                                                  },
+                                              }),
+                                          ),
+                                      },
+                                  },
+                              })),
+                          }
+                        : undefined,
                 },
                 include: {
-                    cronograma: true,
+                    cronogramas: true,
                     normas: true,
                 },
             })

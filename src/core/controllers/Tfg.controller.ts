@@ -13,7 +13,7 @@ import {
     UseGuards,
 } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
-import { BuscarTccQuery } from '../application/queries/BuscarTfg.query'
+import { BuscarTfgQuery } from '../application/queries/BuscarTfg.query'
 import {
     CadastrarTfgUsecase,
     CadastrarTfgUsecaseProps,
@@ -33,8 +33,8 @@ import {
     EnviarTfgParcialUsecaseProps,
 } from '../application/usecases/tfg/EnviarTfgParcial.usecase'
 import { Response } from 'express'
-import { BaixarTccUsecase } from '../application/usecases/tfg/BaixarTfg.usecase'
-import { JwtAuthGuard } from 'src/middlewares/AuthenticationMiddleware'
+import { BaixarTfgUsecase } from '../application/usecases/tfg/BaixarTfg.usecase'
+import { JwtAuthGuard } from 'src/shared/middlewares/AuthenticationMiddleware'
 import {
     AvaliarNotaParcialUsecase,
     AvaliarNotaParcialUsecaseProps,
@@ -43,17 +43,16 @@ import {
     AvaliarNotaFinalUsecase,
     AvaliarNotaFinalUsecaseProps,
 } from '../application/usecases/tfg/AvaliarNotaFinal.usecase'
-import { TokenInterceptor } from '../../middlewares/TokenCaptureMiddleware'
 
-@Controller('tcc')
-export class TccController extends AbstractController {
+@Controller('tfg')
+export class TfgController extends AbstractController {
     constructor(
-        private readonly buscarTccQuery: BuscarTccQuery,
-        private readonly cadastrarTccUsecase: CadastrarTfgUsecase,
+        private readonly buscarTfgQuery: BuscarTfgQuery,
+        private readonly cadastrarTfgUsecase: CadastrarTfgUsecase,
         private readonly avaliarOrientacaoUsecase: AvaliarOrientacaoUsecase,
         private readonly cadastrarBancaUsecase: CadastrarBancaUsecase,
         private readonly enviarTfgParcialUsecase: EnviarTfgParcialUsecase,
-        private readonly baixarTccUsecase: BaixarTccUsecase,
+        private readonly baixarTfgUsecase: BaixarTfgUsecase,
         private readonly avaliarNotaParcial: AvaliarNotaParcialUsecase,
         private readonly avaliarNotaFinal: AvaliarNotaFinalUsecase,
     ) {
@@ -66,8 +65,8 @@ export class TccController extends AbstractController {
     }
     @Get(':id')
     @UseGuards(JwtAuthGuard)
-    public async getTcc(@Param('id') id: string): Promise<Tfg> {
-        const result = await this.buscarTccQuery.execute(id)
+    public async getTfg(@Param('id') id: string): Promise<Tfg> {
+        const result = await this.buscarTfgQuery.execute(id)
 
         return this.handleResponse(result)
     }
@@ -75,14 +74,13 @@ export class TccController extends AbstractController {
     // TODO: revisar a rota, se precisa enviar os dados todos logo de início
     @Post()
     @UseGuards(JwtAuthGuard)
-    @UseInterceptors(TokenInterceptor)
-    public async postTcc(
+    public async postTfg(
         @Req() req: any,
         @Body() body: CadastrarTfgUsecaseProps,
     ): Promise<void> {
-        const result = await this.cadastrarTccUsecase.execute({
+        const result = await this.cadastrarTfgUsecase.execute({
             ...body,
-            aluno: req.body.id,
+            aluno: req.user.id,
         })
 
         return this.handleResponse(result)
@@ -110,7 +108,7 @@ export class TccController extends AbstractController {
     ) {
         const result = await this.cadastrarBancaUsecase.execute({
             ...body,
-            tccId: id,
+            tfgId: id,
         })
 
         return this.handleResponse(result)
@@ -118,7 +116,6 @@ export class TccController extends AbstractController {
 
     @Put(':id/nota-parcial')
     @UseGuards(JwtAuthGuard)
-    @UseInterceptors(TokenInterceptor)
     public async atribuirNotaParcial(
         @Param('id') id: string,
         @Req() req: any,
@@ -126,8 +123,8 @@ export class TccController extends AbstractController {
     ) {
         const result = await this.avaliarNotaParcial.execute({
             ...body,
-            tccId: id,
-            professorId: req.body.id,
+            tfgId: id,
+            professorId: req.user.id,
         })
 
         return this.handleResponse(result)
@@ -141,18 +138,18 @@ export class TccController extends AbstractController {
     ) {
         const result = await this.avaliarNotaFinal.execute({
             ...body,
-            tccId: id,
+            tfgId: id,
         })
 
         return this.handleResponse(result)
     }
 
-    // Download e upload de TCCs
+    // Download e upload de TFGs
 
     @Post(':id/parcial')
     @UseGuards(JwtAuthGuard)
     @UseInterceptors(FileInterceptor('file'))
-    public async enviarTccParcial(
+    public async enviarTfgParcial(
         @Param('id') id: string,
         @UploadedFile() file: Express.Multer.File,
         @Body() body: EnviarTfgParcialUsecaseProps,
@@ -169,13 +166,13 @@ export class TccController extends AbstractController {
 
     @Get(':id/download')
     @UseGuards(JwtAuthGuard)
-    public async downloadTcc(@Param('id') id: string, @Res() res: Response) {
-        const result = await this.baixarTccUsecase.execute(id)
+    public async downloadTfg(@Param('id') id: string, @Res() res: Response) {
+        const result = await this.baixarTfgUsecase.execute(id)
 
         if (!(result instanceof Error)) res.download(result)
 
         return this.handleResponse(result)
     }
 
-    //TODO: implementar rota para nota parcial (banca ou TCC?)
+    //TODO: implementar rota para nota parcial (banca ou TFG?)
 }
