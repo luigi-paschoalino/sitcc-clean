@@ -60,7 +60,8 @@ export class TfgController extends AbstractController {
             RepositoryException: 500,
             RepositoryDataNotFoundException: 404,
             InvalidPropsException: 400,
-            UsuarioException: 400,
+            UsuarioException: 401,
+            TfgException: 400,
         })
     }
     @Get(':id')
@@ -91,10 +92,12 @@ export class TfgController extends AbstractController {
     public async avaliarOrientacao(
         @Param('id') id: string,
         @Body() body: AvaliarOrientacaoUsecaseProps,
+        @Req() req: any,
     ) {
         const result = await this.avaliarOrientacaoUsecase.execute({
             ...body,
             tfgId: id,
+            professorId: req.user.id,
         })
 
         return this.handleResponse(result)
@@ -105,10 +108,12 @@ export class TfgController extends AbstractController {
     public async atribuirBanca(
         @Param('id') id: string,
         @Body() body: CadastrarBancaUsecaseProps,
+        @Req() req: any,
     ) {
         const result = await this.cadastrarBancaUsecase.execute({
             ...body,
             tfgId: id,
+            usuarioId: req.user.id,
         })
 
         return this.handleResponse(result)
@@ -130,15 +135,18 @@ export class TfgController extends AbstractController {
         return this.handleResponse(result)
     }
 
+    // TODO: conferir Usecase
     @Put(':id/nota-final')
     @UseGuards(JwtAuthGuard)
     public async atribuirNotaFinal(
         @Param('id') id: string,
+        @Req() req: any,
         @Body() body: AvaliarNotaFinalUsecaseProps,
     ) {
         const result = await this.avaliarNotaFinal.execute({
             ...body,
             tfgId: id,
+            usuarioId: req.user.id,
         })
 
         return this.handleResponse(result)
@@ -151,18 +159,19 @@ export class TfgController extends AbstractController {
     @UseInterceptors(FileInterceptor('file'))
     public async enviarTfgParcial(
         @Param('id') id: string,
+        @Req() req: any,
         @UploadedFile() file: Express.Multer.File,
-        @Body() body: EnviarTfgParcialUsecaseProps,
     ) {
         const result = await this.enviarTfgParcialUsecase.execute({
-            usuarioId: body.usuarioId, // TODO: pegar o usuário logado
-            titulo: body.titulo,
+            usuarioId: req.user.id,
             tfgId: id,
             path: file.path,
         })
 
         return this.handleResponse(result)
     }
+
+    // TODO: rota envio TFG final
 
     @Get(':id/download')
     @UseGuards(JwtAuthGuard)
@@ -173,6 +182,4 @@ export class TfgController extends AbstractController {
 
         return this.handleResponse(result)
     }
-
-    //TODO: implementar rota para nota parcial (banca ou TFG?)
 }

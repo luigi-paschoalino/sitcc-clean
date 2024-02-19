@@ -29,9 +29,7 @@ export class AvaliarNotaParcialUsecase {
             const professor = await this.usuarioRepository.buscarPorId(
                 props.professorId,
             )
-
             this.logger.debug(JSON.stringify(professor, null, 2))
-
             if (professor instanceof Error) throw professor
             if (professor.getTipo() !== TIPO_USUARIO.PROFESSOR)
                 throw new UsuarioException('Usuário não é um professor')

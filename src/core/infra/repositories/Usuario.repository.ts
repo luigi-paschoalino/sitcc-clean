@@ -49,6 +49,46 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
         }
     }
 
+    async buscarPorIds(ids: string[]): Promise<Error | Usuario[]> {
+        try {
+            const models = await this.prismaService.usuario.findMany({
+                where: { id: { in: ids } },
+                include: {
+                    perfilProfessor: {
+                        select: {
+                            id: true,
+                            descricao: true,
+                            link: true,
+                            areasAtuacao: true,
+                            projetos: true,
+                            usuarioId: true,
+                        },
+                    },
+                },
+            })
+
+            if (!models || models.length === 0)
+                throw new RepositoryDataNotFoundException(
+                    `Não foi possível encontrar nenhum usuário com os IDs informados!`,
+                )
+            if (models.length !== ids.length)
+                throw new RepositoryDataNotFoundException(
+                    `Não foi possível encontrar os usuários com os seguintes IDs: ${ids.filter(
+                        (id) => !models.map((model) => model.id).includes(id),
+                    )}`,
+                )
+
+            const usuarios = models.map((model) =>
+                this.usuarioMapper.modelToDomain({
+                    ...model,
+                }),
+            )
+            return usuarios
+        } catch (error) {
+            return error
+        }
+    }
+
     async buscarPorEmail(email: string): Promise<Error | Usuario> {
         try {
             const model = await this.prismaService.usuario.findUnique({

@@ -6,7 +6,7 @@ import { UsuarioRepository } from 'src/core/domain/repositories/Usuario.reposito
 import { EventPublisherService } from '../../../domain/services/EventPublisher.service'
 
 export interface AvaliarNotaFinalUsecaseProps {
-    id: string
+    usuarioId: string
     tfgId: string
     notaApresentacao: number
     notaTrabalho: number
@@ -21,9 +21,12 @@ export class AvaliarNotaFinalUsecase {
         private readonly publisher: EventPublisherService,
     ) {}
 
+    // TODO: reavaliar como é feita a avaliação de notas
     async execute(props: AvaliarNotaFinalUsecaseProps): Promise<Error | void> {
         try {
-            const professor = await this.usuarioRepository.buscarPorId(props.id)
+            const professor = await this.usuarioRepository.buscarPorId(
+                props.usuarioId,
+            )
             if (professor instanceof Error) throw professor
 
             if (professor.getTipo() !== TIPO_USUARIO.PROFESSOR)
@@ -33,7 +36,7 @@ export class AvaliarNotaFinalUsecase {
             if (tfg instanceof Error) throw tfg
 
             const aplicar_nota = tfg.avaliarNotaFinalBanca(
-                props.id,
+                props.usuarioId,
                 props.notaApresentacao,
                 props.notaTrabalho,
             )

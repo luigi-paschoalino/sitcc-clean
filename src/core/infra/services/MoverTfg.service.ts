@@ -15,7 +15,7 @@ export class MoverTfgServiceImpl implements MoverTfgService {
                     '$tfgEntrega',
                     props.tipoEntrega,
                 ),
-                props.tfgId + '.pdf',
+                props.tfgId + `_-_${props.tipoEntrega}.pdf`,
             )
 
             if (!fs.existsSync(path.dirname(tccFinalPath)))
