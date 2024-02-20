@@ -5,14 +5,14 @@ import { EventPublisherService } from '../../../domain/services/EventPublisher.s
 import { TfgException } from '../../../domain/exceptions/Tfg.exception'
 import { STATUS_TFG, TIPO_ENTREGA } from '../../../domain/Tfg'
 
-export interface EnviarTfgParcialUsecaseProps {
+export interface EnviarTfgFinalUsecaseProps {
     usuarioId: string
     tfgId: string
     path: string
 }
 
-export class EnviarTfgParcialUsecase {
-    private logger = new Logger(EnviarTfgParcialUsecase.name)
+export class EnviarTfgFinalUsecase {
+    private logger = new Logger(EnviarTfgFinalUsecase.name)
 
     constructor(
         @Inject('TfgRepository') private readonly TfgRepository: TfgRepository,
@@ -22,7 +22,7 @@ export class EnviarTfgParcialUsecase {
         private readonly eventPublisherService: EventPublisherService,
     ) {}
 
-    async execute(props: EnviarTfgParcialUsecaseProps) {
+    async execute(props: EnviarTfgFinalUsecaseProps) {
         try {
             if (!props.path)
                 throw new TfgException(
@@ -37,17 +37,17 @@ export class EnviarTfgParcialUsecase {
                     'O usuário informado não possui autoria sobre o TFG',
                 )
 
-            if (tfg.getStatus() !== STATUS_TFG.ORIENTACAO_ACEITA)
-                throw new TfgException('A orientação do Tfg não foi aprovada!')
+            if (tfg.getStatus() !== STATUS_TFG.ENTREGA_PARCIAL)
+                throw new TfgException('A entrega parcial não foi realizada!')
 
             const service = await this.moverTfgService.execute({
                 tfgId: props.tfgId,
                 path: props.path,
-                tipoEntrega: TIPO_ENTREGA.PARCIAL,
+                tipoEntrega: TIPO_ENTREGA.FINAL,
             })
             if (service instanceof Error) throw service
 
-            tfg.enviarTfg(service, TIPO_ENTREGA.PARCIAL)
+            tfg.enviarTfg(service, TIPO_ENTREGA.FINAL)
 
             const salvar = await this.TfgRepository.salvarTfg(tfg)
             if (salvar instanceof Error) throw salvar

@@ -35,7 +35,6 @@ export class CursoRepositoryImpl implements CursoRepository {
                 throw new RepositoryDataNotFoundException(
                     `Não foi possível encontrar um curso com o ID ${id}`,
                 )
-            this.logger.debug(JSON.stringify(model, null, 2))
             const curso = this.cursoMapper.modelToDomain(model)
 
             return curso

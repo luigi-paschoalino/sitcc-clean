@@ -1,7 +1,4 @@
-export enum TIPO_ENTREGA {
-    PARCIAL = 'PARCIAL',
-    FINAL = 'FINAL',
-}
+import { TIPO_ENTREGA } from '../Tfg'
 
 export interface MoverTfgServiceProps {
     tfgId: string

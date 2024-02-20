@@ -11,10 +11,25 @@ export class BancaMapper {
             data: domain.getDiaHora(),
             professorId: domain.getProfessorId(),
             segundoProfessorId: domain.getSegundoProfessorId(),
-            notaApresentacao: new Prisma.Decimal(domain.getNotaApresentacao()),
-            notaTrabalho: new Prisma.Decimal(domain.getNotaTrabalho()),
+            notaApresentacaoProfessor: domain.getNotaApresentacaoProfessor()
+                ? new Prisma.Decimal(domain.getNotaApresentacaoProfessor())
+                : undefined,
+            notaApresentacaoSegundoProfessor:
+                domain.getNotaApresentacaoSegundoProfessor()
+                    ? new Prisma.Decimal(
+                          domain.getNotaApresentacaoSegundoProfessor(),
+                      )
+                    : undefined,
+            notaTrabalhoProfessor: domain.getNotaTrabalhoProfessor()
+                ? new Prisma.Decimal(domain.getNotaTrabalhoProfessor())
+                : undefined,
+            notaTrabalhoSegundoProfessor:
+                domain.getNotaTrabalhoSegundoProfessor()
+                    ? new Prisma.Decimal(
+                          domain.getNotaTrabalhoSegundoProfessor(),
+                      )
+                    : undefined,
             tccId,
-            versao: domain.getVersao(),
         }
     }
 
@@ -24,8 +39,14 @@ export class BancaMapper {
                 professorId: model.professorId,
                 segundoProfessorId: model.segundoProfessorId,
                 data: model.data,
-                notaApresentacao: Number(model.notaApresentacao),
-                notaTrabalho: Number(model.notaTrabalho),
+                notaApresentacaoProfessor:
+                    Number(model.notaApresentacaoProfessor) ?? null,
+                notaApresentacaoSegundoProfessor:
+                    Number(model.notaApresentacaoSegundoProfessor) ?? null,
+                notaTrabalhoProfessor:
+                    Number(model.notaTrabalhoProfessor) ?? null,
+                notaTrabalhoSegundoProfessor:
+                    Number(model.notaTrabalhoSegundoProfessor) ?? null,
             },
             model.id,
         )

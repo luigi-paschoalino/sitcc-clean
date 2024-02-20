@@ -78,8 +78,6 @@ export class CadastrarUsuarioUseCase {
             )
             if (usuario instanceof Error) throw usuario
 
-            this.logger.debug(JSON.stringify(usuario))
-
             const salvarUsuario = await this.usuarioRepository.salvar(usuario)
             if (salvarUsuario instanceof Error) throw salvarUsuario
 

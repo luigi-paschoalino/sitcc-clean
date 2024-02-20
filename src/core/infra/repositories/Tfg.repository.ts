@@ -53,8 +53,32 @@ export class TfgRepositoryImpl implements TfgRepository {
                             where: {
                                 id: banca.id,
                             },
-                            update: banca,
-                            create: banca,
+                            update: {
+                                professorId: banca.professorId,
+                                segundoProfessorId: banca.segundoProfessorId,
+                                data: banca.data,
+                                notaApresentacaoProfessor:
+                                    banca.notaApresentacaoProfessor,
+                                notaApresentacaoSegundoProfessor:
+                                    banca.notaApresentacaoSegundoProfessor,
+                                notaTrabalhoProfessor:
+                                    banca.notaTrabalhoProfessor,
+                                notaTrabalhoSegundoProfessor:
+                                    banca.notaTrabalhoSegundoProfessor,
+                            },
+                            create: {
+                                professorId: banca.professorId,
+                                segundoProfessorId: banca.segundoProfessorId,
+                                data: banca.data,
+                                notaApresentacaoProfessor:
+                                    banca.notaApresentacaoProfessor,
+                                notaApresentacaoSegundoProfessor:
+                                    banca.notaApresentacaoSegundoProfessor,
+                                notaTrabalhoProfessor:
+                                    banca.notaTrabalhoProfessor,
+                                notaTrabalhoSegundoProfessor:
+                                    banca.notaTrabalhoSegundoProfessor,
+                            },
                         })),
                     },
                 },
@@ -67,9 +91,14 @@ export class TfgRepositoryImpl implements TfgRepository {
                                 professorId: banca.professorId,
                                 segundoProfessorId: banca.segundoProfessorId,
                                 data: banca.data,
-                                notaApresentacao: banca.notaApresentacao,
-                                notaTrabalho: banca.notaTrabalho,
-                                versao: banca.versao,
+                                notaApresentacaoProfessor:
+                                    banca.notaApresentacaoProfessor,
+                                notaApresentacaoSegundoProfessor:
+                                    banca.notaApresentacaoSegundoProfessor,
+                                notaTrabalhoProfessor:
+                                    banca.notaTrabalhoProfessor,
+                                notaTrabalhoSegundoProfessor:
+                                    banca.notaTrabalhoSegundoProfessor,
                             })),
                     },
                 },

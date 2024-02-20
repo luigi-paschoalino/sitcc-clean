@@ -11,7 +11,6 @@ export class CodigoProfessorMapper {
             id: domain.getId(),
             codigo: domain.getCodigo(),
             disponivel: domain.getDisponivel(),
-            professorId: domain.getProfessorId(),
         }
     }
 
@@ -19,7 +18,6 @@ export class CodigoProfessorMapper {
         const domain = CodigoProfessor.criar({
             id: model.id,
             codigo: model.codigo,
-            professorId: model.professorId,
         })
 
         return domain

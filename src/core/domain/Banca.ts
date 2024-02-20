@@ -10,8 +10,10 @@ export interface CarregarBancaProps {
     professorId: string
     segundoProfessorId: string
     data: Date
-    notaApresentacao: number
-    notaTrabalho: number
+    notaApresentacaoProfessor: number
+    notaApresentacaoSegundoProfessor: number
+    notaTrabalhoProfessor: number
+    notaTrabalhoSegundoProfessor: number
 }
 
 export class Banca {
@@ -19,9 +21,10 @@ export class Banca {
     private professorId: string
     private segundoProfessorId: string
     private data: Date
-    private notaApresentacao: number
-    private notaTrabalho: number
-    private versao: number
+    private notaApresentacaoProfessor: number
+    private notaApresentacaoSegundoProfessor: number
+    private notaTrabalhoProfessor: number
+    private notaTrabalhoSegundoProfessor: number
 
     private constructor(id: string) {
         this.id = id
@@ -30,7 +33,13 @@ export class Banca {
     static criar(props: CriarBancaProps, id: string): Banca {
         const banca = new Banca(id)
 
+        if (props.segundoProfessorId === props.professorId)
+            throw new InvalidPropsException(
+                'O segundo professor não pode ser o mesmo que o primeiro',
+            )
+
         banca.setProfessorId(props.professorId)
+        banca.setSegundoProfessorId(props.segundoProfessorId)
         banca.setData(props.data)
 
         return banca
@@ -40,10 +49,14 @@ export class Banca {
         const banca = new Banca(id)
 
         banca.setProfessorId(props.professorId)
+        banca.setSegundoProfessorId(props.segundoProfessorId)
         banca.setData(props.data)
 
-        banca.notaApresentacao = props.notaApresentacao
-        banca.notaTrabalho = props.notaTrabalho
+        banca.notaApresentacaoProfessor = props.notaApresentacaoProfessor
+        banca.notaApresentacaoSegundoProfessor =
+            props.notaApresentacaoSegundoProfessor
+        banca.notaTrabalhoProfessor = props.notaTrabalhoProfessor
+        banca.notaTrabalhoSegundoProfessor = props.notaTrabalhoSegundoProfessor
 
         return banca
     }
@@ -51,9 +64,17 @@ export class Banca {
     private setProfessorId(id: string): Error | void {
         if (!id)
             throw new InvalidPropsException(
-                'Id do Professor não pode ser vazio',
+                'ID do professor não pode ser vazio',
             )
         this.professorId = id
+    }
+
+    private setSegundoProfessorId(id: string): Error | void {
+        if (!id)
+            throw new InvalidPropsException(
+                'ID do segundo professor não pode ser vazio',
+            )
+        this.segundoProfessorId = id
     }
 
     private setData(data: Date): Error | void {
@@ -78,32 +99,42 @@ export class Banca {
         return this.data
     }
 
-    getNotaApresentacao(): number {
-        return this.notaApresentacao
+    getNotaApresentacaoProfessor(): number {
+        return this.notaApresentacaoProfessor
     }
 
-    getNotaTrabalho(): number {
-        return this.notaTrabalho
+    getNotaApresentacaoSegundoProfessor(): number {
+        return this.notaApresentacaoSegundoProfessor
     }
 
-    getVersao(): number {
-        return this.versao
+    getNotaTrabalhoProfessor(): number {
+        return this.notaTrabalhoProfessor
+    }
+
+    getNotaTrabalhoSegundoProfessor(): number {
+        return this.notaTrabalhoSegundoProfessor
     }
 
     avaliarNotaTfg(
+        professorId: string,
         notaApresentacao: number,
         notaTrabalho: number,
     ): Error | void {
+        if (
+            professorId !== this.professorId &&
+            professorId !== this.segundoProfessorId
+        )
+            throw new InvalidPropsException('Professor não pertence à banca')
         if (!notaApresentacao || notaApresentacao < 0 || notaApresentacao > 10)
             throw new InvalidPropsException('Nota de apresentação inválida')
         if (!notaTrabalho || notaTrabalho < 0 || notaTrabalho > 10)
             throw new InvalidPropsException('Nota de trabalho inválida')
 
-        this.notaApresentacao = notaApresentacao
-        this.notaTrabalho = notaTrabalho
-
-        // this.nota_final = Number(
-        //     (notaTrabalho * 0.7 + notaApresentacao * 0.3).toFixed(2),
-        // )
+        professorId === this.professorId
+            ? (this.notaApresentacaoProfessor = notaApresentacao)
+            : (this.notaApresentacaoSegundoProfessor = notaApresentacao)
+        professorId === this.professorId
+            ? (this.notaTrabalhoProfessor = notaTrabalho)
+            : (this.notaTrabalhoSegundoProfessor = notaTrabalho)
     }
 }

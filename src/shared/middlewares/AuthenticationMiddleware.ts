@@ -25,8 +25,6 @@ export class JwtAuthGuard implements CanActivate {
         const authHeader = request.headers.authorization
         const token = authHeader
 
-        this.logger.debug(`AuthHeader: ${authHeader}\nToken: ${token}`)
-
         if (token === null) {
             throw new UnauthorizedException()
         }

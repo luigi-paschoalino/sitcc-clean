@@ -32,7 +32,6 @@ export class GerarCodigoProfessorUsecase {
         props: GerarCodigoProfessorUsecaseProps,
     ): Promise<Error | string> {
         try {
-            this.logger.warn(JSON.stringify(props, null, 2))
             const usuario = await this.usuarioRepository.buscarPorId(
                 props.usuarioId,
             )
@@ -58,7 +57,6 @@ export class GerarCodigoProfessorUsecase {
             const codigoProfessor = CodigoProfessor.criar({
                 codigo,
                 id,
-                professorId: props.professorId,
             })
 
             this.logger.debug(JSON.stringify(codigoProfessor, null, 2))

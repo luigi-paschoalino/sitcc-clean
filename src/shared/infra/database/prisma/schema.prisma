@@ -22,23 +22,22 @@ model Curso {
 }
 
 model Usuario {
-  id                   String            @id @default(uuid()) @db.Uuid
-  nome                 String            @db.VarChar(255)
-  email                String            @unique @db.VarChar(255)
-  senha                String            @db.VarChar(100)
-  hashRecuperacaoSenha String?           @db.Uuid
-  numero               String?           @db.VarChar(15)
-  matricula            String?           @db.VarChar(10)
-  curso                Curso             @relation(fields: [cursoId], references: [id])
+  id                   String           @id @default(uuid()) @db.Uuid
+  nome                 String           @db.VarChar(255)
+  email                String           @unique @db.VarChar(255)
+  senha                String           @db.VarChar(100)
+  hashRecuperacaoSenha String?          @db.Uuid
+  numero               String?          @db.VarChar(15)
+  matricula            String?          @db.VarChar(10)
+  curso                Curso            @relation(fields: [cursoId], references: [id])
   tipo                 TIPO_USUARIO
-  cursoId              String            @db.Uuid
+  cursoId              String           @db.Uuid
   perfilProfessor      PerfilProfessor?
-  tfgAluno             Tfg[]             @relation(name: "AlunoRelation")
-  tfgOrientador        Tfg[]             @relation(name: "OrientadorRelation")
-  tfgCoorientador      Tfg[]             @relation(name: "CoorientadorRelation")
-  bancaPrimeiroProf    Banca[]           @relation(name: "PrimeiroProfessorRelation")
-  bancaSegundoProf     Banca[]           @relation(name: "SegundoProfessorRelation")
-  codigoProfessor      CodigoProfessor[]
+  tfgAluno             Tfg[]            @relation(name: "AlunoRelation")
+  tfgOrientador        Tfg[]            @relation(name: "OrientadorRelation")
+  tfgCoorientador      Tfg[]            @relation(name: "CoorientadorRelation")
+  bancaPrimeiroProf    Banca[]          @relation(name: "PrimeiroProfessorRelation")
+  bancaSegundoProf     Banca[]          @relation(name: "SegundoProfessorRelation")
 
   @@map("usuarios")
 }
@@ -89,13 +88,10 @@ model PerfilProfessor {
 }
 
 model CodigoProfessor {
-  id          String  @id @default(uuid()) @db.Uuid
-  codigo      String  @unique @db.VarChar(12)
-  disponivel  Boolean @default(true)
-  professorId String  @db.Uuid
-  professor   Usuario @relation(fields: [professorId], references: [id])
+  id         String  @id @default(uuid()) @db.Uuid
+  codigo     String  @unique @db.VarChar(12)
+  disponivel Boolean @default(true)
 
-  @@unique([codigo, professorId])
   @@map("codigos_professores")
 }
 
@@ -112,19 +108,19 @@ model Projeto {
 }
 
 model Banca {
-  id                 String   @id @default(uuid()) @db.Uuid
-  data               DateTime
-  professorId        String   @db.Uuid
-  segundoProfessorId String   @db.Uuid // Adiciona um segundo professor
-  tccId              String   @db.Uuid
-  professor          Usuario  @relation(name: "PrimeiroProfessorRelation", fields: [professorId], references: [id])
-  segundoProfessor   Usuario  @relation(name: "SegundoProfessorRelation", fields: [segundoProfessorId], references: [id])
-  tcc                Tfg      @relation(fields: [tccId], references: [id])
-  notaApresentacao   Decimal? @db.Decimal(4, 2)
-  notaTrabalho       Decimal? @db.Decimal(4, 2)
-  versao             Int      @default(1)
+  id                               String   @id @default(uuid()) @db.Uuid
+  data                             DateTime
+  professorId                      String   @db.Uuid
+  segundoProfessorId               String   @db.Uuid // Adiciona um segundo professor
+  tccId                            String   @db.Uuid
+  professor                        Usuario  @relation(name: "PrimeiroProfessorRelation", fields: [professorId], references: [id])
+  segundoProfessor                 Usuario  @relation(name: "SegundoProfessorRelation", fields: [segundoProfessorId], references: [id])
+  tcc                              Tfg      @relation(fields: [tccId], references: [id])
+  notaApresentacaoProfessor        Decimal? @db.Decimal(4, 2)
+  notaApresentacaoSegundoProfessor Decimal? @db.Decimal(4, 2)
+  notaTrabalhoProfessor            Decimal? @db.Decimal(4, 2)
+  notaTrabalhoSegundoProfessor     Decimal? @db.Decimal(4, 2)
 
-  @@unique([tccId, versao])
   @@map("bancas")
 }
 
@@ -142,7 +138,8 @@ model Tfg {
   resultados           String     @db.VarChar()
   notaParcial          Decimal?   @db.Decimal(4, 2)
   notaFinal            Decimal?   @db.Decimal(4, 2)
-  path                 String?    @db.VarChar()
+  pathParcial          String?    @db.VarChar()
+  pathFinal            String?    @db.VarChar()
   aluno                Usuario    @relation(name: "AlunoRelation", fields: [alunoId], references: [id])
   alunoId              String     @db.Uuid
   orientador           Usuario    @relation(name: "OrientadorRelation", fields: [orientadorId], references: [id])

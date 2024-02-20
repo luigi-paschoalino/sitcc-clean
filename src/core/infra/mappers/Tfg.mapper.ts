@@ -30,7 +30,8 @@ export class TfgMapper {
             notaParcial: tfg.getNotaParcial()
                 ? new Prisma.Decimal(tfg.getNotaParcial())
                 : null,
-            path: tfg.getPath(),
+            pathParcial: tfg.getPathParcial(),
+            pathFinal: tfg.getPathFinal(),
             banca: tfg
                 .getBanca()
                 ?.map((banca) =>
@@ -60,7 +61,8 @@ export class TfgMapper {
                 banca: tfgModel.banca.map((banca) =>
                     this.bancaMapper.modelToDomain(banca),
                 ),
-                path: tfgModel.path,
+                pathParcial: tfgModel.pathParcial,
+                pathFinal: tfgModel.pathFinal,
             },
             tfgModel.id,
         )

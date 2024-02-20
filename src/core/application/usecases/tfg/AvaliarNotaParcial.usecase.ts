@@ -37,11 +37,11 @@ export class AvaliarNotaParcialUsecase {
             const tfg = await this.tfgRepository.buscarTfg(props.tfgId)
             if (tfg instanceof Error) throw tfg
 
-            const aplicar_nota = tfg.avaliarNotaParcial(
+            const aplicarNota = tfg.avaliarNotaParcial(
                 props.professorId,
                 props.nota,
             )
-            if (aplicar_nota instanceof Error) throw aplicar_nota
+            if (aplicarNota instanceof Error) throw aplicarNota
 
             const salvar = await this.tfgRepository.salvarTfg(tfg)
             if (salvar instanceof Error) throw salvar

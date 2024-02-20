@@ -4,21 +4,18 @@ import { InvalidPropsException } from './exceptions/InvalidProps.exception'
 export interface GerarCodigoProfessorProps {
     codigo: string
     id: string
-    professorId: string
 }
 
 export interface CarregarCodigoProfessorProps {
     codigo: string
     disponivel: boolean
     id: string
-    professorId: string
 }
 
 export class CodigoProfessor extends AggregateRoot {
     private id: string
     private codigo: string
     private disponivel: boolean
-    private professorId: string
 
     constructor(id: string) {
         super()
@@ -30,7 +27,6 @@ export class CodigoProfessor extends AggregateRoot {
         const instance = new CodigoProfessor(props.id)
         instance.setCodigo(props.codigo)
         instance.setDisponivel(true)
-        instance.professorId = props.professorId
 
         return instance
     }
@@ -39,7 +35,6 @@ export class CodigoProfessor extends AggregateRoot {
         const instance = new CodigoProfessor(props.id)
         instance.codigo = props.codigo
         instance.disponivel = props.disponivel
-        instance.professorId = props.professorId
 
         return instance
     }
@@ -66,10 +61,6 @@ export class CodigoProfessor extends AggregateRoot {
 
     getDisponivel(): boolean {
         return this.disponivel
-    }
-
-    getProfessorId(): string {
-        return this.professorId
     }
 
     consumirCodigo(): void {

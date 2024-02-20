@@ -10,7 +10,6 @@ import { TfgNotaParcialAvaliadaEvent } from './events/TfgNotaParcialAvaliada.eve
 import { TfgNotaFinalAvaliadaEvent } from './events/TfgNotaFinalEvent.event'
 import { BancaAdicionadaEvent } from './events/BancaAdicionada.event'
 import { TfgEnviadoEvent } from './events/TfgEnviado.event'
-import { TIPO_ENTREGA } from './services/MoverTfg.service'
 
 export enum STATUS_TFG {
     MATRICULA_REALIZADA = 'MATRICULA_REALIZADA',
@@ -20,6 +19,11 @@ export enum STATUS_TFG {
     ENTREGA_FINAL = 'ENTREGA_FINAL',
     APROVADO = 'APROVADO',
     REPROVADO = 'REPROVADO',
+}
+
+export enum TIPO_ENTREGA {
+    PARCIAL = 'PARCIAL',
+    FINAL = 'FINAL',
 }
 
 export interface CriarTfgProps {
@@ -54,7 +58,8 @@ export interface CarregarTfgProps {
     notaParcial?: number
     notaFinal?: number
     banca?: Banca[]
-    path?: string
+    pathParcial?: string
+    pathFinal?: string
 }
 
 export class Tfg extends AggregateRoot {
@@ -75,7 +80,8 @@ export class Tfg extends AggregateRoot {
     private notaParcial?: number
     private notaFinal?: number
     private banca?: Banca[]
-    private path?: string
+    private pathParcial?: string
+    private pathFinal?: string
 
     private constructor(id: string) {
         super()
@@ -129,7 +135,8 @@ export class Tfg extends AggregateRoot {
         tfg.notaParcial = props.notaParcial
         tfg.notaFinal = props.notaFinal
         tfg.banca = props.banca
-        tfg.path = props.path
+        tfg.pathParcial = props.pathParcial
+        tfg.pathFinal = props.pathFinal
 
         tfg.alunoId = props.aluno
         tfg.orientadorId = props.orientador
@@ -206,8 +213,12 @@ export class Tfg extends AggregateRoot {
         return this.banca
     }
 
-    public getPath(): string {
-        return this.path
+    public getPathParcial(): string {
+        return this.pathParcial
+    }
+
+    public getPathFinal(): string {
+        return this.pathFinal
     }
 
     private setStatus(status: STATUS_TFG): void {
@@ -286,6 +297,7 @@ export class Tfg extends AggregateRoot {
         this.coorientadorId = coorientador.getId()
     }
 
+    // TODO: evento para caso a nota seja menor que 6
     private setNotaParcial(nota_parcial: number): void {
         if (!nota_parcial) {
             throw new Error('Nota não informada')
@@ -296,17 +308,6 @@ export class Tfg extends AggregateRoot {
         }
 
         this.notaParcial = nota_parcial
-    }
-    private setNotaFinal(notaFinal: number): void {
-        if (!notaFinal) {
-            throw new Error('Nota não informada')
-        }
-
-        if (notaFinal < 0 || notaFinal > 10) {
-            throw new Error('Nota deve ser entre 0 e 10')
-        }
-
-        this.notaFinal = notaFinal
     }
 
     // TODO: adicionar evento TfgBancaAtribuidaEvent
@@ -395,14 +396,18 @@ export class Tfg extends AggregateRoot {
         notaApresentacao: number,
         notaTrabalho: number,
     ): Error | void {
-        const banca = this.banca.find((b) => b.getProfessorId() === professorId)
+        const banca = this.banca.find(
+            (b) =>
+                b.getProfessorId() === professorId ||
+                b.getSegundoProfessorId() === professorId,
+        )
 
         if (!banca)
             throw new UsuarioException(
-                'Professor informado não possui registro na banca deste TFG',
+                'O professor informado não possui registro na banca deste TFG',
             )
 
-        banca.avaliarNotaTfg(notaApresentacao, notaTrabalho)
+        banca.avaliarNotaTfg(professorId, notaApresentacao, notaTrabalho)
 
         new TfgNotaFinalAvaliadaEvent({
             bancaId: banca.getId(),
@@ -415,8 +420,14 @@ export class Tfg extends AggregateRoot {
             throw new Error('Caminho do arquivo não informado')
         }
 
-        this.path = path
-        this.setStatus(STATUS_TFG.ENTREGA_PARCIAL)
+        tipoEntrega === TIPO_ENTREGA.PARCIAL
+            ? (this.pathParcial = path)
+            : (this.pathFinal = path)
+        this.setStatus(
+            tipoEntrega === TIPO_ENTREGA.PARCIAL
+                ? STATUS_TFG.ENTREGA_PARCIAL
+                : STATUS_TFG.ENTREGA_FINAL,
+        )
 
         this.apply(
             new TfgEnviadoEvent({
@@ -446,7 +457,8 @@ export class Tfg extends AggregateRoot {
             notaParcial: this.notaParcial,
             notaFinal: this.notaFinal,
             banca: this.banca,
-            path: this.path,
+            pathParcial: this.pathParcial,
+            pathFinal: this.pathFinal,
         }
     }
 }

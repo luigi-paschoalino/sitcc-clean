@@ -13,6 +13,7 @@ import { EnviarTfgParcialUsecase } from './tfg/EnviarTfgParcial.usecase'
 import { GerarCodigoProfessorUsecase } from './codigoProfessor/GerarCodigoProfessor.usecase'
 import { RecuperarSenhaUsecase } from './usuario/RecuperarSenha.usecase'
 import { ValidarTokenUsecase } from './auth/ValidarToken.usecase'
+import { EnviarTfgFinalUsecase } from './tfg/EnviarTfgFinal.usecase'
 
 const UseCases = [
     CadastrarTfgUsecase,
@@ -30,6 +31,7 @@ const UseCases = [
     AvaliarNotaFinalUsecase,
     ValidarTokenUsecase,
     EditarCursoUsecase,
+    EnviarTfgFinalUsecase,
 ]
 
 export default UseCases

@@ -30,8 +30,6 @@ export class AuthServiceImpl implements AuthService {
             )
             if (usuario instanceof Error) throw usuario
 
-            this.logger.debug(JSON.stringify(usuario, null, 2))
-
             if (
                 await this.encriptarSenhaService.comparar(
                     body.senha,

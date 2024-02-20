@@ -18,7 +18,7 @@ import {
     CadastrarTfgUsecase,
     CadastrarTfgUsecaseProps,
 } from '../application/usecases/tfg/CadastrarTfg.usecase'
-import { Tfg } from '../domain/Tfg'
+import { TIPO_ENTREGA, Tfg } from '../domain/Tfg'
 import { AbstractController } from './AbstractController'
 import {
     AvaliarOrientacaoUsecase,
@@ -43,6 +43,7 @@ import {
     AvaliarNotaFinalUsecase,
     AvaliarNotaFinalUsecaseProps,
 } from '../application/usecases/tfg/AvaliarNotaFinal.usecase'
+import { EnviarTfgFinalUsecase } from '../application/usecases/tfg/EnviarTfgFinal.usecase'
 
 @Controller('tfg')
 export class TfgController extends AbstractController {
@@ -55,6 +56,7 @@ export class TfgController extends AbstractController {
         private readonly baixarTfgUsecase: BaixarTfgUsecase,
         private readonly avaliarNotaParcial: AvaliarNotaParcialUsecase,
         private readonly avaliarNotaFinal: AvaliarNotaFinalUsecase,
+        private readonly enviarTfgFinalUsecase: EnviarTfgFinalUsecase,
     ) {
         super({
             RepositoryException: 500,
@@ -171,12 +173,49 @@ export class TfgController extends AbstractController {
         return this.handleResponse(result)
     }
 
-    // TODO: rota envio TFG final
-
-    @Get(':id/download')
+    @Post(':id/final')
     @UseGuards(JwtAuthGuard)
-    public async downloadTfg(@Param('id') id: string, @Res() res: Response) {
-        const result = await this.baixarTfgUsecase.execute(id)
+    @UseInterceptors(FileInterceptor('file'))
+    public async enviarTfgFinal(
+        @Param('id') id: string,
+        @Req() req: any,
+        @UploadedFile() file: Express.Multer.File,
+    ) {
+        const result = await this.enviarTfgFinalUsecase.execute({
+            usuarioId: req.user.id,
+            tfgId: id,
+            path: file.path,
+        })
+
+        return this.handleResponse(result)
+    }
+
+    @Get(':id/download/parcial')
+    @UseGuards(JwtAuthGuard)
+    public async downloadTfgParcial(
+        @Param('id') id: string,
+        @Res() res: Response,
+    ) {
+        const result = await this.baixarTfgUsecase.execute({
+            id,
+            tipoEntrega: TIPO_ENTREGA.PARCIAL,
+        })
+
+        if (!(result instanceof Error)) res.download(result)
+
+        return this.handleResponse(result)
+    }
+
+    @Get(':id/download/final')
+    @UseGuards(JwtAuthGuard)
+    public async downloadTfgFinal(
+        @Param('id') id: string,
+        @Res() res: Response,
+    ) {
+        const result = await this.baixarTfgUsecase.execute({
+            id,
+            tipoEntrega: TIPO_ENTREGA.FINAL,
+        })
 
         if (!(result instanceof Error)) res.download(result)
 
