@@ -49,57 +49,19 @@ export class TfgRepositoryImpl implements TfgRepository {
                 update: {
                     ...model,
                     banca: {
-                        upsert: model.banca?.map((banca) => ({
+                        upsert: {
                             where: {
-                                id: banca.id,
+                                id: model.banca.id,
                             },
-                            update: {
-                                professorId: banca.professorId,
-                                segundoProfessorId: banca.segundoProfessorId,
-                                data: banca.data,
-                                notaApresentacaoProfessor:
-                                    banca.notaApresentacaoProfessor,
-                                notaApresentacaoSegundoProfessor:
-                                    banca.notaApresentacaoSegundoProfessor,
-                                notaTrabalhoProfessor:
-                                    banca.notaTrabalhoProfessor,
-                                notaTrabalhoSegundoProfessor:
-                                    banca.notaTrabalhoSegundoProfessor,
-                            },
-                            create: {
-                                professorId: banca.professorId,
-                                segundoProfessorId: banca.segundoProfessorId,
-                                data: banca.data,
-                                notaApresentacaoProfessor:
-                                    banca.notaApresentacaoProfessor,
-                                notaApresentacaoSegundoProfessor:
-                                    banca.notaApresentacaoSegundoProfessor,
-                                notaTrabalhoProfessor:
-                                    banca.notaTrabalhoProfessor,
-                                notaTrabalhoSegundoProfessor:
-                                    banca.notaTrabalhoSegundoProfessor,
-                            },
-                        })),
+                            update: model.banca,
+                            create: model.banca,
+                        },
                     },
                 },
                 create: {
                     ...model,
                     banca: {
-                        create: model.banca
-                            ?.filter((n) => !n.id)
-                            .map((banca) => ({
-                                professorId: banca.professorId,
-                                segundoProfessorId: banca.segundoProfessorId,
-                                data: banca.data,
-                                notaApresentacaoProfessor:
-                                    banca.notaApresentacaoProfessor,
-                                notaApresentacaoSegundoProfessor:
-                                    banca.notaApresentacaoSegundoProfessor,
-                                notaTrabalhoProfessor:
-                                    banca.notaTrabalhoProfessor,
-                                notaTrabalhoSegundoProfessor:
-                                    banca.notaTrabalhoSegundoProfessor,
-                            })),
+                        create: model.banca,
                     },
                 },
             })

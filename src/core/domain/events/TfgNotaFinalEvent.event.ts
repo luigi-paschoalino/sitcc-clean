@@ -1,7 +1,6 @@
 import { AbstractEvent } from './AbstractEvent'
 
 export interface TfgNotaFinalAvaliadaEventProps {
-    bancaId: string
     tfgId: string
 }
 

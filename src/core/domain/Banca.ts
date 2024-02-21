@@ -1,3 +1,4 @@
+import { BancaException } from './exceptions/Banca.exception'
 import { InvalidPropsException } from './exceptions/InvalidProps.exception'
 
 export interface CriarBancaProps {
@@ -136,5 +137,35 @@ export class Banca {
         professorId === this.professorId
             ? (this.notaTrabalhoProfessor = notaTrabalho)
             : (this.notaTrabalhoSegundoProfessor = notaTrabalho)
+    }
+
+    validarPreenchimentoNotas(): boolean {
+        if (
+            !this.notaApresentacaoProfessor ||
+            !this.notaApresentacaoSegundoProfessor ||
+            !this.notaTrabalhoProfessor ||
+            !this.notaTrabalhoSegundoProfessor
+        )
+            return false
+
+        return true
+    }
+
+    calcularNotaFinal(): Error | number {
+        if (!this.validarPreenchimentoNotas())
+            throw new BancaException(
+                'As notas da banca não foram totalmente preenchidas',
+            )
+        // 30% média das notas de apresentação + 70% média das notas de trabalho
+        return (
+            (0.3 *
+                (this.notaApresentacaoProfessor +
+                    this.notaApresentacaoSegundoProfessor)) /
+                2 +
+            (0.7 *
+                (this.notaTrabalhoProfessor +
+                    this.notaTrabalhoSegundoProfessor)) /
+                2
+        )
     }
 }

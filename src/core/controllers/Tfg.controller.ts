@@ -64,6 +64,7 @@ export class TfgController extends AbstractController {
             InvalidPropsException: 400,
             UsuarioException: 401,
             TfgException: 400,
+            BancaException: 400,
         })
     }
     @Get(':id')

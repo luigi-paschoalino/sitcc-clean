@@ -10,6 +10,7 @@ import { TfgNotaParcialAvaliadaEvent } from './events/TfgNotaParcialAvaliada.eve
 import { TfgNotaFinalAvaliadaEvent } from './events/TfgNotaFinalEvent.event'
 import { BancaAdicionadaEvent } from './events/BancaAdicionada.event'
 import { TfgEnviadoEvent } from './events/TfgEnviado.event'
+import { TfgException } from './exceptions/Tfg.exception'
 
 export enum STATUS_TFG {
     MATRICULA_REALIZADA = 'MATRICULA_REALIZADA',
@@ -57,7 +58,7 @@ export interface CarregarTfgProps {
     status: STATUS_TFG
     notaParcial?: number
     notaFinal?: number
-    banca?: Banca[]
+    banca?: Banca
     pathParcial?: string
     pathFinal?: string
 }
@@ -79,7 +80,7 @@ export class Tfg extends AggregateRoot {
     private resultadosEsperados: string
     private notaParcial?: number
     private notaFinal?: number
-    private banca?: Banca[]
+    private banca?: Banca
     private pathParcial?: string
     private pathFinal?: string
 
@@ -209,7 +210,7 @@ export class Tfg extends AggregateRoot {
         return this.notaFinal
     }
 
-    public getBanca(): Banca[] {
+    public getBanca(): Banca {
         return this.banca
     }
 
@@ -310,21 +311,14 @@ export class Tfg extends AggregateRoot {
         this.notaParcial = nota_parcial
     }
 
-    // TODO: adicionar evento TfgBancaAtribuidaEvent
     public atribuirBanca(banca: Banca): void {
         try {
-            if (!this.banca) this.banca = []
-
-            if (
-                this.banca.find(
-                    (b) => b.getProfessorId() === banca.getProfessorId(),
-                )
-            )
+            if (this.banca)
                 throw new UsuarioException(
-                    'Este professor já esta avaliando este TFG',
+                    'A banca já foi atribuída a este TFG',
                 )
 
-            this.banca.push(banca)
+            this.banca = banca
 
             this.apply(
                 new BancaAdicionadaEvent({
@@ -336,6 +330,7 @@ export class Tfg extends AggregateRoot {
             return error
         }
     }
+    // TODO: comando para editar banca
 
     public avaliarOrientacao(
         professorId: string,
@@ -396,23 +391,49 @@ export class Tfg extends AggregateRoot {
         notaApresentacao: number,
         notaTrabalho: number,
     ): Error | void {
-        const banca = this.banca.find(
-            (b) =>
-                b.getProfessorId() === professorId ||
-                b.getSegundoProfessorId() === professorId,
-        )
+        if (!this.banca)
+            throw new TfgException('A banca deste TFG ainda não foi atribuída')
 
-        if (!banca)
+        if (
+            ![
+                this.banca.getProfessorId(),
+                this.banca.getSegundoProfessorId(),
+            ].includes(professorId)
+        )
             throw new UsuarioException(
-                'O professor informado não possui registro na banca deste TFG',
+                'O professor que está avaliando não faz parte da banca deste TFG',
             )
 
-        banca.avaliarNotaTfg(professorId, notaApresentacao, notaTrabalho)
+        this.banca.avaliarNotaTfg(professorId, notaApresentacao, notaTrabalho)
 
         new TfgNotaFinalAvaliadaEvent({
-            bancaId: banca.getId(),
             tfgId: this.id,
         })
+    }
+
+    public calcularNotaFinal(): Error | void {
+        if (!this.banca)
+            throw new TfgException('A banca deste TFG ainda não foi atribuída')
+
+        if (
+            !this.banca.getNotaApresentacaoProfessor() ||
+            !this.banca.getNotaApresentacaoSegundoProfessor() ||
+            !this.banca.getNotaTrabalhoProfessor() ||
+            !this.banca.getNotaTrabalhoSegundoProfessor()
+        )
+            throw new TfgException(
+                'A nota final não pode ser calculada sem que todas as notas da banca estejam atribuídas',
+            )
+
+        this.notaFinal =
+            0.3 *
+                ((this.banca.getNotaApresentacaoProfessor() +
+                    this.banca.getNotaApresentacaoSegundoProfessor()) /
+                    2) +
+            0.7 *
+                ((this.banca.getNotaTrabalhoProfessor() +
+                    this.banca.getNotaTrabalhoSegundoProfessor()) /
+                    2)
     }
 
     public enviarTfg(path: string, tipoEntrega: TIPO_ENTREGA): Error | void {
