@@ -380,10 +380,12 @@ export class Tfg extends AggregateRoot {
 
         this.setNotaParcial(nota)
 
-        new TfgNotaParcialAvaliadaEvent({
-            tfgId: this.id,
-            nota: nota,
-        })
+        this.apply(
+            new TfgNotaParcialAvaliadaEvent({
+                tfgId: this.id,
+                nota: nota,
+            }),
+        )
     }
 
     public avaliarNotaFinalBanca(
@@ -391,6 +393,11 @@ export class Tfg extends AggregateRoot {
         notaApresentacao: number,
         notaTrabalho: number,
     ): Error | void {
+        if (this.status !== STATUS_TFG.ENTREGA_FINAL)
+            throw new TfgException(
+                'O atual estado do TFG não permite a avaliação final',
+            )
+
         if (!this.banca)
             throw new TfgException('A banca deste TFG ainda não foi atribuída')
 
@@ -406,9 +413,11 @@ export class Tfg extends AggregateRoot {
 
         this.banca.avaliarNotaTfg(professorId, notaApresentacao, notaTrabalho)
 
-        new TfgNotaFinalAvaliadaEvent({
-            tfgId: this.id,
-        })
+        this.apply(
+            new TfgNotaFinalAvaliadaEvent({
+                tfgId: this.id,
+            }),
+        )
     }
 
     public calcularNotaFinal(): Error | void {
@@ -434,6 +443,8 @@ export class Tfg extends AggregateRoot {
                 ((this.banca.getNotaTrabalhoProfessor() +
                     this.banca.getNotaTrabalhoSegundoProfessor()) /
                     2)
+        this.status =
+            this.notaFinal >= 6 ? STATUS_TFG.APROVADO : STATUS_TFG.REPROVADO
     }
 
     public enviarTfg(path: string, tipoEntrega: TIPO_ENTREGA): Error | void {

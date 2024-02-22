@@ -53,15 +53,58 @@ export class TfgRepositoryImpl implements TfgRepository {
                             where: {
                                 id: model.banca.id,
                             },
-                            update: model.banca,
-                            create: model.banca,
+                            update: {
+                                id: model.banca.id,
+                                professorId: model.banca.professorId,
+                                segundoProfessorId:
+                                    model.banca.segundoProfessorId,
+                                data: model.banca.data,
+                                notaApresentacaoProfessor:
+                                    model.banca.notaApresentacaoProfessor,
+                                notaApresentacaoSegundoProfessor:
+                                    model.banca
+                                        .notaApresentacaoSegundoProfessor,
+                                notaTrabalhoProfessor:
+                                    model.banca.notaTrabalhoProfessor,
+                                notaTrabalhoSegundoProfessor:
+                                    model.banca.notaTrabalhoSegundoProfessor,
+                            },
+                            create: {
+                                id: model.banca.id,
+                                professorId: model.banca.professorId,
+                                segundoProfessorId:
+                                    model.banca.segundoProfessorId,
+                                data: model.banca.data,
+                                notaApresentacaoProfessor:
+                                    model.banca.notaApresentacaoProfessor,
+                                notaApresentacaoSegundoProfessor:
+                                    model.banca
+                                        .notaApresentacaoSegundoProfessor,
+                                notaTrabalhoProfessor:
+                                    model.banca.notaTrabalhoProfessor,
+                                notaTrabalhoSegundoProfessor:
+                                    model.banca.notaTrabalhoSegundoProfessor,
+                            },
                         },
                     },
                 },
                 create: {
                     ...model,
                     banca: {
-                        create: model.banca,
+                        create: {
+                            id: model.banca.id,
+                            professorId: model.banca.professorId,
+                            segundoProfessorId: model.banca.segundoProfessorId,
+                            data: model.banca.data,
+                            notaApresentacaoProfessor:
+                                model.banca.notaApresentacaoProfessor,
+                            notaApresentacaoSegundoProfessor:
+                                model.banca.notaApresentacaoSegundoProfessor,
+                            notaTrabalhoProfessor:
+                                model.banca.notaTrabalhoProfessor,
+                            notaTrabalhoSegundoProfessor:
+                                model.banca.notaTrabalhoSegundoProfessor,
+                        },
                     },
                 },
             })
