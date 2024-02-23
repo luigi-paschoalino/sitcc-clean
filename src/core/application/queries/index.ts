@@ -1,19 +1,17 @@
 import { BuscarCursoQuery } from './BuscarCurso.query'
-import { BuscarInstitutoQuery } from './BuscarInstituto.query'
-import { BuscarTccQuery } from './BuscarTcc.query'
-import { BuscarUniversidadeQuery } from './BuscarUniversidade.query'
+import { BuscarTfgQuery } from './BuscarTfg.query'
 import { BuscarUsuarioQuery } from './BuscarUsuario.query'
+import { BuscarUsuarioHashQuery } from './BuscarUsuarioHash.query'
+import { ListarCursosQuery } from './ListarCursos.query'
 import { ListarProfessoresQuery } from './ListarProfessores.query'
-import { ListarUniversidadesQuery } from './ListarUniversidades.query'
 
 const Queries = [
-    BuscarTccQuery,
+    BuscarTfgQuery,
     BuscarUsuarioQuery,
-    BuscarUniversidadeQuery,
-    ListarUniversidadesQuery,
-    BuscarInstitutoQuery,
     BuscarCursoQuery,
     ListarProfessoresQuery,
+    ListarCursosQuery,
+    BuscarUsuarioHashQuery,
 ]
 
 export default Queries

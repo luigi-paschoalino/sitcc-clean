@@ -1,30 +1,52 @@
+import { Prisma } from '@prisma/client'
 import { Banca } from '../../domain/Banca'
-import { BancaModel } from '../models/Banca.model'
+import { BancaInfraDTO as BancaModel } from '../../../shared/infra/database/prisma/dtos/Banca.dto'
 
 export class BancaMapper {
     constructor() {}
 
-    domainToModel(domain: Banca): BancaModel {
-        const model = BancaModel.create({
+    domainToModel(domain: Banca, tccId: string): BancaModel {
+        return {
             id: domain.getId(),
-            professorId: domain.getIdProfessor(),
-            dia_hora: domain.getDiaHora(),
-            nota_final: domain.getNotaFinal(),
-            nota_apresentacao: domain.getNotaApresentacao(),
-            nota_trabalho: domain.getNotaTrabalho(),
-        })
-
-        return model
+            data: domain.getDiaHora(),
+            professorId: domain.getProfessorId(),
+            segundoProfessorId: domain.getSegundoProfessorId(),
+            notaApresentacaoProfessor: domain.getNotaApresentacaoProfessor()
+                ? new Prisma.Decimal(domain.getNotaApresentacaoProfessor())
+                : undefined,
+            notaApresentacaoSegundoProfessor:
+                domain.getNotaApresentacaoSegundoProfessor()
+                    ? new Prisma.Decimal(
+                          domain.getNotaApresentacaoSegundoProfessor(),
+                      )
+                    : undefined,
+            notaTrabalhoProfessor: domain.getNotaTrabalhoProfessor()
+                ? new Prisma.Decimal(domain.getNotaTrabalhoProfessor())
+                : undefined,
+            notaTrabalhoSegundoProfessor:
+                domain.getNotaTrabalhoSegundoProfessor()
+                    ? new Prisma.Decimal(
+                          domain.getNotaTrabalhoSegundoProfessor(),
+                      )
+                    : undefined,
+            tccId,
+        }
     }
 
     modelToDomain(model: BancaModel): Banca {
         const domain = Banca.carregar(
             {
                 professorId: model.professorId,
-                dia_hora: model.dia_hora,
-                nota_final: model.nota_final,
-                nota_apresentacao: model.nota_apresentacao,
-                nota_trabalho: model.nota_trabalho,
+                segundoProfessorId: model.segundoProfessorId,
+                data: model.data,
+                notaApresentacaoProfessor:
+                    Number(model.notaApresentacaoProfessor) ?? null,
+                notaApresentacaoSegundoProfessor:
+                    Number(model.notaApresentacaoSegundoProfessor) ?? null,
+                notaTrabalhoProfessor:
+                    Number(model.notaTrabalhoProfessor) ?? null,
+                notaTrabalhoSegundoProfessor:
+                    Number(model.notaTrabalhoSegundoProfessor) ?? null,
             },
             model.id,
         )

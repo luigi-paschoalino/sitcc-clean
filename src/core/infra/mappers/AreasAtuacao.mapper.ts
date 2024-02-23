@@ -1,18 +1,15 @@
 import { AreasAtuacao } from '../../domain/AreasAtuacao'
-import { AreasAtuacaoModel } from '../models/AreasAtuacao.model'
+import { AreasAtuacaoInfraDTO as AreasAtuacaoModel } from '../../../shared/infra/database/prisma/dtos/AreasAtuacao.dto'
+import { JsonValue } from '@prisma/client/runtime/library'
 
 export class AreasAtuacaoMapper {
     constructor() {}
 
-    domainToModel(domain: AreasAtuacao): AreasAtuacaoModel {
-        const model = new AreasAtuacaoModel()
-
-        model.setProps({
+    domainToModel(domain: AreasAtuacao): JsonValue {
+        return {
             titulo: domain.getTitulo(),
             descricao: domain.getDescricao(),
-        })
-
-        return model
+        }
     }
 
     modelToDomain(model: AreasAtuacaoModel): AreasAtuacao {

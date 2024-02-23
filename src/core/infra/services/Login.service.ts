@@ -1,6 +1,6 @@
 import { Injectable, Inject, Logger } from '@nestjs/common'
 import * as jwt from 'jsonwebtoken'
-import { LoginDTO } from '../../application/dtos/login.dto'
+import { LoginDTO } from '../../domain/dtos/login.dto'
 import { UsuarioRepository } from '../../domain/repositories/Usuario.repository'
 import {
     AuthService,
@@ -30,8 +30,6 @@ export class AuthServiceImpl implements AuthService {
             )
             if (usuario instanceof Error) throw usuario
 
-            this.logger.debug(JSON.stringify(usuario, null, 2))
-
             if (
                 await this.encriptarSenhaService.comparar(
                     body.senha,
@@ -41,7 +39,7 @@ export class AuthServiceImpl implements AuthService {
                 const token = jwt.sign(
                     {
                         id: usuario.getId(),
-                        perfil: usuario.getTipo(),
+                        tipo: usuario.getTipo(),
                     },
                     secretToken,
                     {

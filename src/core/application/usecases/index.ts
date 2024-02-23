@@ -1,25 +1,24 @@
-import { AlterarSenhaUsecase } from './AlterarSenha.usecase'
-import { AutenticarUsecase } from './Autenticar.usecase'
-import { AvaliarNotaFinalUsecase } from './AvaliarNotaFinal.usecase'
-import { AvaliarNotaParcialUsecase } from './AvaliarNotaParcial.usecase'
-import { AvaliarOrientacaoUsecase } from './AvaliarOrientacao.usecase'
-import { BaixarTccUsecase } from './BaixarTcc.usecase'
-import { CadastrarBancaUsecase } from './CadastrarBanca.usecase'
-import { CadastrarCursoUsecase } from './CadastrarCurso.usecase'
-import { CadastrarInstitutoUsecase } from './CadastrarInstituto.usecase'
-import { CadastrarTccUsecase } from './CadastrarTcc.usecase'
-import { CadastrarUniversidadeUsecase } from './CadastrarUniversidade.usecase'
-import { CadastrarUsuarioUseCase } from './CadastrarUsuario.usecase'
-import { EnviarTccParcialUsecase } from './EnviarTccParcial.usecase'
-import { GerarCodigoProfessorUsecase } from './GerarCodigoProfessor.usecase'
-import { RecuperarSenhaUsecase } from './RecuperarSenha.usecase'
-import { ValidarTokenUsecase } from './ValidarToken.usecase'
+import { AlterarSenhaUsecase } from './usuario/AlterarSenha.usecase'
+import { AutenticarUsecase } from './auth/Autenticar.usecase'
+import { AvaliarNotaFinalUsecase } from './tfg/AvaliarNotaFinal.usecase'
+import { AvaliarNotaParcialUsecase } from './tfg/AvaliarNotaParcial.usecase'
+import { AvaliarOrientacaoUsecase } from './tfg/AvaliarOrientacao.usecase'
+import { BaixarTfgUsecase } from './tfg/BaixarTfg.usecase'
+import { CadastrarBancaUsecase } from './tfg/CadastrarBanca.usecase'
+import { CadastrarCursoUsecase } from './curso/CadastrarCurso.usecase'
+import { CadastrarTfgUsecase } from './tfg/CadastrarTfg.usecase'
+import { CadastrarUsuarioUseCase } from './usuario/CadastrarUsuario.usecase'
+import { EditarCursoUsecase } from './curso/EditarCurso.usecase'
+import { EnviarTfgParcialUsecase } from './tfg/EnviarTfgParcial.usecase'
+import { GerarCodigoProfessorUsecase } from './codigoProfessor/GerarCodigoProfessor.usecase'
+import { RecuperarSenhaUsecase } from './usuario/RecuperarSenha.usecase'
+import { ValidarTokenUsecase } from './auth/ValidarToken.usecase'
+import { EnviarTfgFinalUsecase } from './tfg/EnviarTfgFinal.usecase'
+import { EditarBancaUsecase } from './tfg/EditarBanca.usecase'
 
 const UseCases = [
-    CadastrarTccUsecase,
+    CadastrarTfgUsecase,
     CadastrarUsuarioUseCase,
-    CadastrarUniversidadeUsecase,
-    CadastrarInstitutoUsecase,
     CadastrarCursoUsecase,
     AutenticarUsecase,
     AvaliarOrientacaoUsecase,
@@ -27,11 +26,14 @@ const UseCases = [
     RecuperarSenhaUsecase,
     AlterarSenhaUsecase,
     GerarCodigoProfessorUsecase,
-    EnviarTccParcialUsecase,
-    BaixarTccUsecase,
+    EnviarTfgParcialUsecase,
+    BaixarTfgUsecase,
     AvaliarNotaParcialUsecase,
     AvaliarNotaFinalUsecase,
     ValidarTokenUsecase,
+    EditarCursoUsecase,
+    EnviarTfgFinalUsecase,
+    EditarBancaUsecase,
 ]
 
 export default UseCases

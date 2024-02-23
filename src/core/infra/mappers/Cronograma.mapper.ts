@@ -1,24 +1,30 @@
-import { Cronograma } from '../../domain/Cronograma'
-import { CronogramaModel } from '../models/Cronograma.model'
+import { Cronograma, SEMESTRE } from '../../domain/Cronograma'
+import { Cronograma as PrismaCronograma } from '@prisma/client'
+import { AtividadeMapper } from './Atividade.mapper'
+import { CronogramaInfraDTO } from '../../../shared/infra/database/prisma/dtos/Cronograma.dto'
 
 export class CronogramaMapper {
-    constructor() {}
+    constructor(private readonly atividadeMapper: AtividadeMapper) {}
 
-    domainToModel(domain: Cronograma): CronogramaModel {
-        const model = CronogramaModel.create({
+    domainToModel(domain: Cronograma, cursoId: string): PrismaCronograma {
+        return {
             id: domain.getId(),
             ano: domain.getAno(),
             semestre: domain.getSemestre(),
-        })
-
-        return model
+            cursoId,
+        }
     }
 
-    modelToDomain(model: CronogramaModel): Cronograma {
-        const domain = Cronograma.criar(
+    modelToDomain(model: CronogramaInfraDTO): Cronograma {
+        const atividadesDomain = model.atividades?.map((atividade) => {
+            return this.atividadeMapper.modelToDomain(atividade)
+        })
+
+        const domain = Cronograma.carregar(
             {
                 ano: model.ano,
-                semestre: model.semestre,
+                semestre: model.semestre as SEMESTRE,
+                atividades: atividadesDomain,
             },
             model.id,
         )

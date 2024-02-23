@@ -3,18 +3,24 @@ import { InvalidPropsException } from './exceptions/InvalidProps.exception'
 
 export interface CriarCronogramaProps {
     ano: number
-    semestre: ENUM_SEMESTRE
+    semestre: SEMESTRE
 }
 
-export enum ENUM_SEMESTRE {
-    PRIMEIRO = '1',
-    SEGUNDO = '2',
+export interface CarregarCronogramaProps {
+    ano: number
+    semestre: SEMESTRE
+    atividades?: Atividade[]
+}
+
+export enum SEMESTRE {
+    PRIMEIRO = 'PRIMEIRO',
+    SEGUNDO = 'SEGUNDO',
 }
 
 export class Cronograma {
     private id: string
     private ano: number
-    private semestre: ENUM_SEMESTRE
+    private semestre: SEMESTRE
     private atividades?: Atividade[]
 
     private constructor(id: string) {
@@ -30,15 +36,29 @@ export class Cronograma {
         return instance
     }
 
+    static carregar(props: CarregarCronogramaProps, id: string): Cronograma {
+        const instance = new Cronograma(id)
+
+        instance.setAno(props.ano)
+        instance.setSemestre(props.semestre)
+        instance.setAtividades(props.atividades)
+
+        return instance
+    }
+
     private setAno(ano: number): void {
         this.ano = ano
     }
 
-    private setSemestre(semestre: ENUM_SEMESTRE): void {
+    private setSemestre(semestre: SEMESTRE): void {
         if (!semestre) throw new InvalidPropsException('Semestre não informado')
-        if (!Object.values(ENUM_SEMESTRE).includes(semestre))
+        if (!Object.values(SEMESTRE).includes(semestre))
             throw new InvalidPropsException('Semestre inválido')
         this.semestre = semestre
+    }
+
+    private setAtividades(atividades: Atividade[] = []): void {
+        this.atividades = atividades
     }
 
     getId(): string {
@@ -49,7 +69,7 @@ export class Cronograma {
         return this.ano
     }
 
-    getSemestre(): ENUM_SEMESTRE {
+    getSemestre(): SEMESTRE {
         return this.semestre
     }
 

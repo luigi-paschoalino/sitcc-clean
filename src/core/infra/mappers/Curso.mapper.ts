@@ -1,24 +1,51 @@
 import { Curso } from '../../domain/Curso'
-import { CursoModel } from '../models/Curso.model'
+import { CursoInfraDTO } from '../../../shared/infra/database/prisma/dtos/Curso.dto'
+import { CronogramaMapper } from './Cronograma.mapper'
+import { NormaMapper } from './Norma.mapper'
+import { Injectable } from '@nestjs/common'
 
+@Injectable()
 export class CursoMapper {
-    constructor() {}
+    constructor(
+        private readonly normaMapper: NormaMapper,
+        private readonly cronogramaMapper: CronogramaMapper,
+    ) {}
 
-    domainToModel(domain: Curso): CursoModel {
-        const model = CursoModel.create({
+    domainToModel(domain: Curso): CursoInfraDTO {
+        return {
             id: domain.getId(),
             nome: domain.getNome(),
             codigo: domain.getCodigo(),
-        })
-
-        return model
+            cronogramas: domain
+                .getCronogramas()
+                ?.map((cronograma) =>
+                    this.cronogramaMapper.domainToModel(
+                        cronograma,
+                        domain.getId(),
+                    ),
+                ),
+            normas: domain
+                .getNormas()
+                ?.map((norma) =>
+                    this.normaMapper.domainToModel(norma, domain.getId()),
+                ),
+        }
     }
 
-    modelToDomain(model: CursoModel): Curso {
-        const domain = Curso.criar(
+    modelToDomain(model: CursoInfraDTO): Curso {
+        const normasDomain = model.normas?.map((norma) =>
+            this.normaMapper.modelToDomain(norma),
+        )
+        const cronogramasDomain = model.cronogramas?.map((cronograma) =>
+            this.cronogramaMapper.modelToDomain(cronograma),
+        )
+
+        const domain = Curso.carregar(
             {
                 nome: model.nome,
                 codigo: model.codigo,
+                normas: normasDomain ?? [],
+                cronogramas: cronogramasDomain ?? [],
             },
             model.id,
         )

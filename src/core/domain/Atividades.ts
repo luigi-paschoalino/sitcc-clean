@@ -1,9 +1,9 @@
 import { InvalidPropsException } from './exceptions/InvalidProps.exception'
 
 export enum TIPO_ATIVIDADE {
-    ENTREGA_PARCIAL = 'ENTREGA PARCIAL',
-    ENTREGA_FINAL = 'ENTREGA FINAL',
-    DATA_DEFESA = 'DATA DEFESA',
+    ENTREGA_PARCIAL = 'ENTREGA_PARCIAL',
+    ENTREGA_FINAL = 'ENTREGA_FINAL',
+    DATA_DEFESA = 'DATA_DEFESA',
 }
 
 export interface CriarAtividadeProps {
