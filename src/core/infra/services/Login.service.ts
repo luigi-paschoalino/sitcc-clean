@@ -39,7 +39,7 @@ export class AuthServiceImpl implements AuthService {
                 const token = jwt.sign(
                     {
                         id: usuario.getId(),
-                        perfil: usuario.getTipo(),
+                        tipo: usuario.getTipo(),
                     },
                     secretToken,
                     {

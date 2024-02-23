@@ -38,7 +38,7 @@ export class EnviarTfgParcialUsecase {
                 )
 
             if (tfg.getStatus() !== STATUS_TFG.ORIENTACAO_ACEITA)
-                throw new TfgException('A orientação do Tfg não foi aprovada!')
+                throw new TfgException('A orientação do TFG não foi aprovada!')
 
             const service = await this.moverTfgService.execute({
                 tfgId: props.tfgId,

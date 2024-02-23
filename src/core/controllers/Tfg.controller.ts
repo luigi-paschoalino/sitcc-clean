@@ -44,6 +44,10 @@ import {
     AvaliarNotaFinalUsecaseProps,
 } from '../application/usecases/tfg/AvaliarNotaFinal.usecase'
 import { EnviarTfgFinalUsecase } from '../application/usecases/tfg/EnviarTfgFinal.usecase'
+import {
+    EditarBancaUsecase,
+    EditarBancaUsecaseProps,
+} from '../application/usecases/tfg/EditarBanca.usecase'
 
 @Controller('tfg')
 export class TfgController extends AbstractController {
@@ -52,6 +56,7 @@ export class TfgController extends AbstractController {
         private readonly cadastrarTfgUsecase: CadastrarTfgUsecase,
         private readonly avaliarOrientacaoUsecase: AvaliarOrientacaoUsecase,
         private readonly cadastrarBancaUsecase: CadastrarBancaUsecase,
+        private readonly editarBancaUsecase: EditarBancaUsecase,
         private readonly enviarTfgParcialUsecase: EnviarTfgParcialUsecase,
         private readonly baixarTfgUsecase: BaixarTfgUsecase,
         private readonly avaliarNotaParcial: AvaliarNotaParcialUsecase,
@@ -122,6 +127,22 @@ export class TfgController extends AbstractController {
         return this.handleResponse(result)
     }
 
+    @Patch(':id/banca')
+    @UseGuards(JwtAuthGuard)
+    public async editarBanca(
+        @Param('id') id: string,
+        @Body() body: EditarBancaUsecaseProps,
+        @Req() req: any,
+    ) {
+        const result = await this.editarBancaUsecase.execute({
+            ...body,
+            tfgId: id,
+            usuarioTipo: req.user.tipo,
+        })
+
+        return this.handleResponse(result)
+    }
+
     @Put(':id/nota-parcial')
     @UseGuards(JwtAuthGuard)
     public async atribuirNotaParcial(
@@ -138,7 +159,6 @@ export class TfgController extends AbstractController {
         return this.handleResponse(result)
     }
 
-    // TODO: conferir Usecase
     @Put(':id/nota-final')
     @UseGuards(JwtAuthGuard)
     public async atribuirNotaFinal(

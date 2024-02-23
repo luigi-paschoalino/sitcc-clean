@@ -49,9 +49,9 @@ export class Banca {
     static carregar(props: CarregarBancaProps, id: string): Banca {
         const banca = new Banca(id)
 
-        banca.setProfessorId(props.professorId)
-        banca.setSegundoProfessorId(props.segundoProfessorId)
-        banca.setData(props.data)
+        banca.professorId = props.professorId
+        banca.segundoProfessorId = props.segundoProfessorId
+        banca.data = props.data
 
         banca.notaApresentacaoProfessor = props.notaApresentacaoProfessor
         banca.notaApresentacaoSegundoProfessor =
@@ -67,6 +67,11 @@ export class Banca {
             throw new InvalidPropsException(
                 'ID do professor não pode ser vazio',
             )
+        if (id === this.segundoProfessorId)
+            throw new InvalidPropsException(
+                'O segundo professor não pode ser o mesmo que o primeiro',
+            )
+
         this.professorId = id
     }
 
@@ -75,12 +80,19 @@ export class Banca {
             throw new InvalidPropsException(
                 'ID do segundo professor não pode ser vazio',
             )
+        if (id === this.professorId)
+            throw new InvalidPropsException(
+                'O segundo professor não pode ser o mesmo que o primeiro',
+            )
+
         this.segundoProfessorId = id
     }
 
     private setData(data: Date): Error | void {
-        //TODO: fazer validação de data
-        if (!data) throw new InvalidPropsException('A data não pode ser vazio')
+        if (!data) throw new InvalidPropsException('A data não pode ser vazia')
+        if (new Date(data) < new Date())
+            throw new InvalidPropsException('A data não pode ser no passado')
+
         this.data = data
     }
 
@@ -114,6 +126,17 @@ export class Banca {
 
     getNotaTrabalhoSegundoProfessor(): number {
         return this.notaTrabalhoSegundoProfessor
+    }
+
+    editarBanca(props: {
+        professorId?: string
+        segundoProfessorId?: string
+        data?: Date
+    }): Error | void {
+        if (props.professorId) this.setProfessorId(props.professorId)
+        if (props.segundoProfessorId)
+            this.setSegundoProfessorId(props.segundoProfessorId)
+        if (props.data) this.setData(props.data)
     }
 
     avaliarNotaTfg(

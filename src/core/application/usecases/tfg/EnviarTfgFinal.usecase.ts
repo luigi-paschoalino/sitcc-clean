@@ -37,8 +37,8 @@ export class EnviarTfgFinalUsecase {
                     'O usuário informado não possui autoria sobre o TFG',
                 )
 
-            if (tfg.getStatus() !== STATUS_TFG.ENTREGA_PARCIAL)
-                throw new TfgException('A entrega parcial não foi realizada!')
+            if (tfg.getStatus() !== STATUS_TFG.ENTREGA_PARCIAL_APROVADA)
+                throw new TfgException('A entrega parcial não foi avaliada!')
 
             const service = await this.moverTfgService.execute({
                 tfgId: props.tfgId,

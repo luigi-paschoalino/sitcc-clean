@@ -14,6 +14,7 @@ import { GerarCodigoProfessorUsecase } from './codigoProfessor/GerarCodigoProfes
 import { RecuperarSenhaUsecase } from './usuario/RecuperarSenha.usecase'
 import { ValidarTokenUsecase } from './auth/ValidarToken.usecase'
 import { EnviarTfgFinalUsecase } from './tfg/EnviarTfgFinal.usecase'
+import { EditarBancaUsecase } from './tfg/EditarBanca.usecase'
 
 const UseCases = [
     CadastrarTfgUsecase,
@@ -32,6 +33,7 @@ const UseCases = [
     ValidarTokenUsecase,
     EditarCursoUsecase,
     EnviarTfgFinalUsecase,
+    EditarBancaUsecase,
 ]
 
 export default UseCases

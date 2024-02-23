@@ -11,15 +11,18 @@ import { TfgNotaFinalAvaliadaEvent } from './events/TfgNotaFinalEvent.event'
 import { BancaAdicionadaEvent } from './events/BancaAdicionada.event'
 import { TfgEnviadoEvent } from './events/TfgEnviado.event'
 import { TfgException } from './exceptions/Tfg.exception'
+import { BancaEditadaEvent } from './events/BancaEditada.event'
+import { Logger } from '@nestjs/common'
 
 export enum STATUS_TFG {
-    MATRICULA_REALIZADA = 'MATRICULA_REALIZADA',
-    ORIENTACAO_ACEITA = 'ORIENTACAO_ACEITA',
-    ORIENTACAO_RECUSADA = 'ORIENTACAO_RECUSADA',
-    ENTREGA_PARCIAL = 'ENTREGA_PARCIAL',
-    ENTREGA_FINAL = 'ENTREGA_FINAL',
-    APROVADO = 'APROVADO',
-    REPROVADO = 'REPROVADO',
+    MATRICULA_REALIZADA = 'MATRICULA_REALIZADA', // Aluno matriculado e TFG cadastrado
+    ORIENTACAO_ACEITA = 'ORIENTACAO_ACEITA', // Orientação aceita pelo orientador
+    ORIENTACAO_RECUSADA = 'ORIENTACAO_RECUSADA', // Orientação recusada pelo orientador
+    ENTREGA_PARCIAL_REALIZADA = 'ENTREGA_PARCIAL_REALIZADA', // Entrega parcial realizada
+    ENTREGA_PARCIAL_APROVADA = 'ENTREGA_PARCIAL_APROVADA', // Nota parcial atribuída e maior ou igual a 6
+    ENTREGA_FINAL = 'ENTREGA_FINAL', // Entrega final realizada
+    APROVADO = 'APROVADO', // TFG aprovado após avaliação da entrega final
+    REPROVADO = 'REPROVADO', // TFG reprovado a qualquer momento do processo
 }
 
 export enum TIPO_ENTREGA {
@@ -298,7 +301,6 @@ export class Tfg extends AggregateRoot {
         this.coorientadorId = coorientador.getId()
     }
 
-    // TODO: evento para caso a nota seja menor que 6
     private setNotaParcial(nota_parcial: number): void {
         if (!nota_parcial) {
             throw new Error('Nota não informada')
@@ -330,7 +332,33 @@ export class Tfg extends AggregateRoot {
             return error
         }
     }
-    // TODO: comando para editar banca
+
+    public editarBanca(props: {
+        professorId?: string
+        segundoProfessorId?: string
+        data?: Date
+    }): Error | void {
+        if (!this.banca)
+            throw new TfgException('A banca deste TFG ainda não foi atribuída')
+
+        if (
+            this.status !== STATUS_TFG.ENTREGA_PARCIAL_APROVADA &&
+            this.status !== STATUS_TFG.ENTREGA_FINAL
+        )
+            throw new TfgException(
+                'A banca só pode ser editada após a aprovação da entrega parcial e antes da entrega final',
+            )
+
+        const editar = this.banca.editarBanca(props)
+        if (editar instanceof Error) throw editar
+
+        this.apply(
+            new BancaEditadaEvent({
+                tfgId: this.id,
+                alteracoes: props,
+            }),
+        )
+    }
 
     public avaliarOrientacao(
         professorId: string,
@@ -379,6 +407,12 @@ export class Tfg extends AggregateRoot {
             )
 
         this.setNotaParcial(nota)
+
+        this.setStatus(
+            nota >= 6
+                ? STATUS_TFG.ENTREGA_PARCIAL_APROVADA
+                : STATUS_TFG.REPROVADO,
+        )
 
         this.apply(
             new TfgNotaParcialAvaliadaEvent({
@@ -457,7 +491,7 @@ export class Tfg extends AggregateRoot {
             : (this.pathFinal = path)
         this.setStatus(
             tipoEntrega === TIPO_ENTREGA.PARCIAL
-                ? STATUS_TFG.ENTREGA_PARCIAL
+                ? STATUS_TFG.ENTREGA_PARCIAL_REALIZADA
                 : STATUS_TFG.ENTREGA_FINAL,
         )
 
