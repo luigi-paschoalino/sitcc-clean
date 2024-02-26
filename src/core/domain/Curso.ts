@@ -1,4 +1,4 @@
-import { InvalidPropsException } from './exceptions/InvalidProps.exception'
+import { InvalidPropsException } from '../../shared/domain/exceptions/InvalidProps.exception'
 import { Norma } from './Norma'
 import { Cronograma } from './Cronograma'
 import { AggregateRoot } from '@nestjs/cqrs'

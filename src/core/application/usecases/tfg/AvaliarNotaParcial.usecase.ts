@@ -3,7 +3,7 @@ import { TfgRepository } from '../../../domain/repositories/Tfg.repository'
 import { UsuarioRepository } from '../../../domain/repositories/Usuario.repository'
 import { EventPublisher } from '@nestjs/cqrs'
 import { TIPO_USUARIO } from 'src/core/domain/Usuario'
-import { UsuarioException } from 'src/core/domain/exceptions/Usuario.exception'
+import { UsuarioException } from 'src/shared/domain/exceptions/Usuario.exception'
 import { EventPublisherService } from '../../../domain/services/EventPublisher.service'
 
 export interface AvaliarNotaParcialUsecaseProps {

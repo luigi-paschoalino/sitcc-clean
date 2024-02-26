@@ -1,6 +1,6 @@
 import { AbstractEvent } from './AbstractEvent'
 
-interface TfgCadastradoEventProps {
+export interface TfgCadastradoEventProps {
     id: string
     titulo: string
 }

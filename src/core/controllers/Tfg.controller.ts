@@ -19,7 +19,7 @@ import {
     CadastrarTfgUsecaseProps,
 } from '../application/usecases/tfg/CadastrarTfg.usecase'
 import { TIPO_ENTREGA, Tfg } from '../domain/Tfg'
-import { AbstractController } from './AbstractController'
+import { AbstractController } from '../../shared/controllers/AbstractController'
 import {
     AvaliarOrientacaoUsecase,
     AvaliarOrientacaoUsecaseProps,

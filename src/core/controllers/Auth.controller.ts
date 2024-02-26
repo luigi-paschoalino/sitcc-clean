@@ -3,7 +3,7 @@ import {
     AutenticarUsecase,
     AutenticarUsecaseProps,
 } from '../application/usecases/auth/Autenticar.usecase'
-import { AbstractController } from './AbstractController'
+import { AbstractController } from '../../shared/controllers/AbstractController'
 import { Response } from 'express'
 import {
     ValidarTokenUsecase,

@@ -151,6 +151,23 @@ model Tfg {
   @@map("tfgs")
 }
 
+// Indicador
+
+model Indicador {
+  id                         String @id @default(uuid()) @db.Uuid
+  quantidadeTfgs             Int    @default(0)
+  quantidadeAprovacoes       Int    @default(0)
+  quantidadeReprovacoes      Int    @default(0)
+  orientacoesRecusadas       Int    @default(0)
+  orientacoesAceitas         Int    @default(0)
+  entregasParciaisRealizadas Int    @default(0)
+  entregasParciaisAprovadas  Int    @default(0)
+  entregasFinais             Int    @default(0)
+  orientacaoPendente         Int    @default(0)
+
+  @@map("indicadores")
+}
+
 // Enums
 
 enum TIPO_ATIVIDADE {

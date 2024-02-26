@@ -1,5 +1,5 @@
-import { BancaException } from './exceptions/Banca.exception'
-import { InvalidPropsException } from './exceptions/InvalidProps.exception'
+import { BancaException } from '../../shared/domain/exceptions/Banca.exception'
+import { InvalidPropsException } from '../../shared/domain/exceptions/InvalidProps.exception'
 
 export interface CriarBancaProps {
     professorId: string

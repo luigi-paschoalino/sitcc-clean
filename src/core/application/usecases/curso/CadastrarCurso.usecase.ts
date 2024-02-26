@@ -3,7 +3,7 @@ import { UniqueIdService } from '../../../domain/services/UniqueID.service'
 import { Curso } from '../../../domain/Curso'
 import { EventPublisherService } from '../../../domain/services/EventPublisher.service'
 import { CursoRepository } from '../../../domain/repositories/Curso.repository'
-import { InvalidPropsException } from '../../../domain/exceptions/InvalidProps.exception'
+import { InvalidPropsException } from '../../../../shared/domain/exceptions/InvalidProps.exception'
 
 export interface CadastrarCursoUsecaseProps {
     nome: string

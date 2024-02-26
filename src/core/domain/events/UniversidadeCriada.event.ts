@@ -5,7 +5,6 @@ interface UniversidadeCriadaEventProps {
     nome: string
 }
 
-//TODO: como pegar um evento disparado e salvar no banco de dados?
 export class UniversidadeCriadaEvent extends AbstractEvent<UniversidadeCriadaEventProps> {
     constructor(props: UniversidadeCriadaEventProps) {
         super(UniversidadeCriadaEvent.name, props)

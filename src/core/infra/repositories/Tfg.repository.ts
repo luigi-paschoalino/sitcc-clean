@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { TfgRepository } from '../../domain/repositories/Tfg.repository'
 import { Tfg } from '../../domain/Tfg'
-import { RepositoryException } from '../../domain/exceptions/Repository.exception'
-import { RepositoryDataNotFoundException } from '../../domain/exceptions/RepositoryDataNotFound.exception'
+import { RepositoryException } from '../../../shared/domain/exceptions/Repository.exception'
+import { RepositoryDataNotFoundException } from '../../../shared/domain/exceptions/RepositoryDataNotFound.exception'
 import { TfgMapper } from '../mappers/Tfg.mapper'
 import { PrismaService } from '../../../shared/infra/database/prisma/prisma.service'
 

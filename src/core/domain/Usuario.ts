@@ -1,7 +1,7 @@
 import { AggregateRoot } from '@nestjs/cqrs'
 import { PerfilProfessor } from './PerfilProfessor'
 import { UsuarioCadastradoEvent } from './events/UsuarioCadastrado.event'
-import { InvalidPropsException } from './exceptions/InvalidProps.exception'
+import { InvalidPropsException } from '../../shared/domain/exceptions/InvalidProps.exception'
 import { SenhaReiniciadaEvent } from './events/SenhaReiniciada.event'
 
 export enum TIPO_USUARIO {

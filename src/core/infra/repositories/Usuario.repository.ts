@@ -1,9 +1,9 @@
 import { Inject, Injectable, Logger } from '@nestjs/common'
 import { TIPO_USUARIO, Usuario } from '../../domain/Usuario'
-import { RepositoryException } from '../../domain/exceptions/Repository.exception'
+import { RepositoryException } from '../../../shared/domain/exceptions/Repository.exception'
 import { UsuarioMapper } from '../mappers/Usuario.mapper'
 import { UsuarioRepository } from './../../domain/repositories/Usuario.repository'
-import { RepositoryDataNotFoundException } from '../../domain/exceptions/RepositoryDataNotFound.exception'
+import { RepositoryDataNotFoundException } from '../../../shared/domain/exceptions/RepositoryDataNotFound.exception'
 import { PrismaService } from '../../../shared/infra/database/prisma/prisma.service'
 
 @Injectable()
@@ -263,6 +263,27 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
             if (!models || models.length === 0)
                 throw new RepositoryDataNotFoundException(
                     `Não foi possível encontrar nenhum usuario com o tipo: ${tipo}`,
+                )
+
+            const usuarios = models.map((model) =>
+                this.usuarioMapper.modelToDomain({
+                    ...model,
+                }),
+            )
+            return usuarios
+        } catch (error) {
+            return error
+        }
+    }
+
+    async listar(): Promise<Error | Usuario[]> {
+        try {
+            // TODO: criar rota, permitir apenas admin para ela e validar se funciona
+            const models = await this.prismaService.usuario.findMany({})
+
+            if (!models || models.length === 0)
+                throw new RepositoryDataNotFoundException(
+                    `Não foi possível encontrar nenhum usuario!`,
                 )
 
             const usuarios = models.map((model) =>

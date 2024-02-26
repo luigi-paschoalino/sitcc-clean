@@ -1,4 +1,4 @@
-import { InvalidPropsException } from './exceptions/InvalidProps.exception'
+import { InvalidPropsException } from '../../shared/domain/exceptions/InvalidProps.exception'
 
 export interface CriarNormaProps {
     titulo: string

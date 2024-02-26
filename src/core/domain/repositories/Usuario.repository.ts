@@ -7,4 +7,5 @@ export interface UsuarioRepository {
     buscarPorEmail(email: string): Promise<Error | Usuario>
     buscarPorHashSenha(hash: string): Promise<Error | Usuario>
     buscarPorTipo(tipo: TIPO_USUARIO): Promise<Error | Usuario[]>
+    listar(): Promise<Error | Usuario[]>
 }

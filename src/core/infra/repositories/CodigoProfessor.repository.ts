@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { CodigoProfessor } from '../../domain/CodigoProfessor'
-import { RepositoryDataNotFoundException } from '../../domain/exceptions/RepositoryDataNotFound.exception'
+import { RepositoryDataNotFoundException } from '../../../shared/domain/exceptions/RepositoryDataNotFound.exception'
 import { CodigoProfessorRepository } from '../../domain/repositories/CodigoProfessor.repository'
 import { CodigoProfessorMapper } from '../mappers/CodigoProfessor.mapper'
 import { PrismaService } from '../../../shared/infra/database/prisma/prisma.service'
