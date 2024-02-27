@@ -1,18 +1,17 @@
-import { AggregateRoot } from '@nestjs/cqrs'
-import { TfgCadastradoEvent } from './events/TfgCadastrado.event'
+import { AbstractAggregateRoot } from '../../shared/domain/AbstractAggregateRoot'
+import { InvalidPropsException } from '../../shared/domain/exceptions/InvalidProps.exception'
+import { TfgException } from '../../shared/domain/exceptions/Tfg.exception'
+import { UsuarioException } from '../../shared/domain/exceptions/Usuario.exception'
 import { Banca } from './Banca'
 import { TIPO_USUARIO, Usuario } from './Usuario'
-import { UsuarioException } from '../../shared/domain/exceptions/Usuario.exception'
+import { BancaAdicionadaEvent } from './events/BancaAdicionada.event'
+import { BancaEditadaEvent } from './events/BancaEditada.event'
+import { TfgCadastradoEvent } from './events/TfgCadastrado.event'
+import { TfgEnviadoEvent } from './events/TfgEnviado.event'
+import { TfgNotaFinalAvaliadaEvent } from './events/TfgNotaFinalEvent.event'
+import { TfgNotaParcialAvaliadaEvent } from './events/TfgNotaParcialAvaliada.event'
 import { TfgOrientacaoAprovadaEvent } from './events/TfgOrientacaoAprovada.event'
 import { TfgOrientacaoReprovadaEvent } from './events/TfgOrientacaoReprovada.event'
-import { InvalidPropsException } from '../../shared/domain/exceptions/InvalidProps.exception'
-import { TfgNotaParcialAvaliadaEvent } from './events/TfgNotaParcialAvaliada.event'
-import { TfgNotaFinalAvaliadaEvent } from './events/TfgNotaFinalEvent.event'
-import { BancaAdicionadaEvent } from './events/BancaAdicionada.event'
-import { TfgEnviadoEvent } from './events/TfgEnviado.event'
-import { TfgException } from '../../shared/domain/exceptions/Tfg.exception'
-import { BancaEditadaEvent } from './events/BancaEditada.event'
-import { Logger } from '@nestjs/common'
 
 export enum STATUS_TFG {
     MATRICULA_REALIZADA = 'MATRICULA_REALIZADA', // Aluno matriculado e TFG cadastrado
@@ -66,8 +65,7 @@ export interface CarregarTfgProps {
     pathFinal?: string
 }
 
-export class Tfg extends AggregateRoot {
-    private id: string
+export class Tfg extends AbstractAggregateRoot<string> {
     private alunoId: string
     private orientadorId: string
     private coorientadorId?: string
@@ -87,13 +85,12 @@ export class Tfg extends AggregateRoot {
     private pathParcial?: string
     private pathFinal?: string
 
-    private constructor(id: string) {
-        super()
-        this.id = id
+    private constructor(id?: string) {
+        super(id)
     }
 
-    static criar(props: CriarTfgProps, id: string): Error | Tfg {
-        const tfg = new Tfg(id)
+    static criar(props: CriarTfgProps): Error | Tfg {
+        const tfg = new Tfg()
 
         if (props.coorientador && props.coorientador === props.orientador)
             throw new InvalidPropsException(
@@ -147,10 +144,6 @@ export class Tfg extends AggregateRoot {
         tfg.coorientadorId = props.coorientador
 
         return tfg
-    }
-
-    public getId(): string {
-        return this.id
     }
 
     public getAluno(): string {

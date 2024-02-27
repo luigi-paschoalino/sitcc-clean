@@ -1,14 +1,13 @@
-import { Inject, Injectable, Logger } from '@nestjs/common'
-import { TIPO_USUARIO, Usuario } from '../../domain/Usuario'
+import { Inject, Injectable } from '@nestjs/common'
 import { RepositoryException } from '../../../shared/domain/exceptions/Repository.exception'
-import { UsuarioMapper } from '../mappers/Usuario.mapper'
-import { UsuarioRepository } from './../../domain/repositories/Usuario.repository'
 import { RepositoryDataNotFoundException } from '../../../shared/domain/exceptions/RepositoryDataNotFound.exception'
 import { PrismaService } from '../../../shared/infra/database/prisma/prisma.service'
+import { TIPO_USUARIO, Usuario } from '../../domain/Usuario'
+import { UsuarioMapper } from '../mappers/Usuario.mapper'
+import { UsuarioRepository } from './../../domain/repositories/Usuario.repository'
 
 @Injectable()
 export class UsuarioRepositoryImpl implements UsuarioRepository {
-    private logger = new Logger(UsuarioRepositoryImpl.name)
     constructor(
         @Inject('PrismaService') private readonly prismaService: PrismaService,
         private readonly usuarioMapper: UsuarioMapper,

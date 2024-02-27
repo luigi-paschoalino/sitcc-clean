@@ -1,9 +1,8 @@
-import { Inject, Logger } from '@nestjs/common'
-import { UniqueIdService } from '../../../domain/services/UniqueID.service'
-import { Curso } from '../../../domain/Curso'
-import { EventPublisherService } from '../../../domain/services/EventPublisher.service'
-import { CursoRepository } from '../../../domain/repositories/Curso.repository'
+import { Inject } from '@nestjs/common'
 import { InvalidPropsException } from '../../../../shared/domain/exceptions/InvalidProps.exception'
+import { Curso } from '../../../domain/Curso'
+import { CursoRepository } from '../../../domain/repositories/Curso.repository'
+import { EventPublisherService } from '../../../domain/services/EventPublisher.service'
 
 export interface CadastrarCursoUsecaseProps {
     nome: string
@@ -11,13 +10,9 @@ export interface CadastrarCursoUsecaseProps {
 }
 
 export class CadastrarCursoUsecase {
-    private logger = new Logger(CadastrarCursoUsecase.name)
-
     constructor(
         @Inject('EventPublisherService')
         private readonly publisher: EventPublisherService,
-        @Inject('UniqueIdService')
-        private readonly uniqueIdService: UniqueIdService,
         @Inject('CursoRepository')
         private readonly cursoRepository: CursoRepository,
     ) {}
@@ -37,13 +32,10 @@ export class CadastrarCursoUsecase {
                     'Já existe um curso com esse nome/código',
                 )
 
-            const curso = Curso.criar(
-                {
-                    nome: props.nome,
-                    codigo: props.codigo,
-                },
-                this.uniqueIdService.gerarUuid(),
-            )
+            const curso = Curso.criar({
+                nome: props.nome,
+                codigo: props.codigo,
+            })
             if (curso instanceof Error) {
                 throw curso
             }

@@ -1,7 +1,6 @@
-import { Logger, Inject } from '@nestjs/common'
-import { UsuarioRepository } from '../../domain/repositories/Usuario.repository'
+import { Inject, Logger } from '@nestjs/common'
 import { UsuarioDTO } from '../../domain/dtos/Usuario.dto'
-import { CursoDTO } from '../../domain/dtos/Curso.dto'
+import { UsuarioRepository } from '../../domain/repositories/Usuario.repository'
 import { UsuarioDTOMapper } from '../mappers/UsuarioDTO.mapper'
 
 type BuscarUsuarioHashResponse = UsuarioDTO

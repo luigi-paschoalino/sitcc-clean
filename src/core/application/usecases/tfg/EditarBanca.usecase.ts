@@ -1,10 +1,10 @@
-import { Inject, Logger } from '@nestjs/common'
-import { TfgRepository } from '../../../domain/repositories/Tfg.repository'
-import { EventPublisherService } from '../../../domain/services/EventPublisher.service'
-import { UsuarioRepository } from '../../../domain/repositories/Usuario.repository'
-import { TIPO_USUARIO } from '../../../domain/Usuario'
-import { UsuarioException } from '../../../../shared/domain/exceptions/Usuario.exception'
+import { Inject } from '@nestjs/common'
 import { InvalidPropsException } from '../../../../shared/domain/exceptions/InvalidProps.exception'
+import { UsuarioException } from '../../../../shared/domain/exceptions/Usuario.exception'
+import { TIPO_USUARIO } from '../../../domain/Usuario'
+import { TfgRepository } from '../../../domain/repositories/Tfg.repository'
+import { UsuarioRepository } from '../../../domain/repositories/Usuario.repository'
+import { EventPublisherService } from '../../../domain/services/EventPublisher.service'
 
 export interface EditarBancaUsecaseProps {
     tfgId: string
@@ -15,8 +15,6 @@ export interface EditarBancaUsecaseProps {
 }
 
 export class EditarBancaUsecase {
-    private logger = new Logger(EditarBancaUsecase.name)
-
     constructor(
         @Inject('TfgRepository')
         private readonly tfgRepository: TfgRepository,

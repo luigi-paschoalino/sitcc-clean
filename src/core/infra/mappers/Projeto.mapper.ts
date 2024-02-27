@@ -18,15 +18,12 @@ export class ProjetoMapper {
     }
 
     modelToDomain(projetoModel: ProjetoModel): Projeto {
-        const domain = Projeto.criar(
-            {
-                titulo: projetoModel.titulo,
-                descricao: projetoModel.descricao,
-                preRequisitos: projetoModel.preRequisitos,
-                disponivel: projetoModel.disponivel,
-            },
-            projetoModel.id,
-        )
+        const domain = Projeto.criar({
+            titulo: projetoModel.titulo,
+            descricao: projetoModel.descricao,
+            preRequisitos: projetoModel.preRequisitos,
+            disponivel: projetoModel.disponivel,
+        })
 
         return domain
     }

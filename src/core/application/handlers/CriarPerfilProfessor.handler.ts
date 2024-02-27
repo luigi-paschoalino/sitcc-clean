@@ -1,11 +1,10 @@
 import { Inject, Logger } from '@nestjs/common'
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs'
-import { UsuarioCadastradoEvent } from '../../domain/events/UsuarioCadastrado.event'
-import { UsuarioRepository } from '../../domain/repositories/Usuario.repository'
-import { TIPO_USUARIO } from '../../domain/Usuario'
-import { CodigoProfessorRepository } from '../../domain/repositories/CodigoProfessor.repository'
 import { PerfilProfessor } from '../../domain/PerfilProfessor'
-import { UniqueIdService } from '../../domain/services/UniqueID.service'
+import { TIPO_USUARIO } from '../../domain/Usuario'
+import { UsuarioCadastradoEvent } from '../../domain/events/UsuarioCadastrado.event'
+import { CodigoProfessorRepository } from '../../domain/repositories/CodigoProfessor.repository'
+import { UsuarioRepository } from '../../domain/repositories/Usuario.repository'
 
 @EventsHandler(UsuarioCadastradoEvent)
 export class CriarPerfilProfessorHandler
@@ -17,8 +16,6 @@ export class CriarPerfilProfessorHandler
         private readonly usuarioRepository: UsuarioRepository,
         @Inject('CodigoProfessorRepository')
         private readonly codigoProfessorRepository: CodigoProfessorRepository,
-        @Inject('UniqueIdService')
-        private readonly uniqueIdService: UniqueIdService,
     ) {}
     async handle(event: UsuarioCadastradoEvent): Promise<Error | void> {
         try {
@@ -34,15 +31,10 @@ export class CriarPerfilProfessorHandler
                 )
                 if (professor instanceof Error) throw professor
 
-                const id = this.uniqueIdService.gerarUuid()
-
-                const perfilProfessor = PerfilProfessor.criar(
-                    {
-                        descricao: '',
-                        link: '',
-                    },
-                    id,
-                )
+                const perfilProfessor = PerfilProfessor.criar({
+                    descricao: '',
+                    link: '',
+                })
 
                 professor.setPerfilProfessor(perfilProfessor)
 

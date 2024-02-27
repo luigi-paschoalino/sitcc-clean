@@ -1,3 +1,4 @@
+import { AbstractEntity } from '../../shared/domain/AbstractEntity'
 import { BancaException } from '../../shared/domain/exceptions/Banca.exception'
 import { InvalidPropsException } from '../../shared/domain/exceptions/InvalidProps.exception'
 
@@ -17,8 +18,7 @@ export interface CarregarBancaProps {
     notaTrabalhoSegundoProfessor: number
 }
 
-export class Banca {
-    private id: string
+export class Banca extends AbstractEntity<string> {
     private professorId: string
     private segundoProfessorId: string
     private data: Date
@@ -27,12 +27,12 @@ export class Banca {
     private notaTrabalhoProfessor: number
     private notaTrabalhoSegundoProfessor: number
 
-    private constructor(id: string) {
-        this.id = id
+    private constructor(id?: string) {
+        super(id)
     }
 
-    static criar(props: CriarBancaProps, id: string): Banca {
-        const banca = new Banca(id)
+    static criar(props: CriarBancaProps): Banca {
+        const banca = new Banca()
 
         if (props.segundoProfessorId === props.professorId)
             throw new InvalidPropsException(
@@ -94,10 +94,6 @@ export class Banca {
             throw new InvalidPropsException('A data não pode ser no passado')
 
         this.data = data
-    }
-
-    getId(): string {
-        return this.id
     }
 
     getProfessorId(): string {

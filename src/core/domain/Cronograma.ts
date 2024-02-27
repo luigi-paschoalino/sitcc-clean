@@ -1,6 +1,6 @@
 import { Atividade } from './Atividades'
 import { InvalidPropsException } from '../../shared/domain/exceptions/InvalidProps.exception'
-import { AbstractAggregate } from '../../shared/domain/AbstractAggregate'
+import { AbstractEntity } from '../../shared/domain/AbstractEntity'
 
 export interface CriarCronogramaProps {
     ano: number
@@ -18,7 +18,7 @@ export enum SEMESTRE {
     SEGUNDO = 'SEGUNDO',
 }
 
-export class Cronograma extends AbstractAggregate {
+export class Cronograma extends AbstractEntity {
     private ano: number
     private semestre: SEMESTRE
     private atividades?: Atividade[]

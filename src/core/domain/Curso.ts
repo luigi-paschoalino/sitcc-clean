@@ -1,7 +1,7 @@
 import { InvalidPropsException } from '../../shared/domain/exceptions/InvalidProps.exception'
 import { Norma } from './Norma'
 import { Cronograma } from './Cronograma'
-import { AggregateRoot } from '@nestjs/cqrs'
+import { AbstractAggregateRoot } from '../../shared/domain/AbstractAggregateRoot'
 
 export interface CriarCursoProps {
     nome: string
@@ -15,22 +15,20 @@ export interface CarregarCursoProps {
     cronogramas?: Cronograma[]
 }
 
-export class Curso extends AggregateRoot {
-    private id: string
+export class Curso extends AbstractAggregateRoot<string> {
     private nome: string
     private codigo: string
     private normas?: Norma[]
     private cronogramas?: Cronograma[]
 
-    private constructor(id: string) {
-        super()
-
-        this.id = id
+    private constructor(id?: string) {
+        super(id)
     }
 
     //TODO: criar função pra gerar UUID por conta
-    static criar(props: CriarCursoProps, id: string): Curso {
-        const instance = new Curso(id)
+    static criar(props: CriarCursoProps): Curso {
+        const instance = new Curso()
+
         instance.setNome(props.nome)
         instance.setCodigo(props.codigo)
 
@@ -39,6 +37,7 @@ export class Curso extends AggregateRoot {
 
     static carregar(props: CarregarCursoProps, id: string): Curso {
         const instance = new Curso(id)
+
         instance.setNome(props.nome)
         instance.setCodigo(props.codigo)
         instance.normas = props.normas ?? []
@@ -90,10 +89,6 @@ export class Curso extends AggregateRoot {
 
     getCodigo() {
         return this.codigo
-    }
-
-    getId(): string {
-        return this.id
     }
 
     getNormas(): Norma[] {

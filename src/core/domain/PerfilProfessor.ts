@@ -1,3 +1,4 @@
+import { AbstractEntity } from '../../shared/domain/AbstractEntity'
 import { AreasAtuacao } from './AreasAtuacao'
 import { Projeto } from './Projeto'
 
@@ -7,28 +8,23 @@ export interface CriarPerfilProps {
     projetos?: Projeto[]
     areasAtuacao?: AreasAtuacao[]
 }
-export class PerfilProfessor {
-    private id: string
+export class PerfilProfessor extends AbstractEntity<string> {
     private descricao: string
     private link: string
     private projetos?: Projeto[]
     private areasAtuacao?: AreasAtuacao[]
 
-    private constructor(id: string) {
-        this.id = id
+    private constructor(id?: string) {
+        super(id)
     }
 
-    static criar(props: CriarPerfilProps, id: string): PerfilProfessor {
-        const instance = new PerfilProfessor(id)
+    static criar(props: CriarPerfilProps): PerfilProfessor {
+        const instance = new PerfilProfessor()
 
         instance.descricao = props.descricao
         instance.link = props.link
 
         return instance
-    }
-
-    public getId(): string {
-        return this.id
     }
 
     public getDescricao(): string {

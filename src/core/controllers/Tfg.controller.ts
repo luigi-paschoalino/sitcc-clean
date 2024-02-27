@@ -1,53 +1,50 @@
 import {
+    Body,
     Controller,
     Get,
     Param,
-    Post,
-    Body,
     Patch,
+    Post,
     Put,
-    UseInterceptors,
-    UploadedFile,
-    Res,
     Req,
+    Res,
+    UploadedFile,
     UseGuards,
+    UseInterceptors,
 } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
+import { Response } from 'express'
+import { JwtAuthGuard } from 'src/shared/middlewares/AuthenticationMiddleware'
+import { AbstractController } from '../../shared/controllers/AbstractController'
 import { BuscarTfgQuery } from '../application/queries/BuscarTfg.query'
 import {
-    CadastrarTfgUsecase,
-    CadastrarTfgUsecaseProps,
-} from '../application/usecases/tfg/CadastrarTfg.usecase'
-import { TIPO_ENTREGA, Tfg } from '../domain/Tfg'
-import { AbstractController } from '../../shared/controllers/AbstractController'
-import {
-    AvaliarOrientacaoUsecase,
-    AvaliarOrientacaoUsecaseProps,
-} from '../application/usecases/tfg/AvaliarOrientacao.usecase'
-import {
-    CadastrarBancaUsecase,
-    CadastrarBancaUsecaseProps,
-} from '../application/usecases/tfg/CadastrarBanca.usecase'
-import {
-    EnviarTfgParcialUsecase,
-    EnviarTfgParcialUsecaseProps,
-} from '../application/usecases/tfg/EnviarTfgParcial.usecase'
-import { Response } from 'express'
-import { BaixarTfgUsecase } from '../application/usecases/tfg/BaixarTfg.usecase'
-import { JwtAuthGuard } from 'src/shared/middlewares/AuthenticationMiddleware'
+    AvaliarNotaFinalUsecase,
+    AvaliarNotaFinalUsecaseProps,
+} from '../application/usecases/tfg/AvaliarNotaFinal.usecase'
 import {
     AvaliarNotaParcialUsecase,
     AvaliarNotaParcialUsecaseProps,
 } from '../application/usecases/tfg/AvaliarNotaParcial.usecase'
 import {
-    AvaliarNotaFinalUsecase,
-    AvaliarNotaFinalUsecaseProps,
-} from '../application/usecases/tfg/AvaliarNotaFinal.usecase'
-import { EnviarTfgFinalUsecase } from '../application/usecases/tfg/EnviarTfgFinal.usecase'
+    AvaliarOrientacaoUsecase,
+    AvaliarOrientacaoUsecaseProps,
+} from '../application/usecases/tfg/AvaliarOrientacao.usecase'
+import { BaixarTfgUsecase } from '../application/usecases/tfg/BaixarTfg.usecase'
+import {
+    CadastrarBancaUsecase,
+    CadastrarBancaUsecaseProps,
+} from '../application/usecases/tfg/CadastrarBanca.usecase'
+import {
+    CadastrarTfgUsecase,
+    CadastrarTfgUsecaseProps,
+} from '../application/usecases/tfg/CadastrarTfg.usecase'
 import {
     EditarBancaUsecase,
     EditarBancaUsecaseProps,
 } from '../application/usecases/tfg/EditarBanca.usecase'
+import { EnviarTfgFinalUsecase } from '../application/usecases/tfg/EnviarTfgFinal.usecase'
+import { EnviarTfgParcialUsecase } from '../application/usecases/tfg/EnviarTfgParcial.usecase'
+import { TIPO_ENTREGA, Tfg } from '../domain/Tfg'
 
 @Controller('tfg')
 export class TfgController extends AbstractController {

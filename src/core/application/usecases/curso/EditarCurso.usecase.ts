@@ -1,4 +1,4 @@
-import { Inject, Logger } from '@nestjs/common'
+import { Inject } from '@nestjs/common'
 import { CursoRepository } from '../../../domain/repositories/Curso.repository'
 
 export interface EditarCursoUsecaseProps {
@@ -8,8 +8,6 @@ export interface EditarCursoUsecaseProps {
 }
 
 export class EditarCursoUsecase {
-    private logger = new Logger(EditarCursoUsecase.name)
-
     constructor(
         @Inject('CursoRepository')
         private readonly cursoRepository: CursoRepository,

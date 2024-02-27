@@ -1,3 +1,4 @@
+import { AbstractEntity } from '../../shared/domain/AbstractEntity'
 import { InvalidPropsException } from '../../shared/domain/exceptions/InvalidProps.exception'
 
 export enum TIPO_ATIVIDADE {
@@ -12,18 +13,17 @@ export interface CriarAtividadeProps {
     descricao: string
 }
 
-export class Atividade {
-    private id: string
+export class Atividade extends AbstractEntity<string> {
     private data: Date
     private titulo: TIPO_ATIVIDADE
     private descricao: string
 
-    private constructor(id: string) {
-        this.id = id
+    private constructor(id?: string) {
+        super(id)
     }
 
-    static criar(props: CriarAtividadeProps, id: string): Atividade {
-        const atividade = new Atividade(id)
+    static criar(props: CriarAtividadeProps): Atividade {
+        const atividade = new Atividade()
 
         atividade.setData(props.data)
         atividade.setTitulo(props.titulo)
@@ -31,6 +31,7 @@ export class Atividade {
 
         return atividade
     }
+    //TODO :função carregar
 
     private setData(data: Date) {
         //TODO: validar data
@@ -50,10 +51,6 @@ export class Atividade {
                 'Descrição da Atividade não pode ser vazio',
             )
         this.descricao = descricao
-    }
-
-    getId() {
-        return this.id
     }
 
     getTitulo() {

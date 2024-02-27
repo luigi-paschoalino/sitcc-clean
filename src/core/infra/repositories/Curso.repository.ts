@@ -1,14 +1,13 @@
+import { Inject, Injectable } from '@nestjs/common'
 import { CursoRepository } from 'src/core/domain/repositories/Curso.repository'
-import { CursoMapper } from '../mappers/Curso.mapper'
 import { RepositoryException } from '../../../shared/domain/exceptions/Repository.exception'
 import { RepositoryDataNotFoundException } from '../../../shared/domain/exceptions/RepositoryDataNotFound.exception'
-import { Inject, Injectable, Logger } from '@nestjs/common'
-import { Curso } from '../../domain/Curso'
 import { PrismaService } from '../../../shared/infra/database/prisma/prisma.service'
+import { Curso } from '../../domain/Curso'
+import { CursoMapper } from '../mappers/Curso.mapper'
 
 @Injectable()
 export class CursoRepositoryImpl implements CursoRepository {
-    private logger = new Logger(CursoRepositoryImpl.name)
     constructor(
         @Inject('PrismaService') private readonly prismaService: PrismaService,
         private readonly cursoMapper: CursoMapper,

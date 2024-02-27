@@ -1,8 +1,8 @@
-import { AggregateRoot } from '@nestjs/cqrs'
-import { PerfilProfessor } from './PerfilProfessor'
-import { UsuarioCadastradoEvent } from './events/UsuarioCadastrado.event'
+import { AbstractAggregateRoot } from '../../shared/domain/AbstractAggregateRoot'
 import { InvalidPropsException } from '../../shared/domain/exceptions/InvalidProps.exception'
+import { PerfilProfessor } from './PerfilProfessor'
 import { SenhaReiniciadaEvent } from './events/SenhaReiniciada.event'
+import { UsuarioCadastradoEvent } from './events/UsuarioCadastrado.event'
 
 export enum TIPO_USUARIO {
     ALUNO = 'ALUNO',
@@ -34,8 +34,7 @@ export interface CarregarUsuarioProps {
     perfilProfessor?: PerfilProfessor
 }
 
-export class Usuario extends AggregateRoot {
-    private id: string // Matricula
+export class Usuario extends AbstractAggregateRoot<string> {
     private cursoId: string
     private nome: string
     private email: string
@@ -46,20 +45,18 @@ export class Usuario extends AggregateRoot {
     private hashRecuperacaoSenha?: string
     private perfilProfessor?: PerfilProfessor
 
-    private constructor(id: string) {
-        super()
-
-        this.id = id
+    private constructor(id?: string) {
+        super(id)
     }
 
-    static criar(props: CriarUsuarioProps, id: string): Usuario {
+    static criar(props: CriarUsuarioProps): Usuario {
         try {
             if (Object.keys(props).length === 0)
                 throw new InvalidPropsException(
                     'Dados do usuário não informados',
                 )
 
-            const instance = new Usuario(id)
+            const instance = new Usuario()
 
             instance.setNome(props.nome)
             instance.setCurso(props.curso)
@@ -164,10 +161,6 @@ export class Usuario extends AggregateRoot {
     public setPerfilProfessor(perfilProfessor: PerfilProfessor) {
         if (this.getTipo() === TIPO_USUARIO.PROFESSOR)
             this.perfilProfessor = perfilProfessor
-    }
-
-    public getId(): string {
-        return this.id
     }
 
     public getNome(): string {

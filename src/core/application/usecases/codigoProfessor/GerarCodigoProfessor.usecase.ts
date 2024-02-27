@@ -1,13 +1,12 @@
+import { Inject, Logger } from '@nestjs/common'
+import { InvalidPropsException } from '../../../../shared/domain/exceptions/InvalidProps.exception'
+import { UsuarioException } from '../../../../shared/domain/exceptions/Usuario.exception'
 import { CodigoProfessor } from '../../../domain/CodigoProfessor'
+import { TIPO_USUARIO } from '../../../domain/Usuario'
+import { CodigoProfessorRepository } from '../../../domain/repositories/CodigoProfessor.repository'
+import { UsuarioRepository } from '../../../domain/repositories/Usuario.repository'
 import { EventPublisherService } from '../../../domain/services/EventPublisher.service'
 import { GerarCodigoService } from '../../../domain/services/GerarCodigo.service'
-import { UniqueIdService } from '../../../domain/services/UniqueID.service'
-import { CodigoProfessorRepository } from '../../../domain/repositories/CodigoProfessor.repository'
-import { Inject, Logger } from '@nestjs/common'
-import { UsuarioRepository } from '../../../domain/repositories/Usuario.repository'
-import { TIPO_USUARIO } from '../../../domain/Usuario'
-import { UsuarioException } from '../../../../shared/domain/exceptions/Usuario.exception'
-import { InvalidPropsException } from '../../../../shared/domain/exceptions/InvalidProps.exception'
 
 export type GerarCodigoProfessorUsecaseProps = {
     usuarioId: string
@@ -24,8 +23,6 @@ export class GerarCodigoProfessorUsecase {
         private readonly usuarioRepository: UsuarioRepository,
         @Inject('EventPublisherService')
         private readonly publisher: EventPublisherService,
-        @Inject('UniqueIdService')
-        private readonly uniqueIdService: UniqueIdService,
         @Inject('GerarCodigoService')
         private readonly gerarCodigoService: GerarCodigoService,
     ) {}
@@ -52,13 +49,10 @@ export class GerarCodigoProfessorUsecase {
             )
             if (professor instanceof Error) return professor
 
-            const id = this.uniqueIdService.gerarUuid()
-
             const codigo = this.gerarCodigoService.gerarCodigo()
 
             const codigoProfessor = CodigoProfessor.criar({
                 codigo,
-                id,
             })
 
             this.logger.debug(JSON.stringify(codigoProfessor, null, 2))
