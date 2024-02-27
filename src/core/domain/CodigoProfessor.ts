@@ -1,5 +1,5 @@
 import { AggregateRoot } from '@nestjs/cqrs'
-import { InvalidPropsException } from './exceptions/InvalidProps.exception'
+import { InvalidPropsException } from '../../shared/domain/exceptions/InvalidProps.exception'
 
 export interface GerarCodigoProfessorProps {
     codigo: string

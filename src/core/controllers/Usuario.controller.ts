@@ -11,7 +11,7 @@ import {
     UseGuards,
     Patch,
 } from '@nestjs/common'
-import { AbstractController } from './AbstractController'
+import { AbstractController } from '../../shared/controllers/AbstractController'
 import { BuscarUsuarioQuery } from '../application/queries/BuscarUsuario.query'
 import {
     RecuperarSenhaUsecase,

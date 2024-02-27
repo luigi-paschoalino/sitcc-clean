@@ -20,7 +20,8 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "prisma:generate": "npx prisma generate --schema=./src/shared/infra/database/prisma/schema.prisma",
     "prisma:migrate": "npx prisma migrate dev --schema=./src/shared/infra/database/prisma/schema.prisma --name",
-    "prisma:update": "npm run prisma:generate && npm run prisma:migrate"
+    "prisma:update": "npm run prisma:generate && npm run prisma:migrate",
+    "prisma:create": "npx prisma migrate dev --create-only --schema=./src/shared/infra/database/prisma/schema.prisma --name"
   },
   "dependencies": {
     "@nestjs/axios": "^3.0.0",

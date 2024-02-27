@@ -2,7 +2,7 @@ import { Inject } from '@nestjs/common'
 import { TfgRepository } from '../../../domain/repositories/Tfg.repository'
 import { UsuarioRepository } from '../../../domain/repositories/Usuario.repository'
 import { TIPO_USUARIO } from '../../../domain/Usuario'
-import { UsuarioException } from '../../../domain/exceptions/Usuario.exception'
+import { UsuarioException } from '../../../../shared/domain/exceptions/Usuario.exception'
 import { EventPublisherService } from '../../../domain/services/EventPublisher.service'
 
 export interface AvaliarOrientacaoUsecaseProps {

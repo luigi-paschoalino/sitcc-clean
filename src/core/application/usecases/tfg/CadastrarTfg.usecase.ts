@@ -36,7 +36,6 @@ export class CadastrarTfgUsecase {
     ) {}
 
     async execute(props: CadastrarTfgUsecaseProps): Promise<Error | void> {
-        // TODO: descomentar o setPerfilProfessor no usuário e verificar erro no agregado Usuario junto ao TCC (not null constraint)
         try {
             const uuid = this.uniqueIdService.gerarUuid()
 

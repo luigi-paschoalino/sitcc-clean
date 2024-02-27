@@ -1,5 +1,5 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common'
-import { AbstractController } from './AbstractController'
+import { AbstractController } from '../../shared/controllers/AbstractController'
 import { GerarCodigoProfessorUsecase } from '../application/usecases/codigoProfessor/GerarCodigoProfessor.usecase'
 import { JwtAuthGuard } from '../../shared/middlewares/AuthenticationMiddleware'
 

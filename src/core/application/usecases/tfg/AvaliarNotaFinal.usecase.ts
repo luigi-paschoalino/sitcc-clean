@@ -1,6 +1,6 @@
 import { Inject } from '@nestjs/common'
 import { TIPO_USUARIO } from 'src/core/domain/Usuario'
-import { UsuarioException } from 'src/core/domain/exceptions/Usuario.exception'
+import { UsuarioException } from 'src/shared/domain/exceptions/Usuario.exception'
 import { TfgRepository } from 'src/core/domain/repositories/Tfg.repository'
 import { UsuarioRepository } from 'src/core/domain/repositories/Usuario.repository'
 import { EventPublisherService } from '../../../domain/services/EventPublisher.service'
@@ -21,7 +21,6 @@ export class AvaliarNotaFinalUsecase {
         private readonly publisher: EventPublisherService,
     ) {}
 
-    // TODO: reavaliar como é feita a avaliação de notas
     async execute(props: AvaliarNotaFinalUsecaseProps): Promise<Error | void> {
         try {
             const professor = await this.usuarioRepository.buscarPorId(

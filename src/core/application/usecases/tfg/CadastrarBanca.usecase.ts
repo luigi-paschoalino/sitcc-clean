@@ -5,7 +5,7 @@ import { UniqueIdService } from 'src/core/domain/services/UniqueID.service'
 import { EventPublisherService } from '../../../domain/services/EventPublisher.service'
 import { UsuarioRepository } from '../../../domain/repositories/Usuario.repository'
 import { TIPO_USUARIO } from '../../../domain/Usuario'
-import { UsuarioException } from '../../../domain/exceptions/Usuario.exception'
+import { UsuarioException } from '../../../../shared/domain/exceptions/Usuario.exception'
 
 export interface CadastrarBancaUsecaseProps {
     usuarioId: string

@@ -11,7 +11,7 @@ import {
     CadastrarCursoUsecase,
     CadastrarCursoUsecaseProps,
 } from '../application/usecases/curso/CadastrarCurso.usecase'
-import { AbstractController } from './AbstractController'
+import { AbstractController } from '../../shared/controllers/AbstractController'
 import { ListarCursosQuery } from '../application/queries/ListarCursos.query'
 import { BuscarCursoQuery } from '../application/queries/BuscarCurso.query'
 import { JwtAuthGuard } from '../../shared/middlewares/AuthenticationMiddleware'
@@ -62,7 +62,6 @@ export class CursoController extends AbstractController {
         return this.handleResponse(result)
     }
 
-    //TODO: rota para editar curso
     @Patch(':id')
     @UseGuards(JwtAuthGuard)
     public async editarCurso(
@@ -76,4 +75,6 @@ export class CursoController extends AbstractController {
 
         return this.handleResponse(result)
     }
+
+    // Adição e edição de cronogramas
 }

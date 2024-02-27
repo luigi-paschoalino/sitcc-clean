@@ -4,7 +4,7 @@ import { UniqueIdService } from '../../../domain/services/UniqueID.service'
 import { Inject, Logger } from '@nestjs/common'
 import { EventPublisherService } from '../../../domain/services/EventPublisher.service'
 import { EncriptarSenhaService } from '../../../domain/services/EncriptarSenha.service'
-import { InvalidPropsException } from '../../../domain/exceptions/InvalidProps.exception'
+import { InvalidPropsException } from '../../../../shared/domain/exceptions/InvalidProps.exception'
 import { CodigoProfessorRepository } from '../../../domain/repositories/CodigoProfessor.repository'
 import { CursoRepository } from '../../../domain/repositories/Curso.repository'
 
@@ -37,7 +37,6 @@ export class CadastrarUsuarioUseCase {
         private readonly cursoRepository: CursoRepository,
     ) {}
 
-    //TODO: validar se o usuário já existe (email, matricula)
     async execute(props: CadastrarUsuarioUsecaseProps): Promise<Error | void> {
         try {
             if (props.tipo === TIPO_USUARIO.PROFESSOR) {
@@ -52,6 +51,19 @@ export class CadastrarUsuarioUseCase {
                     )
                 if (codigo instanceof Error) throw codigo
             }
+
+            const usuarios = await this.usuarioRepository.listar()
+            if (usuarios instanceof Error) throw usuarios
+
+            const existe = usuarios.find(
+                (u) =>
+                    u.getEmail() === props.email ||
+                    u.getMatricula() === props.matricula,
+            )
+            if (existe)
+                throw new InvalidPropsException(
+                    `Já existe um usuário o email ou matrícula informados`,
+                )
 
             const id = this.uniqueIdService.gerarUuid()
 

@@ -2,7 +2,7 @@ import { Logger, Inject } from '@nestjs/common'
 import { TfgRepository } from '../../../domain/repositories/Tfg.repository'
 import { MoverTfgService } from '../../../domain/services/MoverTfg.service'
 import { EventPublisherService } from '../../../domain/services/EventPublisher.service'
-import { TfgException } from '../../../domain/exceptions/Tfg.exception'
+import { TfgException } from '../../../../shared/domain/exceptions/Tfg.exception'
 import { STATUS_TFG, TIPO_ENTREGA } from '../../../domain/Tfg'
 
 export interface EnviarTfgFinalUsecaseProps {

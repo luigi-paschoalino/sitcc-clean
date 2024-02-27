@@ -2,7 +2,7 @@ import { Inject, Logger } from '@nestjs/common'
 import { UsuarioRepository } from '../../../domain/repositories/Usuario.repository'
 import { EventPublisherService } from '../../../domain/services/EventPublisher.service'
 import { EncriptarSenhaService } from '../../../domain/services/EncriptarSenha.service'
-import { InvalidPropsException } from '../../../domain/exceptions/InvalidProps.exception'
+import { InvalidPropsException } from '../../../../shared/domain/exceptions/InvalidProps.exception'
 
 export interface AlterarSenhaUsecaseProps {
     id: string

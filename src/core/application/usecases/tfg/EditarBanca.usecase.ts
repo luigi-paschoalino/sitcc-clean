@@ -3,8 +3,8 @@ import { TfgRepository } from '../../../domain/repositories/Tfg.repository'
 import { EventPublisherService } from '../../../domain/services/EventPublisher.service'
 import { UsuarioRepository } from '../../../domain/repositories/Usuario.repository'
 import { TIPO_USUARIO } from '../../../domain/Usuario'
-import { UsuarioException } from '../../../domain/exceptions/Usuario.exception'
-import { InvalidPropsException } from '../../../domain/exceptions/InvalidProps.exception'
+import { UsuarioException } from '../../../../shared/domain/exceptions/Usuario.exception'
+import { InvalidPropsException } from '../../../../shared/domain/exceptions/InvalidProps.exception'
 
 export interface EditarBancaUsecaseProps {
     tfgId: string

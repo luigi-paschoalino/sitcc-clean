@@ -1,4 +1,4 @@
-import { InvalidPropsException } from './exceptions/InvalidProps.exception'
+import { InvalidPropsException } from '../../shared/domain/exceptions/InvalidProps.exception'
 
 export enum TIPO_ATIVIDADE {
     ENTREGA_PARCIAL = 'ENTREGA_PARCIAL',
