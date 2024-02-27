@@ -1,5 +1,6 @@
 import { Atividade } from './Atividades'
 import { InvalidPropsException } from '../../shared/domain/exceptions/InvalidProps.exception'
+import { AbstractAggregate } from '../../shared/domain/AbstractAggregate'
 
 export interface CriarCronogramaProps {
     ano: number
@@ -17,18 +18,17 @@ export enum SEMESTRE {
     SEGUNDO = 'SEGUNDO',
 }
 
-export class Cronograma {
-    private id: string
+export class Cronograma extends AbstractAggregate {
     private ano: number
     private semestre: SEMESTRE
     private atividades?: Atividade[]
 
-    private constructor(id: string) {
-        this.id = id
+    private constructor(id?: string) {
+        super(id)
     }
 
-    static criar(props: CriarCronogramaProps, id: string): Cronograma {
-        const instance = new Cronograma(id)
+    static criar(props: CriarCronogramaProps): Cronograma {
+        const instance = new Cronograma()
 
         instance.setAno(props.ano)
         instance.setSemestre(props.semestre)
@@ -59,10 +59,6 @@ export class Cronograma {
 
     private setAtividades(atividades: Atividade[] = []): void {
         this.atividades = atividades
-    }
-
-    getId(): string {
-        return this.id
     }
 
     getAno(): number {

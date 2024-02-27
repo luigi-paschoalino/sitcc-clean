@@ -32,7 +32,7 @@ export class CursoRepositoryImpl implements CursoRepository {
                 },
             })
             if (!model)
-                throw new RepositoryDataNotFoundException(
+                return new RepositoryDataNotFoundException(
                     `Não foi possível encontrar um curso com o ID ${id}`,
                 )
             const curso = this.cursoMapper.modelToDomain(model)
@@ -62,7 +62,7 @@ export class CursoRepositoryImpl implements CursoRepository {
             })
 
             if (!model)
-                throw new RepositoryDataNotFoundException(
+                return new RepositoryDataNotFoundException(
                     `Não foi possível encontrar um curso com o nome '${nome}'`,
                 )
 
@@ -93,7 +93,7 @@ export class CursoRepositoryImpl implements CursoRepository {
             })
 
             if (!model)
-                throw new RepositoryDataNotFoundException(
+                return new RepositoryDataNotFoundException(
                     `Não foi possível encontrar um curso com o código '${codigo}'`,
                 )
 
@@ -128,7 +128,7 @@ export class CursoRepositoryImpl implements CursoRepository {
             })
 
             if (!models || models.length === 0)
-                throw new RepositoryDataNotFoundException(
+                return new RepositoryDataNotFoundException(
                     'Não foi possível encontrar nenhum curso',
                 )
 
@@ -208,39 +208,45 @@ export class CursoRepositoryImpl implements CursoRepository {
                                   create: {
                                       ano: cronogramas.ano,
                                       semestre: cronogramas.semestre,
-                                      atividades: {
-                                          create: cronogramas.atividades.map(
-                                              (atividade) => ({
-                                                  titulo: atividade.titulo,
-                                                  descricao:
-                                                      atividade.descricao,
-                                                  data: atividade.data,
-                                              }),
-                                          ),
-                                      },
+                                      atividades: cronogramas.atividades
+                                          ? {
+                                                create: cronogramas.atividades?.map(
+                                                    (atividade) => ({
+                                                        titulo: atividade.titulo,
+                                                        descricao:
+                                                            atividade.descricao,
+                                                        data: atividade.data,
+                                                    }),
+                                                ),
+                                            }
+                                          : undefined,
                                   },
                                   update: {
                                       ano: cronogramas.ano,
                                       semestre: cronogramas.semestre,
-                                      atividades: {
-                                          upsert: cronogramas.atividades.map(
-                                              (atividade) => ({
-                                                  where: { id: atividade.id },
-                                                  create: {
-                                                      titulo: atividade.titulo,
-                                                      descricao:
-                                                          atividade.descricao,
-                                                      data: atividade.data,
-                                                  },
-                                                  update: {
-                                                      titulo: atividade.titulo,
-                                                      descricao:
-                                                          atividade.descricao,
-                                                      data: atividade.data,
-                                                  },
-                                              }),
-                                          ),
-                                      },
+                                      atividades: cronogramas.atividades
+                                          ? {
+                                                upsert: cronogramas.atividades.map(
+                                                    (atividade) => ({
+                                                        where: {
+                                                            id: atividade.id,
+                                                        },
+                                                        create: {
+                                                            titulo: atividade.titulo,
+                                                            descricao:
+                                                                atividade.descricao,
+                                                            data: atividade.data,
+                                                        },
+                                                        update: {
+                                                            titulo: atividade.titulo,
+                                                            descricao:
+                                                                atividade.descricao,
+                                                            data: atividade.data,
+                                                        },
+                                                    }),
+                                                ),
+                                            }
+                                          : undefined,
                                   },
                               })),
                           }
@@ -253,7 +259,7 @@ export class CursoRepositoryImpl implements CursoRepository {
             })
 
             if (salvarCurso instanceof Error)
-                throw new RepositoryException(salvarCurso.stack)
+                return new RepositoryException(salvarCurso.stack)
 
             return
         } catch (error) {

@@ -6,6 +6,8 @@ import {
     Param,
     UseGuards,
     Patch,
+    Put,
+    Req,
 } from '@nestjs/common'
 import {
     CadastrarCursoUsecase,
@@ -19,6 +21,8 @@ import {
     EditarCursoUsecase,
     EditarCursoUsecaseProps,
 } from '../application/usecases/curso/EditarCurso.usecase'
+import { CriarCronogramaProps } from '../domain/Cronograma'
+import { AdicionarCronogramaUsecase } from '../application/usecases/curso/AdicionarCronograma.usecase'
 
 @Controller('cursos')
 export class CursoController extends AbstractController {
@@ -27,6 +31,7 @@ export class CursoController extends AbstractController {
         private readonly listarCursosQuery: ListarCursosQuery,
         private readonly cadastrarCursoUsecase: CadastrarCursoUsecase,
         private readonly editarCursoUsecase: EditarCursoUsecase,
+        private readonly adicionarCronogramaUsecase: AdicionarCronogramaUsecase,
     ) {
         super({
             RepositoryException: 500,
@@ -77,4 +82,20 @@ export class CursoController extends AbstractController {
     }
 
     // Adição e edição de cronogramas
+    @Put(':id/cronograma')
+    @UseGuards(JwtAuthGuard)
+    public async adicionarCronograma(
+        @Param('id') id: string,
+        @Body() props: CriarCronogramaProps,
+        @Req() req: any,
+    ) {
+        const result = await this.adicionarCronogramaUsecase.execute({
+            cursoId: id,
+            ano: props.ano,
+            semestre: props.semestre,
+            usuarioTipo: req.user.tipo,
+        })
+
+        return this.handleResponse(result)
+    }
 }
