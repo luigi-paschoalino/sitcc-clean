@@ -15,7 +15,6 @@ export class IndicadorRepositoryImpl implements IndicadorRepository {
         try {
             const model = await this.prisma.indicador.findFirst()
             if (!model) return new Error('Indicador não encontrado')
-            console.log(model)
 
             const domain = this.mapper.modelToDomain(model)
 
