@@ -6,6 +6,8 @@ import { CodigoProfessorRepository } from '../../../domain/repositories/CodigoPr
 import { Inject, Logger } from '@nestjs/common'
 import { UsuarioRepository } from '../../../domain/repositories/Usuario.repository'
 import { TIPO_USUARIO } from '../../../domain/Usuario'
+import { UsuarioException } from '../../../../shared/domain/exceptions/Usuario.exception'
+import { InvalidPropsException } from '../../../../shared/domain/exceptions/InvalidProps.exception'
 
 export type GerarCodigoProfessorUsecaseProps = {
     usuarioId: string
@@ -38,17 +40,17 @@ export class GerarCodigoProfessorUsecase {
             if (usuario instanceof Error) throw usuario
 
             if (usuario.getTipo() !== TIPO_USUARIO.ADMINISTRADOR)
-                throw new Error('Usuário não é um administrador')
+                return new UsuarioException('Usuário não é um administrador')
 
             if (!props.professorId)
-                throw new Error('É necessário informar o ID do professor')
+                return new InvalidPropsException(
+                    'É necessário informar o ID do professor',
+                )
 
             const professor = await this.usuarioRepository.buscarPorId(
                 props.professorId,
             )
-            if (professor instanceof Error) throw professor
-            // if (professor.getTipo() !== TIPO_USUARIO.PROFESSOR)
-            //     throw new Error('Usuário não é um professor')
+            if (professor instanceof Error) return professor
 
             const id = this.uniqueIdService.gerarUuid()
 

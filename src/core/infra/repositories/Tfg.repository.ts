@@ -26,9 +26,9 @@ export class TfgRepositoryImpl implements TfgRepository {
             })
 
             if (model instanceof Error)
-                throw new RepositoryException(model.stack)
+                return new RepositoryException(model.stack)
             else if (!model)
-                throw new RepositoryDataNotFoundException(
+                return new RepositoryDataNotFoundException(
                     `TFG com ID ${id} não existe!`,
                 )
             const tfg = this.tfgMapper.modelToDomain(model)

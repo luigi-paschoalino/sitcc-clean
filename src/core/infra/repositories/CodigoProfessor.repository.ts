@@ -20,7 +20,7 @@ export class CodigoProfessorRepositoryImpl
                 where: { codigo },
             })
             if (!model)
-                throw new RepositoryDataNotFoundException(
+                return new RepositoryDataNotFoundException(
                     'Não foi encontrado nenhum código com esse valor!',
                 )
 
