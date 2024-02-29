@@ -1,4 +1,4 @@
-import { AbstractEvent } from '../../domain/events/AbstractEvent'
+import { AbstractEvent } from '../../../shared/domain/AbstractEvent'
 import { EventLog as EventModel } from '@prisma/client'
 
 export class EventMapper {

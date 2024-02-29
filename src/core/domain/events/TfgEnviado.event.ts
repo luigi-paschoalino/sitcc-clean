@@ -1,5 +1,5 @@
 import { TIPO_ENTREGA } from '../Tfg'
-import { AbstractEvent } from './AbstractEvent'
+import { AbstractEvent } from '../../../shared/domain/AbstractEvent'
 
 export interface TfgEnviadoEventProps {
     tfgId: string

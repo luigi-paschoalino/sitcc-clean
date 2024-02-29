@@ -131,9 +131,8 @@ export class CursoRepositoryImpl implements CursoRepository {
                     'Não foi possível encontrar nenhum curso',
                 )
 
-            const cursos = models.map((model) =>
-                this.cursoMapper.modelToDomain(model),
-            )
+            const cursos = this.cursoMapper.modelToDomainList(models)
+            if (cursos instanceof Error) return cursos
 
             return cursos
         } catch (error) {

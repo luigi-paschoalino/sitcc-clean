@@ -1,41 +1,15 @@
-import { AlterarSenhaUsecase } from './usuario/AlterarSenha.usecase'
-import { AutenticarUsecase } from './auth/Autenticar.usecase'
-import { AvaliarNotaFinalUsecase } from './tfg/AvaliarNotaFinal.usecase'
-import { AvaliarNotaParcialUsecase } from './tfg/AvaliarNotaParcial.usecase'
-import { AvaliarOrientacaoUsecase } from './tfg/AvaliarOrientacao.usecase'
-import { BaixarTfgUsecase } from './tfg/BaixarTfg.usecase'
-import { CadastrarBancaUsecase } from './tfg/CadastrarBanca.usecase'
-import { CadastrarCursoUsecase } from './curso/CadastrarCurso.usecase'
-import { CadastrarTfgUsecase } from './tfg/CadastrarTfg.usecase'
-import { CadastrarUsuarioUseCase } from './usuario/CadastrarUsuario.usecase'
-import { EditarCursoUsecase } from './curso/EditarCurso.usecase'
-import { EnviarTfgParcialUsecase } from './tfg/EnviarTfgParcial.usecase'
+import Auth from './auth'
 import { GerarCodigoProfessorUsecase } from './codigoProfessor/GerarCodigoProfessor.usecase'
-import { RecuperarSenhaUsecase } from './usuario/RecuperarSenha.usecase'
-import { ValidarTokenUsecase } from './auth/ValidarToken.usecase'
-import { EnviarTfgFinalUsecase } from './tfg/EnviarTfgFinal.usecase'
-import { EditarBancaUsecase } from './tfg/EditarBanca.usecase'
-import { AdicionarCronogramaUsecase } from './curso/AdicionarCronograma.usecase'
+import Curso from './curso'
+import Tfg from './tfg'
+import Usuario from './usuario'
 
 const UseCases = [
-    CadastrarTfgUsecase,
-    CadastrarUsuarioUseCase,
-    CadastrarCursoUsecase,
-    AutenticarUsecase,
-    AvaliarOrientacaoUsecase,
-    CadastrarBancaUsecase,
-    RecuperarSenhaUsecase,
-    AlterarSenhaUsecase,
+    ...Usuario,
+    ...Tfg,
+    ...Curso,
+    ...Auth,
     GerarCodigoProfessorUsecase,
-    EnviarTfgParcialUsecase,
-    BaixarTfgUsecase,
-    AvaliarNotaParcialUsecase,
-    AvaliarNotaFinalUsecase,
-    ValidarTokenUsecase,
-    EditarCursoUsecase,
-    EnviarTfgFinalUsecase,
-    EditarBancaUsecase,
-    AdicionarCronogramaUsecase,
 ]
 
 export default UseCases

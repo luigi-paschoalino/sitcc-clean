@@ -17,13 +17,24 @@ export class AtividadeMapper {
         }
     }
 
-    public modelToDomain(model: AtividadeModel): Atividade {
+    public modelToDomain(model: AtividadeModel): Error | Atividade {
         const domain = Atividade.criar({
             data: model.data,
             descricao: model.descricao,
             titulo: model.titulo as TIPO_ATIVIDADE,
         })
+        if (domain instanceof Error) return domain
 
         return domain
+    }
+
+    public modelToDomainList(modelList: AtividadeModel[]): Error | Atividade[] {
+        const domain = modelList.map((atividade) => {
+            const atividadeDomain = this.modelToDomain(atividade)
+            if (atividadeDomain instanceof Error) return atividadeDomain
+            return atividadeDomain
+        })
+
+        return domain as Atividade[]
     }
 }

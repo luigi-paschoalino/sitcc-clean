@@ -32,23 +32,34 @@ export class CursoMapper {
         }
     }
 
-    modelToDomain(model: CursoInfraDTO): Curso {
+    modelToDomain(model: CursoInfraDTO): Error | Curso {
         const normasDomain = model.normas?.map((norma) =>
             this.normaMapper.modelToDomain(norma),
         )
-        const cronogramasDomain = model.cronogramas?.map((cronograma) =>
-            this.cronogramaMapper.modelToDomain(cronograma),
-        )
+        const cronogramas = model.cronogramas
+            ? this.cronogramaMapper.modelToDomainList(model.cronogramas)
+            : []
+        if (cronogramas instanceof Error) return cronogramas
 
         const domain = Curso.carregar(
             {
                 nome: model.nome,
                 codigo: model.codigo,
                 normas: normasDomain ?? [],
-                cronogramas: cronogramasDomain ?? [],
+                cronogramas,
             },
             model.id,
         )
         return domain
+    }
+
+    modelToDomainList(modelList: CursoInfraDTO[]): Error | Curso[] {
+        const domain = modelList.map((curso) => {
+            const cursoDomain = this.modelToDomain(curso)
+            if (cursoDomain instanceof Error) return cursoDomain
+            return cursoDomain
+        })
+
+        return domain as Curso[]
     }
 }

@@ -28,7 +28,6 @@ export class Indicador {
         this.id = id
     }
 
-    // TODO: validar atualização do indicador quando status dos TFGs mudar
     static carregar(props: CarregarIndicadorProps, id: string): Indicador {
         try {
             if (Object.keys(props).length === 0)

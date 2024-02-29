@@ -61,6 +61,30 @@ export class Cronograma extends AbstractEntity {
         this.atividades = atividades
     }
 
+    adicionarAtividade(atividade: Atividade): void {
+        this.atividades.push(atividade)
+    }
+
+    editarAtividade(atividade: Atividade): Error | void {
+        const index = this.atividades.findIndex(
+            (a) => a.getId() === atividade.getId(),
+        )
+        if (index === -1)
+            return new InvalidPropsException('Atividade não encontrada')
+
+        this.atividades.splice(index, 1, atividade)
+    }
+
+    removerAtividade(atividadeId: string): Error | void {
+        const index = this.atividades.findIndex(
+            (a) => a.getId() === atividadeId,
+        )
+        if (index === -1)
+            return new InvalidPropsException('Atividade não encontrada')
+
+        this.atividades.splice(index, 1)
+    }
+
     getAno(): number {
         return this.ano
     }

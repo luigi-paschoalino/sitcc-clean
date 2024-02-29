@@ -1,5 +1,5 @@
 import { TIPO_USUARIO } from '../Usuario'
-import { AbstractEvent } from './AbstractEvent'
+import { AbstractEvent } from '../../../shared/domain/AbstractEvent'
 
 interface UsuarioCadastradoEventProps {
     id: string
