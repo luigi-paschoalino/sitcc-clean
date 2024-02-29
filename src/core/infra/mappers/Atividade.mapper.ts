@@ -18,14 +18,11 @@ export class AtividadeMapper {
     }
 
     public modelToDomain(model: AtividadeModel): Atividade {
-        const domain = Atividade.criar(
-            {
-                data: model.data,
-                descricao: model.descricao,
-                titulo: model.titulo as TIPO_ATIVIDADE,
-            },
-            model.id,
-        )
+        const domain = Atividade.criar({
+            data: model.data,
+            descricao: model.descricao,
+            titulo: model.titulo as TIPO_ATIVIDADE,
+        })
 
         return domain
     }

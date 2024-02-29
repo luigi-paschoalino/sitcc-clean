@@ -32,21 +32,18 @@ export class PerfilProfessorMapper {
     }
 
     modelToDomain(model: PerfilProfessorModel): PerfilProfessor {
-        const domain = PerfilProfessor.criar(
-            {
-                descricao: model.descricao,
-                link: model.link,
-                areasAtuacao: model.areasAtuacao?.map((area) =>
-                    this.areaAtuacaoMapper.modelToDomain(
-                        area as unknown as AreasAtuacaoInfraDTO,
-                    ),
+        const domain = PerfilProfessor.criar({
+            descricao: model.descricao,
+            link: model.link,
+            areasAtuacao: model.areasAtuacao?.map((area) =>
+                this.areaAtuacaoMapper.modelToDomain(
+                    area as unknown as AreasAtuacaoInfraDTO,
                 ),
-                projetos: model.projetos?.map((projeto) =>
-                    this.projetoMapper.modelToDomain(projeto),
-                ),
-            },
-            model.id,
-        )
+            ),
+            projetos: model.projetos?.map((projeto) =>
+                this.projetoMapper.modelToDomain(projeto),
+            ),
+        })
 
         return domain
     }

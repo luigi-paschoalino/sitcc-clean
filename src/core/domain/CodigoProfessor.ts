@@ -1,38 +1,38 @@
-import { AggregateRoot } from '@nestjs/cqrs'
 import { InvalidPropsException } from '../../shared/domain/exceptions/InvalidProps.exception'
+import { AbstractAggregateRoot } from '../../shared/domain/AbstractAggregateRoot'
 
 export interface GerarCodigoProfessorProps {
     codigo: string
-    id: string
 }
 
 export interface CarregarCodigoProfessorProps {
     codigo: string
     disponivel: boolean
-    id: string
 }
 
-export class CodigoProfessor extends AggregateRoot {
-    private id: string
+export class CodigoProfessor extends AbstractAggregateRoot<string> {
     private codigo: string
     private disponivel: boolean
 
-    constructor(id: string) {
-        super()
-
-        this.id = id
+    constructor(id?: string) {
+        super(id)
     }
 
     static criar(props: GerarCodigoProfessorProps): CodigoProfessor {
-        const instance = new CodigoProfessor(props.id)
+        const instance = new CodigoProfessor()
+
         instance.setCodigo(props.codigo)
         instance.setDisponivel(true)
 
         return instance
     }
 
-    static carregar(props: CarregarCodigoProfessorProps): CodigoProfessor {
-        const instance = new CodigoProfessor(props.id)
+    static carregar(
+        props: CarregarCodigoProfessorProps,
+        id: string,
+    ): CodigoProfessor {
+        const instance = new CodigoProfessor(id)
+
         instance.codigo = props.codigo
         instance.disponivel = props.disponivel
 
@@ -53,10 +53,6 @@ export class CodigoProfessor extends AggregateRoot {
 
     getCodigo(): string {
         return this.codigo
-    }
-
-    getId(): string {
-        return this.id
     }
 
     getDisponivel(): boolean {

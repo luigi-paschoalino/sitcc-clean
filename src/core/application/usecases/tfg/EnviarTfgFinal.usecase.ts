@@ -1,9 +1,9 @@
-import { Logger, Inject } from '@nestjs/common'
-import { TfgRepository } from '../../../domain/repositories/Tfg.repository'
-import { MoverTfgService } from '../../../domain/services/MoverTfg.service'
-import { EventPublisherService } from '../../../domain/services/EventPublisher.service'
+import { Inject } from '@nestjs/common'
 import { TfgException } from '../../../../shared/domain/exceptions/Tfg.exception'
 import { STATUS_TFG, TIPO_ENTREGA } from '../../../domain/Tfg'
+import { TfgRepository } from '../../../domain/repositories/Tfg.repository'
+import { EventPublisherService } from '../../../domain/services/EventPublisher.service'
+import { MoverTfgService } from '../../../domain/services/MoverTfg.service'
 
 export interface EnviarTfgFinalUsecaseProps {
     usuarioId: string
@@ -12,8 +12,6 @@ export interface EnviarTfgFinalUsecaseProps {
 }
 
 export class EnviarTfgFinalUsecase {
-    private logger = new Logger(EnviarTfgFinalUsecase.name)
-
     constructor(
         @Inject('TfgRepository') private readonly TfgRepository: TfgRepository,
         @Inject('MoverTfgService')

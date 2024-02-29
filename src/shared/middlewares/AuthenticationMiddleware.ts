@@ -4,7 +4,6 @@ import {
     ExecutionContext,
     UnauthorizedException,
     ForbiddenException,
-    Logger,
 } from '@nestjs/common'
 import { Observable } from 'rxjs'
 import * as jwt from 'jsonwebtoken'
@@ -16,7 +15,6 @@ const secretToken = process.env.SECRET_TOKEN
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
-    private logger = new Logger(JwtAuthGuard.name)
     // TODO: tirar o token do header e colocar no bearer
     canActivate(
         context: ExecutionContext,

@@ -19,6 +19,7 @@
     "noFallthroughCasesInSwitch": false,
     "esModuleInterop": true,
     "moduleResolution": "node",
+    "noUnusedLocals": true,
   },
   "include": [
     "./src/**/*.ts"

@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common'
+import { Controller, Get } from '@nestjs/common'
 import { AbstractController } from '../../shared/controllers/AbstractController'
 import { BuscarIndicadorQuery } from '../application/queries/BuscarIndicador.query'
 

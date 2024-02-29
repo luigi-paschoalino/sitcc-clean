@@ -1,12 +1,11 @@
-import { TIPO_USUARIO, Usuario } from '../../../domain/Usuario'
-import { UsuarioRepository } from '../../../domain/repositories/Usuario.repository'
-import { UniqueIdService } from '../../../domain/services/UniqueID.service'
-import { Inject, Logger } from '@nestjs/common'
-import { EventPublisherService } from '../../../domain/services/EventPublisher.service'
-import { EncriptarSenhaService } from '../../../domain/services/EncriptarSenha.service'
+import { Inject } from '@nestjs/common'
 import { InvalidPropsException } from '../../../../shared/domain/exceptions/InvalidProps.exception'
+import { TIPO_USUARIO, Usuario } from '../../../domain/Usuario'
 import { CodigoProfessorRepository } from '../../../domain/repositories/CodigoProfessor.repository'
 import { CursoRepository } from '../../../domain/repositories/Curso.repository'
+import { UsuarioRepository } from '../../../domain/repositories/Usuario.repository'
+import { EncriptarSenhaService } from '../../../domain/services/EncriptarSenha.service'
+import { EventPublisherService } from '../../../domain/services/EventPublisher.service'
 
 export interface CadastrarUsuarioUsecaseProps {
     nome: string
@@ -20,13 +19,9 @@ export interface CadastrarUsuarioUsecaseProps {
 }
 
 export class CadastrarUsuarioUseCase {
-    private logger = new Logger(CadastrarUsuarioUseCase.name)
-
     constructor(
         @Inject('EventPublisherService')
         private readonly publisher: EventPublisherService,
-        @Inject('UniqueIdService')
-        private readonly uniqueIdService: UniqueIdService,
         @Inject('EncriptarSenhaService')
         private readonly encriptarSenhaService: EncriptarSenhaService,
         @Inject('UsuarioRepository')
@@ -65,8 +60,6 @@ export class CadastrarUsuarioUseCase {
                     `Já existe um usuário o email ou matrícula informados`,
                 )
 
-            const id = this.uniqueIdService.gerarUuid()
-
             const curso = await this.cursoRepository.buscarPorId(props.curso)
             if (curso instanceof Error)
                 throw new InvalidPropsException('Curso não informado')
@@ -75,19 +68,16 @@ export class CadastrarUsuarioUseCase {
                 props.senha,
             )
 
-            const usuario = Usuario.criar(
-                {
-                    nome: props.nome,
-                    curso: curso.getId(),
-                    email: props.email,
-                    senha: senha,
-                    tipo: props.tipo,
-                    numero: props.numero,
-                    codigo: props.codigo,
-                    matricula: props.matricula,
-                },
-                id,
-            )
+            const usuario = Usuario.criar({
+                nome: props.nome,
+                curso: curso.getId(),
+                email: props.email,
+                senha: senha,
+                tipo: props.tipo,
+                numero: props.numero,
+                codigo: props.codigo,
+                matricula: props.matricula,
+            })
             if (usuario instanceof Error) throw usuario
 
             const salvarUsuario = await this.usuarioRepository.salvar(usuario)

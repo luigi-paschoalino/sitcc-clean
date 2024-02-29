@@ -1,11 +1,10 @@
-import { Inject, Logger } from '@nestjs/common'
+import { Inject } from '@nestjs/common'
 import { Banca } from 'src/core/domain/Banca'
 import { TfgRepository } from 'src/core/domain/repositories/Tfg.repository'
-import { UniqueIdService } from 'src/core/domain/services/UniqueID.service'
-import { EventPublisherService } from '../../../domain/services/EventPublisher.service'
-import { UsuarioRepository } from '../../../domain/repositories/Usuario.repository'
-import { TIPO_USUARIO } from '../../../domain/Usuario'
 import { UsuarioException } from '../../../../shared/domain/exceptions/Usuario.exception'
+import { TIPO_USUARIO } from '../../../domain/Usuario'
+import { UsuarioRepository } from '../../../domain/repositories/Usuario.repository'
+import { EventPublisherService } from '../../../domain/services/EventPublisher.service'
 
 export interface CadastrarBancaUsecaseProps {
     usuarioId: string
@@ -16,13 +15,9 @@ export interface CadastrarBancaUsecaseProps {
 }
 
 export class CadastrarBancaUsecase {
-    private logger = new Logger(CadastrarBancaUsecase.name)
-
     constructor(
         @Inject('EventPublisherService')
         private readonly publisher: EventPublisherService,
-        @Inject('UniqueIdService')
-        private readonly uniqueIdService: UniqueIdService,
         @Inject('TfgRepository')
         private readonly tfgRepository: TfgRepository,
         @Inject('UsuarioRepository')
@@ -45,15 +40,11 @@ export class CadastrarBancaUsecase {
                 ])
             if (professoresExistem instanceof Error) throw professoresExistem
 
-            const uuid = this.uniqueIdService.gerarUuid()
-            const banca = Banca.criar(
-                {
-                    professorId: props.professorId,
-                    segundoProfessorId: props.segundoProfessorId,
-                    data: props.data,
-                },
-                uuid,
-            )
+            const banca = Banca.criar({
+                professorId: props.professorId,
+                segundoProfessorId: props.segundoProfessorId,
+                data: props.data,
+            })
 
             if (banca instanceof Error) throw banca
 

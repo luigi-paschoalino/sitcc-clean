@@ -1,14 +1,13 @@
+import { Inject, Injectable } from '@nestjs/common'
 import { CursoRepository } from 'src/core/domain/repositories/Curso.repository'
-import { CursoMapper } from '../mappers/Curso.mapper'
 import { RepositoryException } from '../../../shared/domain/exceptions/Repository.exception'
 import { RepositoryDataNotFoundException } from '../../../shared/domain/exceptions/RepositoryDataNotFound.exception'
-import { Inject, Injectable, Logger } from '@nestjs/common'
-import { Curso } from '../../domain/Curso'
 import { PrismaService } from '../../../shared/infra/database/prisma/prisma.service'
+import { Curso } from '../../domain/Curso'
+import { CursoMapper } from '../mappers/Curso.mapper'
 
 @Injectable()
 export class CursoRepositoryImpl implements CursoRepository {
-    private logger = new Logger(CursoRepositoryImpl.name)
     constructor(
         @Inject('PrismaService') private readonly prismaService: PrismaService,
         private readonly cursoMapper: CursoMapper,
@@ -32,7 +31,7 @@ export class CursoRepositoryImpl implements CursoRepository {
                 },
             })
             if (!model)
-                throw new RepositoryDataNotFoundException(
+                return new RepositoryDataNotFoundException(
                     `Não foi possível encontrar um curso com o ID ${id}`,
                 )
             const curso = this.cursoMapper.modelToDomain(model)
@@ -62,7 +61,7 @@ export class CursoRepositoryImpl implements CursoRepository {
             })
 
             if (!model)
-                throw new RepositoryDataNotFoundException(
+                return new RepositoryDataNotFoundException(
                     `Não foi possível encontrar um curso com o nome '${nome}'`,
                 )
 
@@ -93,7 +92,7 @@ export class CursoRepositoryImpl implements CursoRepository {
             })
 
             if (!model)
-                throw new RepositoryDataNotFoundException(
+                return new RepositoryDataNotFoundException(
                     `Não foi possível encontrar um curso com o código '${codigo}'`,
                 )
 
@@ -128,7 +127,7 @@ export class CursoRepositoryImpl implements CursoRepository {
             })
 
             if (!models || models.length === 0)
-                throw new RepositoryDataNotFoundException(
+                return new RepositoryDataNotFoundException(
                     'Não foi possível encontrar nenhum curso',
                 )
 
@@ -208,39 +207,45 @@ export class CursoRepositoryImpl implements CursoRepository {
                                   create: {
                                       ano: cronogramas.ano,
                                       semestre: cronogramas.semestre,
-                                      atividades: {
-                                          create: cronogramas.atividades.map(
-                                              (atividade) => ({
-                                                  titulo: atividade.titulo,
-                                                  descricao:
-                                                      atividade.descricao,
-                                                  data: atividade.data,
-                                              }),
-                                          ),
-                                      },
+                                      atividades: cronogramas.atividades
+                                          ? {
+                                                create: cronogramas.atividades?.map(
+                                                    (atividade) => ({
+                                                        titulo: atividade.titulo,
+                                                        descricao:
+                                                            atividade.descricao,
+                                                        data: atividade.data,
+                                                    }),
+                                                ),
+                                            }
+                                          : undefined,
                                   },
                                   update: {
                                       ano: cronogramas.ano,
                                       semestre: cronogramas.semestre,
-                                      atividades: {
-                                          upsert: cronogramas.atividades.map(
-                                              (atividade) => ({
-                                                  where: { id: atividade.id },
-                                                  create: {
-                                                      titulo: atividade.titulo,
-                                                      descricao:
-                                                          atividade.descricao,
-                                                      data: atividade.data,
-                                                  },
-                                                  update: {
-                                                      titulo: atividade.titulo,
-                                                      descricao:
-                                                          atividade.descricao,
-                                                      data: atividade.data,
-                                                  },
-                                              }),
-                                          ),
-                                      },
+                                      atividades: cronogramas.atividades
+                                          ? {
+                                                upsert: cronogramas.atividades.map(
+                                                    (atividade) => ({
+                                                        where: {
+                                                            id: atividade.id,
+                                                        },
+                                                        create: {
+                                                            titulo: atividade.titulo,
+                                                            descricao:
+                                                                atividade.descricao,
+                                                            data: atividade.data,
+                                                        },
+                                                        update: {
+                                                            titulo: atividade.titulo,
+                                                            descricao:
+                                                                atividade.descricao,
+                                                            data: atividade.data,
+                                                        },
+                                                    }),
+                                                ),
+                                            }
+                                          : undefined,
                                   },
                               })),
                           }
@@ -253,7 +258,7 @@ export class CursoRepositoryImpl implements CursoRepository {
             })
 
             if (salvarCurso instanceof Error)
-                throw new RepositoryException(salvarCurso.stack)
+                return new RepositoryException(salvarCurso.stack)
 
             return
         } catch (error) {

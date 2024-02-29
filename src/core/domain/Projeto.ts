@@ -1,3 +1,4 @@
+import { AbstractEntity } from '../../shared/domain/AbstractEntity'
 import { InvalidPropsException } from '../../shared/domain/exceptions/InvalidProps.exception'
 
 export interface CriarProjetoProps {
@@ -7,25 +8,24 @@ export interface CriarProjetoProps {
     disponivel: boolean
 }
 
-export class Projeto {
-    private id: string
+export class Projeto extends AbstractEntity<string> {
     private titulo: string
     private descricao: string
     private preRequisitos: string
     private disponivel: boolean
 
-    private constructor(id: string) {
-        this.id = id
+    private constructor(id?: string) {
+        super(id)
     }
 
-    static criar(props: CriarProjetoProps, id: string): Projeto {
+    static criar(props: CriarProjetoProps): Projeto {
         try {
             if (Object.keys(props).length === 0)
                 throw new InvalidPropsException(
                     'Dados do projeto não informados',
                 )
 
-            const instance = new Projeto(id)
+            const instance = new Projeto()
 
             instance.setTitulo(props.titulo)
             instance.setDescricao(props.descricao)
@@ -37,6 +37,7 @@ export class Projeto {
             return error
         }
     }
+    // TODO: função carregar
 
     private setTitulo(titulo: string) {
         if (!titulo) throw new InvalidPropsException('Titulo não informado')
@@ -59,10 +60,6 @@ export class Projeto {
         if (!disponivel)
             throw new InvalidPropsException('Disponibilidade não informada')
         this.disponivel = disponivel
-    }
-
-    getId(): string {
-        return this.id
     }
 
     getTitulo(): string {

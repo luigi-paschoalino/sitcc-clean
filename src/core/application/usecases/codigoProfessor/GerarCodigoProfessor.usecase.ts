@@ -1,11 +1,12 @@
+import { Inject, Logger } from '@nestjs/common'
+import { InvalidPropsException } from '../../../../shared/domain/exceptions/InvalidProps.exception'
+import { UsuarioException } from '../../../../shared/domain/exceptions/Usuario.exception'
 import { CodigoProfessor } from '../../../domain/CodigoProfessor'
+import { TIPO_USUARIO } from '../../../domain/Usuario'
+import { CodigoProfessorRepository } from '../../../domain/repositories/CodigoProfessor.repository'
+import { UsuarioRepository } from '../../../domain/repositories/Usuario.repository'
 import { EventPublisherService } from '../../../domain/services/EventPublisher.service'
 import { GerarCodigoService } from '../../../domain/services/GerarCodigo.service'
-import { UniqueIdService } from '../../../domain/services/UniqueID.service'
-import { CodigoProfessorRepository } from '../../../domain/repositories/CodigoProfessor.repository'
-import { Inject, Logger } from '@nestjs/common'
-import { UsuarioRepository } from '../../../domain/repositories/Usuario.repository'
-import { TIPO_USUARIO } from '../../../domain/Usuario'
 
 export type GerarCodigoProfessorUsecaseProps = {
     usuarioId: string
@@ -22,8 +23,6 @@ export class GerarCodigoProfessorUsecase {
         private readonly usuarioRepository: UsuarioRepository,
         @Inject('EventPublisherService')
         private readonly publisher: EventPublisherService,
-        @Inject('UniqueIdService')
-        private readonly uniqueIdService: UniqueIdService,
         @Inject('GerarCodigoService')
         private readonly gerarCodigoService: GerarCodigoService,
     ) {}
@@ -38,25 +37,22 @@ export class GerarCodigoProfessorUsecase {
             if (usuario instanceof Error) throw usuario
 
             if (usuario.getTipo() !== TIPO_USUARIO.ADMINISTRADOR)
-                throw new Error('Usuário não é um administrador')
+                return new UsuarioException('Usuário não é um administrador')
 
             if (!props.professorId)
-                throw new Error('É necessário informar o ID do professor')
+                return new InvalidPropsException(
+                    'É necessário informar o ID do professor',
+                )
 
             const professor = await this.usuarioRepository.buscarPorId(
                 props.professorId,
             )
-            if (professor instanceof Error) throw professor
-            // if (professor.getTipo() !== TIPO_USUARIO.PROFESSOR)
-            //     throw new Error('Usuário não é um professor')
-
-            const id = this.uniqueIdService.gerarUuid()
+            if (professor instanceof Error) return professor
 
             const codigo = this.gerarCodigoService.gerarCodigo()
 
             const codigoProfessor = CodigoProfessor.criar({
                 codigo,
-                id,
             })
 
             this.logger.debug(JSON.stringify(codigoProfessor, null, 2))

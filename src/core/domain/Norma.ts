@@ -1,3 +1,4 @@
+import { AbstractEntity } from '../../shared/domain/AbstractEntity'
 import { InvalidPropsException } from '../../shared/domain/exceptions/InvalidProps.exception'
 
 export interface CriarNormaProps {
@@ -7,14 +8,13 @@ export interface CriarNormaProps {
 }
 
 // TODO: criar CadastrarNormaUsecase
-export class Norma {
-    private id: string
+export class Norma extends AbstractEntity {
     private titulo: string
     private descricao: string
     private link: string
 
-    private constructor(id: string) {
-        this.id = id
+    private constructor(id?: string) {
+        super(id)
     }
 
     static criar(props: CriarNormaProps, id: string): Norma {
@@ -47,10 +47,6 @@ export class Norma {
         if (!link)
             throw new InvalidPropsException('Link da Norma não pode ser vazio')
         this.link = link
-    }
-
-    getId() {
-        return this.id
     }
 
     getTitulo() {

@@ -1,8 +1,8 @@
-import { Inject, Logger } from '@nestjs/common'
-import { UsuarioRepository } from '../../../domain/repositories/Usuario.repository'
-import { EventPublisherService } from '../../../domain/services/EventPublisher.service'
-import { EncriptarSenhaService } from '../../../domain/services/EncriptarSenha.service'
+import { Inject } from '@nestjs/common'
 import { InvalidPropsException } from '../../../../shared/domain/exceptions/InvalidProps.exception'
+import { UsuarioRepository } from '../../../domain/repositories/Usuario.repository'
+import { EncriptarSenhaService } from '../../../domain/services/EncriptarSenha.service'
+import { EventPublisherService } from '../../../domain/services/EventPublisher.service'
 
 export interface AlterarSenhaUsecaseProps {
     id: string
@@ -12,8 +12,6 @@ export interface AlterarSenhaUsecaseProps {
 }
 
 export class AlterarSenhaUsecase {
-    private logger = new Logger(AlterarSenhaUsecase.name)
-
     constructor(
         @Inject('UsuarioRepository')
         private readonly usuarioRepository: UsuarioRepository,

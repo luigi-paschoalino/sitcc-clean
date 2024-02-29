@@ -15,10 +15,13 @@ export class CodigoProfessorMapper {
     }
 
     modelToDomain(model: CodigoProfessorModel): CodigoProfessor {
-        const domain = CodigoProfessor.criar({
-            id: model.id,
-            codigo: model.codigo,
-        })
+        const domain = CodigoProfessor.carregar(
+            {
+                codigo: model.codigo,
+                disponivel: model.disponivel,
+            },
+            model.id,
+        )
 
         return domain
     }

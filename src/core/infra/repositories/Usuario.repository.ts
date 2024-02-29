@@ -1,14 +1,13 @@
-import { Inject, Injectable, Logger } from '@nestjs/common'
-import { TIPO_USUARIO, Usuario } from '../../domain/Usuario'
+import { Inject, Injectable } from '@nestjs/common'
 import { RepositoryException } from '../../../shared/domain/exceptions/Repository.exception'
-import { UsuarioMapper } from '../mappers/Usuario.mapper'
-import { UsuarioRepository } from './../../domain/repositories/Usuario.repository'
 import { RepositoryDataNotFoundException } from '../../../shared/domain/exceptions/RepositoryDataNotFound.exception'
 import { PrismaService } from '../../../shared/infra/database/prisma/prisma.service'
+import { TIPO_USUARIO, Usuario } from '../../domain/Usuario'
+import { UsuarioMapper } from '../mappers/Usuario.mapper'
+import { UsuarioRepository } from './../../domain/repositories/Usuario.repository'
 
 @Injectable()
 export class UsuarioRepositoryImpl implements UsuarioRepository {
-    private logger = new Logger(UsuarioRepositoryImpl.name)
     constructor(
         @Inject('PrismaService') private readonly prismaService: PrismaService,
         private readonly usuarioMapper: UsuarioMapper,
@@ -33,9 +32,9 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
             })
 
             if (model instanceof Error)
-                throw new RepositoryException(model.stack)
+                return new RepositoryException(model.stack)
             else if (!model)
-                throw new RepositoryDataNotFoundException(
+                return new RepositoryDataNotFoundException(
                     `Usuário com o ID ${id} não existe!`,
                 )
 
@@ -68,11 +67,11 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
             })
 
             if (!models || models.length === 0)
-                throw new RepositoryDataNotFoundException(
+                return new RepositoryDataNotFoundException(
                     `Não foi possível encontrar nenhum usuário com os IDs informados!`,
                 )
             if (models.length !== ids.length)
-                throw new RepositoryDataNotFoundException(
+                return new RepositoryDataNotFoundException(
                     `Não foi possível encontrar os usuários com os seguintes IDs: ${ids.filter(
                         (id) => !models.map((model) => model.id).includes(id),
                     )}`,
@@ -108,9 +107,9 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
             })
 
             if (model instanceof Error)
-                throw new RepositoryException(model.stack)
+                return new RepositoryException(model.stack)
             else if (!model)
-                throw new RepositoryDataNotFoundException(
+                return new RepositoryDataNotFoundException(
                     `Usuário com o email ${email} não existe!`,
                 )
             const usuario = this.usuarioMapper.modelToDomain({
@@ -125,7 +124,7 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
 
     async buscarPorHashSenha(hash: string): Promise<Error | Usuario> {
         try {
-            const model = await this.prismaService.usuario.findFirstOrThrow({
+            const model = await this.prismaService.usuario.findFirst({
                 where: {
                     hashRecuperacaoSenha: hash,
                 },
@@ -144,9 +143,9 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
             })
 
             if (model instanceof Error)
-                throw new RepositoryException(model.stack)
+                return new RepositoryException(model.stack)
             else if (!model)
-                throw new RepositoryDataNotFoundException(
+                return new RepositoryDataNotFoundException(
                     `A hash ${hash} expirou ou foi preenchida incorretamente. Solicite novamente a recuperação de senha!`,
                 )
 
@@ -235,7 +234,7 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
             })
 
             if (usuarioSalvo instanceof Error)
-                throw new RepositoryException(usuarioSalvo.stack)
+                return new RepositoryException(usuarioSalvo.stack)
 
             return
         } catch (error) {
@@ -261,7 +260,7 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
                 },
             })
             if (!models || models.length === 0)
-                throw new RepositoryDataNotFoundException(
+                return new RepositoryDataNotFoundException(
                     `Não foi possível encontrar nenhum usuario com o tipo: ${tipo}`,
                 )
 
@@ -282,7 +281,7 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
             const models = await this.prismaService.usuario.findMany({})
 
             if (!models || models.length === 0)
-                throw new RepositoryDataNotFoundException(
+                return new RepositoryDataNotFoundException(
                     `Não foi possível encontrar nenhum usuario!`,
                 )
 

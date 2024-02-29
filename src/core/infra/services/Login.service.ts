@@ -1,4 +1,4 @@
-import { Injectable, Inject, Logger } from '@nestjs/common'
+import { Injectable, Inject } from '@nestjs/common'
 import * as jwt from 'jsonwebtoken'
 import { LoginDTO } from '../../domain/dtos/login.dto'
 import { UsuarioRepository } from '../../domain/repositories/Usuario.repository'
@@ -14,8 +14,6 @@ const secretToken = 'sdaFsadasdaGasdCMySecretKey'
 
 @Injectable()
 export class AuthServiceImpl implements AuthService {
-    private logger = new Logger(AuthServiceImpl.name)
-
     constructor(
         @Inject('UsuarioRepository')
         private readonly usuarioRepository: UsuarioRepository,

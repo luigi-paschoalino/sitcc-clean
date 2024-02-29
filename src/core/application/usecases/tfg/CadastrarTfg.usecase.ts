@@ -1,10 +1,9 @@
-import { Inject, Logger } from '@nestjs/common'
+import { Inject } from '@nestjs/common'
+import { Usuario } from 'src/core/domain/Usuario'
 import { Tfg } from '../../../domain/Tfg'
-import { UniqueIdService } from '../../../domain/services/UniqueID.service'
 import { TfgRepository } from '../../../domain/repositories/Tfg.repository'
 import { UsuarioRepository } from '../../../domain/repositories/Usuario.repository'
 import { EventPublisherService } from '../../../domain/services/EventPublisher.service'
-import { Usuario } from 'src/core/domain/Usuario'
 
 export interface CadastrarTfgUsecaseProps {
     aluno: string
@@ -22,13 +21,9 @@ export interface CadastrarTfgUsecaseProps {
 }
 
 export class CadastrarTfgUsecase {
-    private logger = new Logger(CadastrarTfgUsecase.name)
-
     constructor(
         @Inject('EventPublisherService')
         private readonly publisher: EventPublisherService,
-        @Inject('UniqueIdService')
-        private readonly uniqueIdService: UniqueIdService,
         @Inject('TfgRepository')
         private readonly tfgRepository: TfgRepository,
         @Inject('UsuarioRepository')
@@ -37,8 +32,6 @@ export class CadastrarTfgUsecase {
 
     async execute(props: CadastrarTfgUsecaseProps): Promise<Error | void> {
         try {
-            const uuid = this.uniqueIdService.gerarUuid()
-
             const aluno = await this.usuarioRepository.buscarPorId(props.aluno)
             if (aluno instanceof Error) throw aluno
 
@@ -57,23 +50,20 @@ export class CadastrarTfgUsecase {
                 coorientador = busca
             }
 
-            const tfg = Tfg.criar(
-                {
-                    aluno: aluno,
-                    orientador: orientador,
-                    coorientador: coorientador ?? null,
-                    titulo: props.titulo,
-                    palavrasChave: props.palavrasChave,
-                    introducao: props.introducao,
-                    objetivos: props.objetivos,
-                    bibliografia: props.bibliografia,
-                    metodoPesquisa: props.metodoPesquisa,
-                    tecnicaPesquisa: props.tecnicaPesquisa,
-                    descricaoMetodologia: props.descricaoMetodologia,
-                    resultadosEsperados: props.resultadosEsperados,
-                },
-                uuid,
-            )
+            const tfg = Tfg.criar({
+                aluno: aluno,
+                orientador: orientador,
+                coorientador: coorientador ?? null,
+                titulo: props.titulo,
+                palavrasChave: props.palavrasChave,
+                introducao: props.introducao,
+                objetivos: props.objetivos,
+                bibliografia: props.bibliografia,
+                metodoPesquisa: props.metodoPesquisa,
+                tecnicaPesquisa: props.tecnicaPesquisa,
+                descricaoMetodologia: props.descricaoMetodologia,
+                resultadosEsperados: props.resultadosEsperados,
+            })
 
             if (tfg instanceof Error) throw tfg
 
