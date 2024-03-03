@@ -6,6 +6,7 @@ import { Atividade } from './Atividades'
 import { AtividadeAdicionadaEvent } from './events/AtividadeAdicionada.event'
 import { AtividadeEditadaEvent } from './events/AtividadeEditada.event'
 import { AtividadeRemovidaEvent } from './events/AtividadeRemovida.event'
+import { NormaAdicionadaEvent } from './events/NormaAdicionada.event'
 
 export interface CriarCursoProps {
     nome: string
@@ -75,6 +76,13 @@ export class Curso extends AbstractAggregateRoot<string> {
 
     adicionarNorma(norma: Norma) {
         this.normas.push(norma)
+
+        this.apply(
+            new NormaAdicionadaEvent({
+                cursoId: this.getId(),
+                normaId: norma.getId(),
+            }),
+        )
     }
 
     adicionarCronograma(cronograma: Cronograma) {
