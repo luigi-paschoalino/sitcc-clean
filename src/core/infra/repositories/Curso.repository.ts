@@ -131,9 +131,8 @@ export class CursoRepositoryImpl implements CursoRepository {
                     'Não foi possível encontrar nenhum curso',
                 )
 
-            const cursos = models.map((model) =>
-                this.cursoMapper.modelToDomain(model),
-            )
+            const cursos = this.cursoMapper.modelToDomainList(models)
+            if (cursos instanceof Error) return cursos
 
             return cursos
         } catch (error) {
@@ -144,6 +143,7 @@ export class CursoRepositoryImpl implements CursoRepository {
     async salvarCurso(curso: Curso): Promise<Error | void> {
         try {
             const model = this.cursoMapper.domainToModel(curso)
+            if (model instanceof Error) throw model
 
             const salvarCurso = await this.prismaService.curso.upsert({
                 where: { id: model.id },
@@ -202,14 +202,14 @@ export class CursoRepositoryImpl implements CursoRepository {
                         : undefined,
                     cronogramas: model.cronogramas
                         ? {
-                              upsert: model.cronogramas.map((cronogramas) => ({
-                                  where: { id: cronogramas.id },
+                              upsert: model.cronogramas.map((cronograma) => ({
+                                  where: { id: cronograma.id },
                                   create: {
-                                      ano: cronogramas.ano,
-                                      semestre: cronogramas.semestre,
-                                      atividades: cronogramas.atividades
+                                      ano: cronograma.ano,
+                                      semestre: cronograma.semestre,
+                                      atividades: cronograma.atividades
                                           ? {
-                                                create: cronogramas.atividades?.map(
+                                                create: cronograma.atividades?.map(
                                                     (atividade) => ({
                                                         titulo: atividade.titulo,
                                                         descricao:
@@ -221,11 +221,11 @@ export class CursoRepositoryImpl implements CursoRepository {
                                           : undefined,
                                   },
                                   update: {
-                                      ano: cronogramas.ano,
-                                      semestre: cronogramas.semestre,
-                                      atividades: cronogramas.atividades
+                                      ano: cronograma.ano,
+                                      semestre: cronograma.semestre,
+                                      atividades: cronograma.atividades
                                           ? {
-                                                upsert: cronogramas.atividades.map(
+                                                upsert: cronograma.atividades.map(
                                                     (atividade) => ({
                                                         where: {
                                                             id: atividade.id,

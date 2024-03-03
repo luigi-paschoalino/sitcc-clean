@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common'
-import { AbstractEvent } from '../../domain/events/AbstractEvent'
+import { AbstractEvent } from '../../../shared/domain/AbstractEvent'
 import { EventRepository } from '../../domain/repositories/Event.repository'
 import { EventMapper } from '../mappers/Event.mapper'
 import { PrismaService } from '../../../shared/infra/database/prisma/prisma.service'

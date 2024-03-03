@@ -1,5 +1,5 @@
 import { STATUS_TFG } from '../Tfg'
-import { AbstractEvent } from './AbstractEvent'
+import { AbstractEvent } from '../../../shared/domain/AbstractEvent'
 
 export interface TfgFinalizadoEventProps {
     id: string

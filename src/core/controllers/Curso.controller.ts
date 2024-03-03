@@ -8,6 +8,7 @@ import {
     Patch,
     Put,
     Req,
+    Delete,
 } from '@nestjs/common'
 import {
     CadastrarCursoUsecase,
@@ -23,6 +24,15 @@ import {
 } from '../application/usecases/curso/EditarCurso.usecase'
 import { CriarCronogramaProps } from '../domain/Cronograma'
 import { AdicionarCronogramaUsecase } from '../application/usecases/curso/AdicionarCronograma.usecase'
+import {
+    AdicionarAtividadeCronogramaUsecase,
+    AdicionarAtividadeCronogramaUsecaseProps,
+} from '../application/usecases/curso/AdicionarAtividadeCronograma.usecase'
+import {
+    EditarAtividadeCronogramaUsecase,
+    EditarAtividadeCronogramaUsecaseProps,
+} from '../application/usecases/curso/EditarAtividadeCronograma.usecase'
+import { RemoverAtividadeCronogramaUsecase } from '../application/usecases/curso/RemoverAtividadeCronograma.usecase'
 
 @Controller('cursos')
 export class CursoController extends AbstractController {
@@ -32,6 +42,9 @@ export class CursoController extends AbstractController {
         private readonly cadastrarCursoUsecase: CadastrarCursoUsecase,
         private readonly editarCursoUsecase: EditarCursoUsecase,
         private readonly adicionarCronogramaUsecase: AdicionarCronogramaUsecase,
+        private readonly adicionarAtividadeCronogramaUsecase: AdicionarAtividadeCronogramaUsecase,
+        private readonly editarAtividadeCronogramaUsecase: EditarAtividadeCronogramaUsecase,
+        private readonly removerAtividadeCronogramaUsecase: RemoverAtividadeCronogramaUsecase,
     ) {
         super({
             RepositoryException: 500,
@@ -93,6 +106,62 @@ export class CursoController extends AbstractController {
             cursoId: id,
             ano: props.ano,
             semestre: props.semestre,
+            usuarioTipo: req.user.tipo,
+        })
+
+        return this.handleResponse(result)
+    }
+
+    @Put(':id/cronograma/:cronogramaId/atividade')
+    @UseGuards(JwtAuthGuard)
+    public async adicionarAtividadeCronograma(
+        @Param('id') id: string,
+        @Param('cronogramaId') cronogramaId: string,
+        @Body() props: AdicionarAtividadeCronogramaUsecaseProps,
+        @Req() req: any,
+    ) {
+        const result = await this.adicionarAtividadeCronogramaUsecase.execute({
+            cursoId: id,
+            cronogramaId,
+            usuarioTipo: req.user.tipo,
+            ...props,
+        })
+
+        return this.handleResponse(result)
+    }
+
+    @Patch(':id/cronograma/:cronogramaId/atividade/:atividadeId')
+    @UseGuards(JwtAuthGuard)
+    public async editarAtividadeCronograma(
+        @Param('id') id: string,
+        @Param('cronogramaId') cronogramaId: string,
+        @Param('atividadeId') atividadeId: string,
+        @Body() props: EditarAtividadeCronogramaUsecaseProps,
+        @Req() req: any,
+    ) {
+        const result = await this.editarAtividadeCronogramaUsecase.execute({
+            cursoId: id,
+            cronogramaId,
+            atividadeId,
+            usuarioTipo: req.user.tipo,
+            ...props,
+        })
+
+        return this.handleResponse(result)
+    }
+
+    @Delete(':id/cronograma/:cronogramaId/atividade/:atividadeId')
+    @UseGuards(JwtAuthGuard)
+    public async removerAtividadeCronograma(
+        @Param('id') id: string,
+        @Param('cronogramaId') cronogramaId: string,
+        @Param('atividadeId') atividadeId: string,
+        @Req() req: any,
+    ) {
+        const result = await this.removerAtividadeCronogramaUsecase.execute({
+            cursoId: id,
+            cronogramaId,
+            atividadeId,
             usuarioTipo: req.user.tipo,
         })
 

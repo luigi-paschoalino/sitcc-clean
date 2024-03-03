@@ -2,6 +2,10 @@ import { InvalidPropsException } from '../../shared/domain/exceptions/InvalidPro
 import { Norma } from './Norma'
 import { Cronograma } from './Cronograma'
 import { AbstractAggregateRoot } from '../../shared/domain/AbstractAggregateRoot'
+import { Atividade } from './Atividades'
+import { AtividadeAdicionadaEvent } from './events/AtividadeAdicionada.event'
+import { AtividadeEditadaEvent } from './events/AtividadeEditada.event'
+import { AtividadeRemovidaEvent } from './events/AtividadeRemovida.event'
 
 export interface CriarCursoProps {
     nome: string
@@ -25,7 +29,6 @@ export class Curso extends AbstractAggregateRoot<string> {
         super(id)
     }
 
-    //TODO: criar função pra gerar UUID por conta
     static criar(props: CriarCursoProps): Curso {
         const instance = new Curso()
 
@@ -78,7 +81,71 @@ export class Curso extends AbstractAggregateRoot<string> {
         this.cronogramas.push(cronograma)
     }
 
-    editar(props: { nome?: string; codigo?: string }) {
+    adicionarAtividadeCronograma(
+        cronogramaId: string,
+        atividade: Atividade,
+    ): Error | void {
+        const cronograma = this.cronogramas.find(
+            (cronograma) => cronograma.getId() === cronogramaId,
+        )
+        if (!cronograma)
+            return new InvalidPropsException('Cronograma não existe')
+
+        const adicionar = cronograma.adicionarAtividade(atividade)
+        if (adicionar instanceof Error) return adicionar
+
+        this.apply(
+            new AtividadeAdicionadaEvent({
+                cursoId: this.getId(),
+                cronogramaId: cronogramaId,
+            }),
+        )
+    }
+
+    editarAtividadeCronograma(
+        cronogramaId: string,
+        atividade: Atividade,
+    ): Error | void {
+        const cronograma = this.cronogramas.find(
+            (cronograma) => cronograma.getId() === cronogramaId,
+        )
+        if (!cronograma)
+            return new InvalidPropsException('Cronograma não existe')
+
+        const editar = cronograma.editarAtividade(atividade)
+        if (editar instanceof Error) return editar
+
+        this.apply(
+            new AtividadeEditadaEvent({
+                cursoId: this.getId(),
+                cronogramaId: cronogramaId,
+                atividadeId: atividade.getId(),
+            }),
+        )
+    }
+
+    removerAtividadeCronograma(
+        cronogramaId: string,
+        atividadeId: string,
+    ): Error | void {
+        const cronograma = this.cronogramas.find(
+            (cronograma) => cronograma.getId() === cronogramaId,
+        )
+        if (!cronograma)
+            return new InvalidPropsException('Cronograma não existe')
+
+        const remover = cronograma.removerAtividade(atividadeId)
+        if (remover instanceof Error) return remover
+
+        this.apply(
+            new AtividadeRemovidaEvent({
+                cursoId: this.getId(),
+                cronogramaId: cronogramaId,
+            }),
+        )
+    }
+
+    editarCurso(props: { nome?: string; codigo?: string }) {
         if (props.nome) this.setNome(props.nome)
         if (props.codigo) this.setCodigo(props.codigo)
     }

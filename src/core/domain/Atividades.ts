@@ -22,33 +22,37 @@ export class Atividade extends AbstractEntity<string> {
         super(id)
     }
 
-    static criar(props: CriarAtividadeProps): Atividade {
-        const atividade = new Atividade()
+    static criar(props: CriarAtividadeProps, id?: string): Error | Atividade {
+        const atividade = new Atividade(id)
 
-        atividade.setData(props.data)
-        atividade.setTitulo(props.titulo)
-        atividade.setDescricao(props.descricao)
+        const setData = atividade.setData(props.data)
+        const setTitulo = atividade.setTitulo(props.titulo)
+        const setDescricao = atividade.setDescricao(props.descricao)
+
+        if (setData instanceof Error) return setData
+        if (setTitulo instanceof Error) return setTitulo
+        if (setDescricao instanceof Error) return setDescricao
 
         return atividade
     }
-    //TODO :função carregar
 
-    private setData(data: Date) {
-        //TODO: validar data
-        this.data = data
+    private setData(data: Date): Error | void {
+        if (new Date(data) < new Date())
+            return new InvalidPropsException('Data inválida')
+        this.data = new Date(data)
     }
 
-    private setTitulo(titulo: TIPO_ATIVIDADE) {
-        if (!titulo) throw new InvalidPropsException('Titulo não informado')
+    private setTitulo(titulo: TIPO_ATIVIDADE): Error | void {
+        if (!titulo) return new InvalidPropsException('Titulo não informado')
         if (!Object.values(TIPO_ATIVIDADE).includes(titulo))
-            throw new InvalidPropsException('Titulo inválido')
+            return new InvalidPropsException('Titulo inválido')
         this.titulo = titulo
     }
 
-    private setDescricao(descricao: string) {
+    private setDescricao(descricao: string): Error | void {
         if (!descricao)
-            throw new InvalidPropsException(
-                'Descrição da Atividade não pode ser vazio',
+            return new InvalidPropsException(
+                'Descrição da atividade não pode ser vazia',
             )
         this.descricao = descricao
     }

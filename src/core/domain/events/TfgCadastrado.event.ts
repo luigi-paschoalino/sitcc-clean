@@ -1,4 +1,4 @@
-import { AbstractEvent } from './AbstractEvent'
+import { AbstractEvent } from '../../../shared/domain/AbstractEvent'
 
 export interface TfgCadastradoEventProps {
     id: string

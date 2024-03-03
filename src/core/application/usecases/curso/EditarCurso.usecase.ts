@@ -18,7 +18,7 @@ export class EditarCursoUsecase {
             const curso = await this.cursoRepository.buscarPorId(props.id)
             if (curso instanceof Error) throw curso
 
-            curso.editar({
+            curso.editarCurso({
                 nome: props.nome,
                 codigo: props.codigo,
             })
