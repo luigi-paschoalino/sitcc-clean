@@ -91,7 +91,8 @@ export class Curso extends AbstractAggregateRoot<string> {
         if (!cronograma)
             return new InvalidPropsException('Cronograma não existe')
 
-        cronograma.adicionarAtividade(atividade)
+        const adicionar = cronograma.adicionarAtividade(atividade)
+        if (adicionar instanceof Error) return adicionar
 
         this.apply(
             new AtividadeAdicionadaEvent({
@@ -144,7 +145,7 @@ export class Curso extends AbstractAggregateRoot<string> {
         )
     }
 
-    editar(props: { nome?: string; codigo?: string }) {
+    editarCurso(props: { nome?: string; codigo?: string }) {
         if (props.nome) this.setNome(props.nome)
         if (props.codigo) this.setCodigo(props.codigo)
     }

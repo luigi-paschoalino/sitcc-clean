@@ -11,19 +11,18 @@ export class CursoMapper {
         private readonly cronogramaMapper: CronogramaMapper,
     ) {}
 
-    domainToModel(domain: Curso): CursoInfraDTO {
+    domainToModel(domain: Curso): Error | CursoInfraDTO {
+        const cronogramas = this.cronogramaMapper.domainToModelList(
+            domain.getCronogramas(),
+            domain.getId(),
+        )
+        if (cronogramas instanceof Error) return cronogramas
+
         return {
             id: domain.getId(),
             nome: domain.getNome(),
             codigo: domain.getCodigo(),
-            cronogramas: domain
-                .getCronogramas()
-                ?.map((cronograma) =>
-                    this.cronogramaMapper.domainToModel(
-                        cronograma,
-                        domain.getId(),
-                    ),
-                ),
+            cronogramas,
             normas: domain
                 .getNormas()
                 ?.map((norma) =>

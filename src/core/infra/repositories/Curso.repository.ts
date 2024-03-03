@@ -143,6 +143,7 @@ export class CursoRepositoryImpl implements CursoRepository {
     async salvarCurso(curso: Curso): Promise<Error | void> {
         try {
             const model = this.cursoMapper.domainToModel(curso)
+            if (model instanceof Error) throw model
 
             const salvarCurso = await this.prismaService.curso.upsert({
                 where: { id: model.id },
@@ -201,14 +202,14 @@ export class CursoRepositoryImpl implements CursoRepository {
                         : undefined,
                     cronogramas: model.cronogramas
                         ? {
-                              upsert: model.cronogramas.map((cronogramas) => ({
-                                  where: { id: cronogramas.id },
+                              upsert: model.cronogramas.map((cronograma) => ({
+                                  where: { id: cronograma.id },
                                   create: {
-                                      ano: cronogramas.ano,
-                                      semestre: cronogramas.semestre,
-                                      atividades: cronogramas.atividades
+                                      ano: cronograma.ano,
+                                      semestre: cronograma.semestre,
+                                      atividades: cronograma.atividades
                                           ? {
-                                                create: cronogramas.atividades?.map(
+                                                create: cronograma.atividades?.map(
                                                     (atividade) => ({
                                                         titulo: atividade.titulo,
                                                         descricao:
@@ -220,11 +221,11 @@ export class CursoRepositoryImpl implements CursoRepository {
                                           : undefined,
                                   },
                                   update: {
-                                      ano: cronogramas.ano,
-                                      semestre: cronogramas.semestre,
-                                      atividades: cronogramas.atividades
+                                      ano: cronograma.ano,
+                                      semestre: cronograma.semestre,
+                                      atividades: cronograma.atividades
                                           ? {
-                                                upsert: cronogramas.atividades.map(
+                                                upsert: cronograma.atividades.map(
                                                     (atividade) => ({
                                                         where: {
                                                             id: atividade.id,

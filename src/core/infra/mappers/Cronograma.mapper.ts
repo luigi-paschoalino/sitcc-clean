@@ -1,16 +1,26 @@
 import { Cronograma, SEMESTRE } from '../../domain/Cronograma'
-import { Cronograma as PrismaCronograma } from '@prisma/client'
 import { AtividadeMapper } from './Atividade.mapper'
 import { CronogramaInfraDTO } from '../../../shared/infra/database/prisma/dtos/Cronograma.dto'
+import { Injectable } from '@nestjs/common'
 
+@Injectable()
 export class CronogramaMapper {
     constructor(private readonly atividadeMapper: AtividadeMapper) {}
 
-    domainToModel(domain: Cronograma, cursoId: string): PrismaCronograma {
+    domainToModel(
+        domain: Cronograma,
+        cursoId: string,
+    ): Error | CronogramaInfraDTO {
+        const atividades = this.atividadeMapper.domainToModelList(
+            domain.getAtividades(),
+            domain.getId(),
+        )
+        if (atividades instanceof Error) return atividades
         return {
             id: domain.getId(),
             ano: domain.getAno(),
             semestre: domain.getSemestre(),
+            atividades,
             cursoId,
         }
     }
@@ -34,12 +44,34 @@ export class CronogramaMapper {
     }
 
     modelToDomainList(modelList: CronogramaInfraDTO[]): Error | Cronograma[] {
-        const domain = modelList.map((cronograma) => {
-            const cronogramaDomain = this.modelToDomain(cronograma)
-            if (cronogramaDomain instanceof Error) return cronogramaDomain
-            return cronogramaDomain
-        })
+        try {
+            const domain = modelList.map((cronograma) => {
+                const cronogramaDomain = this.modelToDomain(cronograma)
+                if (cronogramaDomain instanceof Error) throw cronogramaDomain
+                return cronogramaDomain
+            })
 
-        return domain as Cronograma[]
+            return domain
+        } catch (error) {
+            return error
+        }
+    }
+
+    domainToModelList(
+        domainList: Cronograma[],
+        cursoId: string,
+    ): CronogramaInfraDTO[] {
+        return domainList.map((cronograma) => {
+            return {
+                id: cronograma.getId(),
+                ano: cronograma.getAno(),
+                semestre: cronograma.getSemestre(),
+                atividades: this.atividadeMapper.domainToModelList(
+                    cronograma.getAtividades(),
+                    cronograma.getId(),
+                ),
+                cursoId,
+            }
+        })
     }
 }

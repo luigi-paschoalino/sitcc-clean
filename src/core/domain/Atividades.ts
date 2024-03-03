@@ -39,7 +39,7 @@ export class Atividade extends AbstractEntity<string> {
     private setData(data: Date): Error | void {
         if (new Date(data) < new Date())
             return new InvalidPropsException('Data inválida')
-        this.data = data
+        this.data = new Date(data)
     }
 
     private setTitulo(titulo: TIPO_ATIVIDADE): Error | void {

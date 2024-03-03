@@ -1,4 +1,4 @@
-import { Atividade } from './Atividades'
+import { Atividade, TIPO_ATIVIDADE } from './Atividades'
 import { InvalidPropsException } from '../../shared/domain/exceptions/InvalidProps.exception'
 import { AbstractEntity } from '../../shared/domain/AbstractEntity'
 
@@ -61,8 +61,11 @@ export class Cronograma extends AbstractEntity {
         this.atividades = atividades
     }
 
-    adicionarAtividade(atividade: Atividade): void {
+    adicionarAtividade(atividade: Atividade): Error | void {
         this.atividades.push(atividade)
+
+        const validar = this.validarAtividades()
+        if (validar instanceof Error) return validar
     }
 
     editarAtividade(atividade: Atividade): Error | void {
@@ -73,6 +76,9 @@ export class Cronograma extends AbstractEntity {
             return new InvalidPropsException('Atividade não encontrada')
 
         this.atividades.splice(index, 1, atividade)
+
+        const validar = this.validarAtividades()
+        if (validar instanceof Error) return validar
     }
 
     removerAtividade(atividadeId: string): Error | void {
@@ -83,6 +89,80 @@ export class Cronograma extends AbstractEntity {
             return new InvalidPropsException('Atividade não encontrada')
 
         this.atividades.splice(index, 1)
+    }
+
+    validarAtividades(): Error | void {
+        if (!this.atividades) return
+
+        // Validar se existe nenhuma ou apenas uma instância de cada tipo de atividade
+        const tipos = this.atividades.map((a) => a.getTitulo())
+        const tiposUnicos = [...new Set(tipos)]
+
+        // Buscar duplicatas
+        const duplicatas = tiposUnicos.filter(
+            (t) => tipos.filter((t2) => t2 === t).length > 1,
+        )
+        if (duplicatas.length)
+            return new InvalidPropsException(
+                `A seguinte atividade está duplicada: ${duplicatas.join(', ')}`,
+            )
+
+        // Validar se nenhuma etapa foi pulada
+        if (
+            this.atividades.find(
+                (a) =>
+                    a.getTitulo() === TIPO_ATIVIDADE.ENTREGA_FINAL &&
+                    !this.atividades.find(
+                        (a) => a.getTitulo() === TIPO_ATIVIDADE.ENTREGA_PARCIAL,
+                    ),
+            )
+        )
+            return new InvalidPropsException(
+                'E necessário cadastrar a entrega parcial antes da entrega final',
+            )
+
+        if (
+            this.atividades.find(
+                (a) =>
+                    a.getTitulo() === TIPO_ATIVIDADE.DATA_DEFESA &&
+                    !this.atividades.find(
+                        (a) => a.getTitulo() === TIPO_ATIVIDADE.ENTREGA_FINAL,
+                    ),
+            )
+        )
+            return new InvalidPropsException(
+                'E necessário cadastrar a entrega final antes da data de defesa',
+            )
+
+        // Validar se as datas estão em ordem
+        const entregaParcial = this.atividades.find(
+            (a) => a.getTitulo() === TIPO_ATIVIDADE.ENTREGA_PARCIAL,
+        )
+        const entregaFinal = this.atividades.find(
+            (a) => a.getTitulo() === TIPO_ATIVIDADE.ENTREGA_FINAL,
+        )
+        const dataDefesa = this.atividades.find(
+            (a) => a.getTitulo() === TIPO_ATIVIDADE.DATA_DEFESA,
+        )
+        if (
+            entregaParcial &&
+            entregaFinal &&
+            entregaFinal.getData() < entregaParcial.getData()
+        ) {
+            return new InvalidPropsException(
+                'Data de entrega final anterior à data de entrega parcial',
+            )
+        }
+
+        if (
+            entregaFinal &&
+            dataDefesa &&
+            dataDefesa.getData() < entregaFinal.getData()
+        ) {
+            return new InvalidPropsException(
+                'Data de defesa anterior à data de entrega final',
+            )
+        }
     }
 
     getAno(): number {
