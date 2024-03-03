@@ -33,6 +33,10 @@ import {
     EditarAtividadeCronogramaUsecaseProps,
 } from '../application/usecases/curso/EditarAtividadeCronograma.usecase'
 import { RemoverAtividadeCronogramaUsecase } from '../application/usecases/curso/RemoverAtividadeCronograma.usecase'
+import {
+    AtualizarNormaUsecase,
+    AtualizarNormaUsecaseProps,
+} from '../application/usecases/curso/AtualizarNorma.usecase'
 
 @Controller('cursos')
 export class CursoController extends AbstractController {
@@ -45,12 +49,14 @@ export class CursoController extends AbstractController {
         private readonly adicionarAtividadeCronogramaUsecase: AdicionarAtividadeCronogramaUsecase,
         private readonly editarAtividadeCronogramaUsecase: EditarAtividadeCronogramaUsecase,
         private readonly removerAtividadeCronogramaUsecase: RemoverAtividadeCronogramaUsecase,
+        private readonly atualizarNormaUsecase: AtualizarNormaUsecase,
     ) {
         super({
             RepositoryException: 500,
             CursoException: 400,
             InvalidPropsException: 400,
             RepositoryDataNotFoundException: 404,
+            UsuarioException: 401,
         })
     }
 
@@ -163,6 +169,23 @@ export class CursoController extends AbstractController {
             cronogramaId,
             atividadeId,
             usuarioTipo: req.user.tipo,
+        })
+
+        return this.handleResponse(result)
+    }
+
+    // Norma
+    @Put(':id/norma')
+    @UseGuards(JwtAuthGuard)
+    public async atualizarNorma(
+        @Param('id') id: string,
+        @Body() body: AtualizarNormaUsecaseProps,
+        @Req() req: any,
+    ) {
+        const result = await this.atualizarNormaUsecase.execute({
+            ...body,
+            id,
+            tipoUsuario: req.user.tipo,
         })
 
         return this.handleResponse(result)

@@ -10,16 +10,18 @@ export class NormaMapper {
             descricao: norma.getDescricao(),
             link: norma.getLink(),
             titulo: norma.getTitulo(),
+            dataPublicacao: norma.getDataPublicacao(),
             cursoId,
         }
     }
 
     public modelToDomain(norma: NormaModel): Norma {
-        const domain = Norma.criar(
+        const domain = Norma.carregar(
             {
                 titulo: norma.titulo,
                 descricao: norma.descricao,
                 link: norma.link,
+                dataPublicacao: norma.dataPublicacao,
             },
             norma.id,
         )

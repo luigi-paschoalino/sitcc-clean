@@ -65,12 +65,13 @@ model Atividade {
 }
 
 model Norma {
-  id        String  @id @default(uuid()) @db.Uuid
-  titulo    String  @db.VarChar(100)
-  descricao String  @db.VarChar()
-  link      String  @db.VarChar(255)
-  curso     Curso?  @relation(fields: [cursoId], references: [id])
-  cursoId   String? @db.Uuid
+  id             String   @id @default(uuid()) @db.Uuid
+  titulo         String   @db.VarChar(100)
+  descricao      String   @db.VarChar()
+  link           String   @db.VarChar(255)
+  dataPublicacao DateTime @default(now()) @db.Timestamp()
+  curso          Curso?   @relation(fields: [cursoId], references: [id])
+  cursoId        String?  @db.Uuid
 
   @@map("normas")
 }

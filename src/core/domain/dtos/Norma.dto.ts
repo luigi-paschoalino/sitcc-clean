@@ -3,4 +3,5 @@ export interface NormaDTO {
     titulo: string
     descricao: string
     link: string
+    dataPublicacao: Date
 }

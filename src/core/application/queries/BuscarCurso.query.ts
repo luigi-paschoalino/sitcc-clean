@@ -21,7 +21,6 @@ export class BuscarCursoQuery {
             if (curso instanceof Error) throw curso
 
             const cursoDTO = this.cursoDTOMapper.toDTO(curso)
-
             return cursoDTO
         } catch (error) {
             return error

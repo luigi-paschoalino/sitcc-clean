@@ -8,6 +8,7 @@ export class NormaDTOMapper {
             titulo: norma.getTitulo(),
             descricao: norma.getDescricao(),
             link: norma.getLink(),
+            dataPublicacao: norma.getDataPublicacao(),
         }
     }
 }
