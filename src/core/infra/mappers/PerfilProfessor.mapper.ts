@@ -27,19 +27,25 @@ export class PerfilProfessorMapper {
         }
     }
 
-    modelToDomain(model: PerfilProfessorModel): PerfilProfessor {
-        const domain = PerfilProfessor.criar(
-            {
-                descricao: model.descricao,
-                link: model.link,
-                areasAtuacao: model.areasAtuacao,
-                projetos: model.projetos?.map((projeto) =>
-                    this.projetoMapper.modelToDomain(projeto),
-                ),
-            },
-            model.id,
-        )
+    modelToDomain(model: PerfilProfessorModel): Error | PerfilProfessor {
+        try {
+            const domain = PerfilProfessor.criar(
+                {
+                    descricao: model.descricao,
+                    link: model.link,
+                    areasAtuacao: model.areasAtuacao,
+                    projetos: model.projetos.map((projeto) => {
+                        const domain = this.projetoMapper.modelToDomain(projeto)
+                        if (domain instanceof Error) throw domain
+                        return domain
+                    }),
+                },
+                model.id,
+            )
 
-        return domain
+            return domain
+        } catch (error) {
+            return error
+        }
     }
 }

@@ -77,11 +77,14 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
                     )}`,
                 )
 
-            const usuarios = models.map((model) =>
-                this.usuarioMapper.modelToDomain({
+            const usuarios = models.map((model) => {
+                const domain = this.usuarioMapper.modelToDomain({
                     ...model,
-                }),
-            )
+                })
+                if (domain instanceof Error) throw domain
+                return domain
+            })
+
             return usuarios
         } catch (error) {
             return error
@@ -166,29 +169,68 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
                 usuario.getCurso(),
             )
 
-            console.log(JSON.stringify(usuarioModel, null, 2))
-
             const usuarioSalvo = await this.prismaService.usuario.upsert({
                 where: { id: usuarioModel.id },
                 update: {
                     ...usuarioModel,
                     perfilProfessor: usuarioModel.perfilProfessor
                         ? {
-                              update: {
-                                  id: usuarioModel.perfilProfessor.id,
-                                  descricao:
-                                      usuarioModel.perfilProfessor.descricao,
-                                  areasAtuacao:
-                                      usuarioModel.perfilProfessor.areasAtuacao,
-                                  link: usuarioModel.perfilProfessor.link,
-                                  projetos: {
-                                      upsert: usuarioModel.perfilProfessor
+                              upsert: {
+                                  where: {
+                                      id: usuarioModel.perfilProfessor.id,
+                                  },
+                                  update: {
+                                      descricao:
+                                          usuarioModel.perfilProfessor
+                                              .descricao,
+                                      link: usuarioModel.perfilProfessor.link,
+                                      areasAtuacao:
+                                          usuarioModel.perfilProfessor
+                                              .areasAtuacao,
+                                      projetos: {
+                                          upsert: usuarioModel.perfilProfessor
+                                              .projetos
+                                              ? usuarioModel.perfilProfessor.projetos.map(
+                                                    (projeto) => ({
+                                                        where: {
+                                                            id: projeto.id,
+                                                        },
+                                                        update: {
+                                                            descricao:
+                                                                projeto.descricao,
+                                                            disponivel:
+                                                                projeto.disponivel,
+                                                            preRequisitos:
+                                                                projeto.preRequisitos,
+                                                            titulo: projeto.titulo,
+                                                        },
+                                                        create: {
+                                                            descricao:
+                                                                projeto.descricao,
+                                                            disponivel:
+                                                                projeto.disponivel,
+                                                            preRequisitos:
+                                                                projeto.preRequisitos,
+                                                            titulo: projeto.titulo,
+                                                        },
+                                                    }),
+                                                )
+                                              : undefined,
+                                      },
+                                  },
+                                  create: {
+                                      descricao:
+                                          usuarioModel.perfilProfessor
+                                              .descricao,
+                                      link: usuarioModel.perfilProfessor.link,
+                                      areasAtuacao:
+                                          usuarioModel.perfilProfessor
+                                              .areasAtuacao,
+                                      projetos: usuarioModel.perfilProfessor
                                           .projetos
-                                          ? usuarioModel.perfilProfessor.projetos?.map(
-                                                (projeto) => ({
-                                                    where: { id: projeto.id },
-                                                    update: {
-                                                        id: projeto.id,
+                                          ? {
+                                                create: usuarioModel.perfilProfessor.projetos.map(
+                                                    (projeto) => ({
                                                         descricao:
                                                             projeto.descricao,
                                                         disponivel:
@@ -196,19 +238,9 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
                                                         preRequisitos:
                                                             projeto.preRequisitos,
                                                         titulo: projeto.titulo,
-                                                    },
-                                                    create: {
-                                                        id: projeto.id,
-                                                        descricao:
-                                                            projeto.descricao,
-                                                        disponivel:
-                                                            projeto.disponivel,
-                                                        preRequisitos:
-                                                            projeto.preRequisitos,
-                                                        titulo: projeto.titulo,
-                                                    },
-                                                }),
-                                            )
+                                                    }),
+                                                ),
+                                            }
                                           : undefined,
                                   },
                               },
@@ -220,19 +252,27 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
                     perfilProfessor: usuarioModel.perfilProfessor
                         ? {
                               create: {
-                                  id: usuarioModel.perfilProfessor.id,
                                   descricao:
                                       usuarioModel.perfilProfessor.descricao,
                                   link: usuarioModel.perfilProfessor.link,
                                   areasAtuacao:
                                       usuarioModel.perfilProfessor.areasAtuacao,
-                                  projetos: {
-                                      createMany: {
-                                          data:
-                                              usuarioModel.perfilProfessor
-                                                  .projetos ?? [],
-                                      },
-                                  },
+                                  projetos: usuarioModel.perfilProfessor
+                                      .projetos
+                                      ? {
+                                            create: usuarioModel.perfilProfessor.projetos.map(
+                                                (projeto) => ({
+                                                    descricao:
+                                                        projeto.descricao,
+                                                    disponivel:
+                                                        projeto.disponivel,
+                                                    preRequisitos:
+                                                        projeto.preRequisitos,
+                                                    titulo: projeto.titulo,
+                                                }),
+                                            ),
+                                        }
+                                      : undefined,
                               },
                           }
                         : undefined,
@@ -283,11 +323,13 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
                     `Não foi possível encontrar nenhum usuario com o tipo: ${tipo}`,
                 )
 
-            const usuarios = models.map((model) =>
-                this.usuarioMapper.modelToDomain({
+            const usuarios = models.map((model) => {
+                const domain = this.usuarioMapper.modelToDomain({
                     ...model,
-                }),
-            )
+                })
+                if (domain instanceof Error) throw domain
+                return domain
+            })
             return usuarios
         } catch (error) {
             return error
@@ -304,11 +346,14 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
                     `Não foi possível encontrar nenhum usuario!`,
                 )
 
-            const usuarios = models.map((model) =>
-                this.usuarioMapper.modelToDomain({
+            const usuarios = models.map((model) => {
+                const domain = this.usuarioMapper.modelToDomain({
                     ...model,
-                }),
-            )
+                })
+                if (domain instanceof Error) throw domain
+                return domain
+            })
+
             return usuarios
         } catch (error) {
             return error

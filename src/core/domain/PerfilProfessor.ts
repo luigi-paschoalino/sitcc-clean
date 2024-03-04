@@ -25,6 +25,7 @@ export class PerfilProfessor extends AbstractEntity<string> {
         instance.descricao = props.descricao
         instance.link = props.link
         instance.areasAtuacao = props.areasAtuacao ? props.areasAtuacao : []
+        instance.projetos = props.projetos ? props.projetos : []
 
         return instance
     }
@@ -38,6 +39,12 @@ export class PerfilProfessor extends AbstractEntity<string> {
         this.areasAtuacao = props.areasAtuacao
             ? props.areasAtuacao
             : this.areasAtuacao
+    }
+
+    public adicionarProjeto(projeto: Projeto): void {
+        if (!this.projetos) this.projetos = []
+
+        this.projetos.push(projeto)
     }
 
     public getDescricao(): string {

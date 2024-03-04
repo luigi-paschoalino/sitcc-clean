@@ -30,6 +30,10 @@ import {
     AtualizarPerfilProfessorUsecase,
     AtualizarPerfilProfessorUsecaseProps,
 } from '../application/usecases/usuario/AtualizarPerfilProfessor.usecase'
+import {
+    AdicionarProjetoUsecase,
+    AdicionarProjetoUsecaseProps,
+} from '../application/usecases/usuario/AdicionarProjeto.usecase'
 
 @Controller('usuarios')
 export class UsuarioController extends AbstractController {
@@ -41,6 +45,7 @@ export class UsuarioController extends AbstractController {
         private readonly listarProfessores: ListarProfessoresQuery,
         private readonly buscarUsuarioHashQuery: BuscarUsuarioHashQuery,
         private readonly atualizarPerfilProfessorUsecase: AtualizarPerfilProfessorUsecase,
+        private readonly adicionarProjetoUsecase: AdicionarProjetoUsecase,
     ) {
         super({
             UsuarioException: 400,
@@ -119,5 +124,15 @@ export class UsuarioController extends AbstractController {
 
     @Put('perfil-professor/projetos')
     @UseGuards(JwtAuthGuard)
-    async adicionarProjetos() {}
+    async adicionarProjetos(
+        @Body() body: AdicionarProjetoUsecaseProps,
+        @Req() req: any,
+    ) {
+        const result = await this.adicionarProjetoUsecase.execute({
+            ...body,
+            usuarioId: req.user.id,
+        })
+
+        return this.handleResponse(result)
+    }
 }

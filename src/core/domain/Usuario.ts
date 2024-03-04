@@ -1,6 +1,7 @@
 import { AbstractAggregateRoot } from '../../shared/domain/AbstractAggregateRoot'
 import { InvalidPropsException } from '../../shared/domain/exceptions/InvalidProps.exception'
 import { CriarPerfilProps, PerfilProfessor } from './PerfilProfessor'
+import { Projeto } from './Projeto'
 import { SenhaReiniciadaEvent } from './events/SenhaReiniciada.event'
 import { UsuarioCadastradoEvent } from './events/UsuarioCadastrado.event'
 
@@ -174,6 +175,17 @@ export class Usuario extends AbstractAggregateRoot<string> {
             return new InvalidPropsException('Perfil não encontrado')
 
         this.perfilProfessor.atualizar(props)
+    }
+
+    adicionarProjeto(projeto: Projeto): Error | void {
+        if (this.getTipo() !== TIPO_USUARIO.PROFESSOR)
+            return new InvalidPropsException(
+                'Apenas professores podem adicionar projetos em seus perfis',
+            )
+        if (!this.perfilProfessor)
+            return new InvalidPropsException('Perfil não encontrado')
+
+        this.perfilProfessor.adicionarProjeto(projeto)
     }
 
     public getNome(): string {

@@ -31,10 +31,11 @@ export class UsuarioMapper {
         }
     }
 
-    modelToDomain(model: UsuarioModel): Usuario {
+    modelToDomain(model: UsuarioModel): Error | Usuario {
         const perfilProfessor = model.perfilProfessor
             ? this.perfilProfessorMapper.modelToDomain(model.perfilProfessor)
             : null
+        if (perfilProfessor instanceof Error) return perfilProfessor
 
         const usuario = Usuario.carregar(
             {

@@ -17,13 +17,14 @@ export class ProjetoMapper {
         }
     }
 
-    modelToDomain(projetoModel: ProjetoModel): Projeto {
+    modelToDomain(projetoModel: ProjetoModel): Error | Projeto {
         const domain = Projeto.criar({
             titulo: projetoModel.titulo,
             descricao: projetoModel.descricao,
             preRequisitos: projetoModel.preRequisitos,
             disponivel: projetoModel.disponivel,
         })
+        if (domain instanceof Error) throw domain
 
         return domain
     }
