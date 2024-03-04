@@ -1,29 +1,35 @@
 import {
+    Body,
+    Controller,
+    Get,
+    Param,
+    Patch,
+    Post,
+    Put,
+    Req,
+    UseGuards,
+} from '@nestjs/common'
+import { JwtAuthGuard } from 'src/shared/middlewares/AuthenticationMiddleware'
+import { AbstractController } from '../../shared/controllers/AbstractController'
+import { BuscarUsuarioQuery } from '../application/queries/BuscarUsuario.query'
+import { BuscarUsuarioHashQuery } from '../application/queries/BuscarUsuarioHash.query'
+import { ListarProfessoresQuery } from '../application/queries/ListarProfessores.query'
+import {
+    AlterarSenhaUsecase,
+    AlterarSenhaUsecaseProps,
+} from '../application/usecases/usuario/AlterarSenha.usecase'
+import {
     CadastrarUsuarioUseCase,
     CadastrarUsuarioUsecaseProps,
 } from '../application/usecases/usuario/CadastrarUsuario.usecase'
-import {
-    Controller,
-    Get,
-    Body,
-    Param,
-    Post,
-    UseGuards,
-    Patch,
-} from '@nestjs/common'
-import { AbstractController } from '../../shared/controllers/AbstractController'
-import { BuscarUsuarioQuery } from '../application/queries/BuscarUsuario.query'
 import {
     RecuperarSenhaUsecase,
     RecuperarSenhaUsecaseProps,
 } from '../application/usecases/usuario/RecuperarSenha.usecase'
 import {
-    AlterarSenhaUsecase,
-    AlterarSenhaUsecaseProps,
-} from '../application/usecases/usuario/AlterarSenha.usecase'
-import { JwtAuthGuard } from 'src/shared/middlewares/AuthenticationMiddleware'
-import { ListarProfessoresQuery } from '../application/queries/ListarProfessores.query'
-import { BuscarUsuarioHashQuery } from '../application/queries/BuscarUsuarioHash.query'
+    AtualizarPerfilProfessorUsecase,
+    AtualizarPerfilProfessorUsecaseProps,
+} from '../application/usecases/usuario/AtualizarPerfilProfessor.usecase'
 
 @Controller('usuarios')
 export class UsuarioController extends AbstractController {
@@ -34,6 +40,7 @@ export class UsuarioController extends AbstractController {
         private readonly alterarSenhaUsecase: AlterarSenhaUsecase,
         private readonly listarProfessores: ListarProfessoresQuery,
         private readonly buscarUsuarioHashQuery: BuscarUsuarioHashQuery,
+        private readonly atualizarPerfilProfessorUsecase: AtualizarPerfilProfessorUsecase,
     ) {
         super({
             UsuarioException: 400,
@@ -92,4 +99,25 @@ export class UsuarioController extends AbstractController {
 
         return this.handleResponse(result)
     }
+
+    // Professor
+
+    // Usecase para editar o perfil professor
+    @Patch('perfil-professor')
+    @UseGuards(JwtAuthGuard)
+    async atualizarPerfilProfessor(
+        @Body() body: AtualizarPerfilProfessorUsecaseProps,
+        @Req() req: any,
+    ) {
+        const result = await this.atualizarPerfilProfessorUsecase.execute({
+            ...body,
+            usuarioId: req.user.id,
+        })
+
+        return this.handleResponse(result)
+    }
+
+    @Put('perfil-professor/projetos')
+    @UseGuards(JwtAuthGuard)
+    async adicionarProjetos() {}
 }

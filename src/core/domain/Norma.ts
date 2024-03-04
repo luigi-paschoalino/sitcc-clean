@@ -52,8 +52,7 @@ export class Norma extends AbstractEntity {
     }
 
     private setTitulo(titulo: string): Error | void {
-        titulo = titulo.trim()
-        if (!titulo)
+        if (!titulo?.trim())
             return new InvalidPropsException(
                 'Título da Norma não pode ser vazio',
             )
@@ -61,8 +60,7 @@ export class Norma extends AbstractEntity {
     }
 
     private setDescricao(descricao: string): Error | void {
-        descricao = descricao.trim()
-        if (!descricao)
+        if (!descricao?.trim())
             throw new InvalidPropsException(
                 'Descrição da Norma não pode ser vazio',
             )
@@ -70,8 +68,7 @@ export class Norma extends AbstractEntity {
     }
 
     private setLink(link: string): Error | void {
-        link = link.trim()
-        if (!link)
+        if (!link?.trim())
             throw new InvalidPropsException('Link da Norma não pode ser vazio')
         this.link = link
     }

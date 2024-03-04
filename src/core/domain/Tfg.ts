@@ -260,11 +260,11 @@ export class Tfg extends AbstractAggregateRoot<string> {
 
     private setAluno(aluno: Usuario): Error | void {
         if (!aluno) {
-            throw new Error('Aluno não informado')
+            throw new InvalidPropsException('Aluno não informado')
         }
 
         if (aluno.getTipo() !== TIPO_USUARIO.ALUNO) {
-            throw new Error('Usuário informado não é um aluno')
+            throw new InvalidPropsException('Usuário informado não é um aluno')
         }
 
         this.alunoId = aluno.getId()
@@ -272,11 +272,13 @@ export class Tfg extends AbstractAggregateRoot<string> {
 
     private setOrientador(orientador: Usuario): Error | void {
         if (!orientador) {
-            throw new Error('Orientador não informado')
+            throw new InvalidPropsException('Orientador não informado')
         }
 
         if (orientador.getTipo() !== TIPO_USUARIO.PROFESSOR) {
-            throw new Error('Usuário informado não é um professor')
+            throw new InvalidPropsException(
+                'Usuário informado não é um professor',
+            )
         }
 
         this.orientadorId = orientador.getId()
@@ -288,7 +290,9 @@ export class Tfg extends AbstractAggregateRoot<string> {
             return
         }
         if (coorientador.getTipo() !== TIPO_USUARIO.PROFESSOR) {
-            throw new Error('Usuário informado não é um professor')
+            throw new InvalidPropsException(
+                'Usuário informado não é um professor',
+            )
         }
 
         this.coorientadorId = coorientador.getId()
@@ -296,11 +300,11 @@ export class Tfg extends AbstractAggregateRoot<string> {
 
     private setNotaParcial(nota_parcial: number): void {
         if (!nota_parcial) {
-            throw new Error('Nota não informada')
+            throw new InvalidPropsException('Nota não informada')
         }
 
         if (nota_parcial < 0 || nota_parcial > 10) {
-            throw new Error('Nota deve ser entre 0 e 10')
+            throw new InvalidPropsException('Nota deve ser entre 0 e 10')
         }
 
         this.notaParcial = nota_parcial
@@ -475,8 +479,8 @@ export class Tfg extends AbstractAggregateRoot<string> {
     }
 
     public enviarTfg(path: string, tipoEntrega: TIPO_ENTREGA): Error | void {
-        if (!path.trim()) {
-            throw new Error('Caminho do arquivo não informado')
+        if (!path?.trim()) {
+            throw new InvalidPropsException('Caminho do arquivo não informado')
         }
 
         tipoEntrega === TIPO_ENTREGA.PARCIAL

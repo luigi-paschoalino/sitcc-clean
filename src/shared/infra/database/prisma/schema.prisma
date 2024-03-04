@@ -80,7 +80,7 @@ model PerfilProfessor {
   id           String    @id @default(uuid()) @db.Uuid
   descricao    String    @db.VarChar()
   link         String    @db.VarChar()
-  areasAtuacao Json[]    @db.Json
+  areasAtuacao String[]  @db.VarChar()
   projetos     Projeto[]
   usuario      Usuario   @relation(fields: [usuarioId], references: [id])
   usuarioId    String    @unique @db.Uuid

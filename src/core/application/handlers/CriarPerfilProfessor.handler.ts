@@ -34,6 +34,7 @@ export class CriarPerfilProfessorHandler
                 const perfilProfessor = PerfilProfessor.criar({
                     descricao: '',
                     link: '',
+                    areasAtuacao: [],
                 })
 
                 professor.setPerfilProfessor(perfilProfessor)

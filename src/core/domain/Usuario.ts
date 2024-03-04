@@ -1,6 +1,6 @@
 import { AbstractAggregateRoot } from '../../shared/domain/AbstractAggregateRoot'
 import { InvalidPropsException } from '../../shared/domain/exceptions/InvalidProps.exception'
-import { PerfilProfessor } from './PerfilProfessor'
+import { CriarPerfilProps, PerfilProfessor } from './PerfilProfessor'
 import { SenhaReiniciadaEvent } from './events/SenhaReiniciada.event'
 import { UsuarioCadastradoEvent } from './events/UsuarioCadastrado.event'
 
@@ -118,49 +118,62 @@ export class Usuario extends AbstractAggregateRoot<string> {
             this.hashRecuperacaoSenha !== hash ||
             !this.hashRecuperacaoSenha?.trim()
         )
-            throw new InvalidPropsException('Hash inválido')
+            return new InvalidPropsException('Hash inválido')
         this.setSenha(senha)
         this.hashRecuperacaoSenha = null
     }
 
-    private setNome(nome: string) {
-        if (!nome) throw new InvalidPropsException('Nome não informado')
+    private setNome(nome: string): Error | void {
+        if (!nome) return new InvalidPropsException('Nome não informado')
         this.nome = nome
     }
 
-    private setCurso(curso: string) {
-        if (!curso) throw new InvalidPropsException('Curso não informado')
+    private setCurso(curso: string): Error | void {
+        if (!curso) return new InvalidPropsException('Curso não informado')
         this.cursoId = curso
     }
 
-    private setEmail(email: string) {
-        if (!email) throw new InvalidPropsException('Email não informado')
+    private setEmail(email: string): Error | void {
+        if (!email) return new InvalidPropsException('Email não informado')
         const regex = /^[a-zA-Z0-9._%+-]+@unifei.edu.br$/
         if (!regex.test(email))
-            throw new InvalidPropsException('Email com formato inválido')
+            return new InvalidPropsException('Email com formato inválido')
         this.email = email
     }
 
-    private setSenha(senha: string) {
-        if (!senha) throw new InvalidPropsException('Senha não informada')
+    private setSenha(senha: string): Error | void {
+        if (!senha) return new InvalidPropsException('Senha não informada')
         this.senha = senha
     }
 
-    private setTipo(tipo: TIPO_USUARIO) {
-        if (!tipo) throw new InvalidPropsException('Tipo não informado')
+    private setTipo(tipo: TIPO_USUARIO): Error | void {
+        if (!tipo) return new InvalidPropsException('Tipo não informado')
         if (!Object.values(TIPO_USUARIO).includes(tipo))
-            throw new InvalidPropsException('Tipo inválido')
+            return new InvalidPropsException('Tipo inválido')
         this.tipo = tipo
     }
 
-    private setNumero(numero: string) {
-        if (!numero) throw new InvalidPropsException('Número não informado')
+    private setNumero(numero: string): Error | void {
+        if (!numero) return new InvalidPropsException('Número não informado')
         this.numero = numero
     }
 
     public setPerfilProfessor(perfilProfessor: PerfilProfessor) {
         if (this.getTipo() === TIPO_USUARIO.PROFESSOR)
             this.perfilProfessor = perfilProfessor
+    }
+
+    atualizarPerfilProfessor(
+        props: Omit<CriarPerfilProps, 'projetos'>,
+    ): Error | void {
+        if (this.getTipo() !== TIPO_USUARIO.PROFESSOR)
+            return new InvalidPropsException(
+                'Apenas professores podem ter perfil',
+            )
+        if (!this.perfilProfessor)
+            return new InvalidPropsException('Perfil não encontrado')
+
+        this.perfilProfessor.atualizar(props)
     }
 
     public getNome(): string {

@@ -3,6 +3,7 @@ import { PrismaService } from '../../../shared/infra/database/prisma/prisma.serv
 import { Indicador } from '../../domain/Indicador'
 import { IndicadorRepository } from '../../domain/repositories/Indicador.repository'
 import { IndicadorMapper } from '../mappers/Indicador.mapper'
+import { RepositoryDataNotFoundException } from '../../../shared/domain/exceptions/RepositoryDataNotFound.exception'
 
 export class IndicadorRepositoryImpl implements IndicadorRepository {
     constructor(
@@ -14,7 +15,10 @@ export class IndicadorRepositoryImpl implements IndicadorRepository {
     async buscar(): Promise<Error | Indicador> {
         try {
             const model = await this.prisma.indicador.findFirst()
-            if (!model) return new Error('Indicador não encontrado')
+            if (!model)
+                return new RepositoryDataNotFoundException(
+                    'Indicador não encontrado',
+                )
 
             const domain = this.mapper.modelToDomain(model)
 

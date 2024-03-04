@@ -166,6 +166,8 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
                 usuario.getCurso(),
             )
 
+            console.log(JSON.stringify(usuarioModel, null, 2))
+
             const usuarioSalvo = await this.prismaService.usuario.upsert({
                 where: { id: usuarioModel.id },
                 update: {
@@ -173,23 +175,41 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
                     perfilProfessor: usuarioModel.perfilProfessor
                         ? {
                               update: {
-                                  id: usuarioModel.perfilProfessor?.id,
-                                  areasAtuacao:
-                                      usuarioModel.perfilProfessor
-                                          ?.areasAtuacao,
+                                  id: usuarioModel.perfilProfessor.id,
                                   descricao:
-                                      usuarioModel.perfilProfessor?.descricao,
-                                  link: usuarioModel.perfilProfessor?.link,
+                                      usuarioModel.perfilProfessor.descricao,
+                                  areasAtuacao:
+                                      usuarioModel.perfilProfessor.areasAtuacao,
+                                  link: usuarioModel.perfilProfessor.link,
                                   projetos: {
-                                      updateMany:
-                                          usuarioModel.perfilProfessor?.projetos?.map(
-                                              (projeto) => ({
-                                                  where: { id: projeto.id },
-                                                  data: {
-                                                      ...projeto,
-                                                  },
-                                              }),
-                                          ),
+                                      upsert: usuarioModel.perfilProfessor
+                                          .projetos
+                                          ? usuarioModel.perfilProfessor.projetos?.map(
+                                                (projeto) => ({
+                                                    where: { id: projeto.id },
+                                                    update: {
+                                                        id: projeto.id,
+                                                        descricao:
+                                                            projeto.descricao,
+                                                        disponivel:
+                                                            projeto.disponivel,
+                                                        preRequisitos:
+                                                            projeto.preRequisitos,
+                                                        titulo: projeto.titulo,
+                                                    },
+                                                    create: {
+                                                        id: projeto.id,
+                                                        descricao:
+                                                            projeto.descricao,
+                                                        disponivel:
+                                                            projeto.disponivel,
+                                                        preRequisitos:
+                                                            projeto.preRequisitos,
+                                                        titulo: projeto.titulo,
+                                                    },
+                                                }),
+                                            )
+                                          : undefined,
                                   },
                               },
                           }
@@ -200,31 +220,30 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
                     perfilProfessor: usuarioModel.perfilProfessor
                         ? {
                               create: {
-                                  id: usuarioModel.perfilProfessor?.id,
+                                  id: usuarioModel.perfilProfessor.id,
                                   descricao:
-                                      usuarioModel.perfilProfessor?.descricao,
-                                  link: usuarioModel.perfilProfessor?.link,
+                                      usuarioModel.perfilProfessor.descricao,
+                                  link: usuarioModel.perfilProfessor.link,
                                   areasAtuacao:
-                                      usuarioModel.perfilProfessor
-                                          ?.areasAtuacao,
+                                      usuarioModel.perfilProfessor.areasAtuacao,
                                   projetos: {
                                       createMany: {
-                                          data: usuarioModel.perfilProfessor
-                                              ?.projetos,
+                                          data:
+                                              usuarioModel.perfilProfessor
+                                                  .projetos ?? [],
                                       },
                                   },
                               },
                           }
                         : undefined,
                 },
-                include: usuario.getPerfilProfessor()
+                include: usuarioModel.perfilProfessor
                     ? {
                           perfilProfessor: {
                               select: {
                                   id: true,
                                   descricao: true,
                                   link: true,
-                                  areasAtuacao: true,
                                   projetos: true,
                                   usuarioId: true,
                               },
