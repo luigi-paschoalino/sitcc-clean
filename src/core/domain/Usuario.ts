@@ -1,5 +1,6 @@
 import { AbstractAggregateRoot } from '../../shared/domain/AbstractAggregateRoot'
 import { InvalidPropsException } from '../../shared/domain/exceptions/InvalidProps.exception'
+import { UsuarioException } from '../../shared/domain/exceptions/Usuario.exception'
 import { CriarPerfilProps, PerfilProfessor } from './PerfilProfessor'
 import { Projeto } from './Projeto'
 import { SenhaReiniciadaEvent } from './events/SenhaReiniciada.event'
@@ -168,9 +169,7 @@ export class Usuario extends AbstractAggregateRoot<string> {
         props: Omit<CriarPerfilProps, 'projetos'>,
     ): Error | void {
         if (this.getTipo() !== TIPO_USUARIO.PROFESSOR)
-            return new InvalidPropsException(
-                'Apenas professores podem ter perfil',
-            )
+            return new UsuarioException('Apenas professores podem ter perfil')
         if (!this.perfilProfessor)
             return new InvalidPropsException('Perfil não encontrado')
 
@@ -179,13 +178,40 @@ export class Usuario extends AbstractAggregateRoot<string> {
 
     adicionarProjeto(projeto: Projeto): Error | void {
         if (this.getTipo() !== TIPO_USUARIO.PROFESSOR)
-            return new InvalidPropsException(
+            return new UsuarioException(
                 'Apenas professores podem adicionar projetos em seus perfis',
             )
         if (!this.perfilProfessor)
-            return new InvalidPropsException('Perfil não encontrado')
+            return new UsuarioException('Perfil não encontrado')
 
         this.perfilProfessor.adicionarProjeto(projeto)
+    }
+
+    editarProjeto(projetoEditado: Projeto, projetoId: string): Error | void {
+        if (this.getTipo() !== TIPO_USUARIO.PROFESSOR)
+            return new UsuarioException(
+                'Apenas professores podem editar projetos em seus perfis',
+            )
+        if (!this.perfilProfessor)
+            return new UsuarioException('Perfil não encontrado')
+
+        const editar = this.perfilProfessor.editarProjeto(
+            projetoEditado,
+            projetoId,
+        )
+        if (editar instanceof Error) return editar
+    }
+
+    excluirProjeto(projetoId: string): Error | void {
+        if (this.getTipo() !== TIPO_USUARIO.PROFESSOR)
+            return new UsuarioException(
+                'Apenas professores podem excluir projetos em seus perfis',
+            )
+        if (!this.perfilProfessor)
+            return new UsuarioException('Perfil não encontrado')
+
+        const excluir = this.perfilProfessor.excluirProjeto(projetoId)
+        if (excluir instanceof Error) return excluir
     }
 
     public getNome(): string {

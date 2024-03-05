@@ -169,6 +169,24 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
                 usuario.getCurso(),
             )
 
+            const projetosAtuais =
+                usuario.getTipo() === TIPO_USUARIO.PROFESSOR
+                    ? await this.prismaService.projeto.findMany({
+                          where: {
+                              perfilProfessorId:
+                                  usuarioModel.perfilProfessor.id,
+                          },
+                      })
+                    : undefined
+            const projetosRemovidos = projetosAtuais?.length
+                ? projetosAtuais.filter(
+                      (projetoAtual) =>
+                          !usuarioModel.perfilProfessor.projetos
+                              .map((projeto) => projeto.id)
+                              .includes(projetoAtual.id),
+                  )
+                : []
+
             const usuarioSalvo = await this.prismaService.usuario.upsert({
                 where: { id: usuarioModel.id },
                 update: {
@@ -188,6 +206,16 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
                                           usuarioModel.perfilProfessor
                                               .areasAtuacao,
                                       projetos: {
+                                          deleteMany: projetosRemovidos.length
+                                              ? {
+                                                    id: {
+                                                        in: projetosRemovidos.map(
+                                                            (projeto) =>
+                                                                projeto.id,
+                                                        ),
+                                                    },
+                                                }
+                                              : undefined,
                                           upsert: usuarioModel.perfilProfessor
                                               .projetos
                                               ? usuarioModel.perfilProfessor.projetos.map(

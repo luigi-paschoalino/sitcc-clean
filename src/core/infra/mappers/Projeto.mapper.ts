@@ -6,24 +6,27 @@ import { Projeto as ProjetoModel } from '@prisma/client'
 export class ProjetoMapper {
     constructor() {}
 
-    domainToModel(projeto: Projeto, perfilProfessorId: string): ProjetoModel {
+    domainToModel(domain: Projeto, perfilProfessorId: string): ProjetoModel {
         return {
-            id: projeto.getId(),
-            titulo: projeto.getTitulo(),
-            descricao: projeto.getDescricao(),
-            preRequisitos: projeto.getPreRequisitos(),
-            disponivel: projeto.getDisponivel(),
+            id: domain.getId(),
+            titulo: domain.getTitulo(),
+            descricao: domain.getDescricao(),
+            preRequisitos: domain.getPreRequisitos(),
+            disponivel: domain.getDisponivel(),
             perfilProfessorId,
         }
     }
 
-    modelToDomain(projetoModel: ProjetoModel): Error | Projeto {
-        const domain = Projeto.criar({
-            titulo: projetoModel.titulo,
-            descricao: projetoModel.descricao,
-            preRequisitos: projetoModel.preRequisitos,
-            disponivel: projetoModel.disponivel,
-        })
+    modelToDomain(model: ProjetoModel): Error | Projeto {
+        const domain = Projeto.carregar(
+            {
+                titulo: model.titulo,
+                descricao: model.descricao,
+                preRequisitos: model.preRequisitos,
+                disponivel: model.disponivel,
+            },
+            model.id,
+        )
         if (domain instanceof Error) throw domain
 
         return domain

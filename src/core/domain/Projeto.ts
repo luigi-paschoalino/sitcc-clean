@@ -77,8 +77,10 @@ export class Projeto extends AbstractEntity<string> {
     }
 
     private setDisponivel(disponivel: boolean): Error | void {
-        if (!disponivel)
-            return new InvalidPropsException('Disponibilidade não informada')
+        if (typeof disponivel !== 'boolean')
+            return new InvalidPropsException(
+                'Valor de disponibilidade inválido',
+            )
 
         this.disponivel = disponivel
     }

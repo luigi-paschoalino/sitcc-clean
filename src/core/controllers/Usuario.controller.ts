@@ -1,6 +1,7 @@
 import {
     Body,
     Controller,
+    Delete,
     Get,
     Param,
     Patch,
@@ -34,6 +35,11 @@ import {
     AdicionarProjetoUsecase,
     AdicionarProjetoUsecaseProps,
 } from '../application/usecases/usuario/AdicionarProjeto.usecase'
+import {
+    EditarProjetoUsecase,
+    EditarProjetoUsecaseProps,
+} from '../application/usecases/usuario/EditarProjeto.usecase'
+import { ExcluirProjetoUsecase } from '../application/usecases/usuario/ExcluirProjeto.usecase'
 
 @Controller('usuarios')
 export class UsuarioController extends AbstractController {
@@ -46,9 +52,11 @@ export class UsuarioController extends AbstractController {
         private readonly buscarUsuarioHashQuery: BuscarUsuarioHashQuery,
         private readonly atualizarPerfilProfessorUsecase: AtualizarPerfilProfessorUsecase,
         private readonly adicionarProjetoUsecase: AdicionarProjetoUsecase,
+        private readonly editarProjetoUsecase: EditarProjetoUsecase,
+        private readonly excluirProjetoUsecase: ExcluirProjetoUsecase,
     ) {
         super({
-            UsuarioException: 400,
+            UsuarioException: 401,
             RepositoryException: 500,
             RepositoryDataNotFoundException: 404,
             InvalidPropsException: 400,
@@ -124,13 +132,40 @@ export class UsuarioController extends AbstractController {
 
     @Put('perfil-professor/projetos')
     @UseGuards(JwtAuthGuard)
-    async adicionarProjetos(
+    async adicionarProjeto(
         @Body() body: AdicionarProjetoUsecaseProps,
         @Req() req: any,
     ) {
         const result = await this.adicionarProjetoUsecase.execute({
             ...body,
             usuarioId: req.user.id,
+        })
+
+        return this.handleResponse(result)
+    }
+
+    @Patch('perfil-professor/projetos/:id')
+    @UseGuards(JwtAuthGuard)
+    async editarProjeto(
+        @Param('id') id: string,
+        @Body() body: EditarProjetoUsecaseProps,
+        @Req() req: any,
+    ) {
+        const result = await this.editarProjetoUsecase.execute({
+            ...body,
+            usuarioId: req.user.id,
+            projetoId: id,
+        })
+
+        return this.handleResponse(result)
+    }
+
+    @Delete('perfil-professor/projetos/:id')
+    @UseGuards(JwtAuthGuard)
+    async excluirProjeto(@Param('id') id: string, @Req() req: any) {
+        const result = await this.excluirProjetoUsecase.execute({
+            usuarioId: req.user.id,
+            projetoId: id,
         })
 
         return this.handleResponse(result)

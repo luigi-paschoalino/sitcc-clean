@@ -47,6 +47,31 @@ export class PerfilProfessor extends AbstractEntity<string> {
         this.projetos.push(projeto)
     }
 
+    public editarProjeto(
+        projetoEditado: Projeto,
+        projetoId: string,
+    ): Error | void {
+        if (!this.projetos?.length)
+            return new InvalidPropsException('O perfil não possui projetos')
+
+        const index = this.projetos.findIndex((p) => p.getId() === projetoId)
+        if (index === -1)
+            return new InvalidPropsException('Projeto original não encontrado')
+
+        this.projetos.splice(index, 1, projetoEditado)
+    }
+
+    public excluirProjeto(projetoId: string): Error | void {
+        if (!this.projetos?.length)
+            return new InvalidPropsException('O perfil não possui projetos')
+
+        const index = this.projetos.findIndex((p) => p.getId() === projetoId)
+        if (index === -1)
+            return new InvalidPropsException('Projeto não encontrado')
+
+        this.projetos.splice(index, 1)
+    }
+
     public getDescricao(): string {
         return this.descricao
     }
