@@ -1,21 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common'
-import { UsuarioRepository } from '../../domain/repositories/Usuario.repository'
-import { TIPO_USUARIO } from '../../domain/Usuario'
+import { UsuarioDTO } from '../../domain/dtos/Usuario.dto'
 import { CursoRepository } from '../../domain/repositories/Curso.repository'
-
-export interface UsuarioResult {
-    id: string
-    nome: string
-    email: string
-    curso: {
-        id: string
-        nome: string
-        codigo: string
-    }
-    tipo: TIPO_USUARIO
-    numero: string
-    matricula?: string
-}
+import { UsuarioRepository } from '../../domain/repositories/Usuario.repository'
+import { UsuarioDTOMapper } from '../mappers/UsuarioDTO.mapper'
 
 @Injectable()
 export class BuscarUsuarioQuery {
@@ -24,9 +11,10 @@ export class BuscarUsuarioQuery {
         private readonly usuarioRepository: UsuarioRepository,
         @Inject('CursoRepository')
         private readonly cursoRepository: CursoRepository,
+        private readonly usuarioDTOMapper: UsuarioDTOMapper,
     ) {}
 
-    async execute(id: string): Promise<Error | UsuarioResult> {
+    async execute(id: string): Promise<Error | UsuarioDTO> {
         try {
             const usuario = await this.usuarioRepository.buscarPorId(id)
             if (usuario instanceof Error) throw usuario
@@ -36,21 +24,9 @@ export class BuscarUsuarioQuery {
             )
             if (curso instanceof Error) throw curso
 
-            const usuarioResult: UsuarioResult = {
-                id: usuario.getId(),
-                nome: usuario.getNome(),
-                email: usuario.getEmail(),
-                curso: {
-                    id: curso.getId(),
-                    nome: curso.getNome(),
-                    codigo: curso.getCodigo(),
-                },
-                tipo: usuario.getTipo(),
-                numero: usuario.getNumero(),
-                matricula: usuario.getMatricula(),
-            }
+            const dto = this.usuarioDTOMapper.toDTO(usuario, curso)
 
-            return usuarioResult
+            return dto
         } catch (error) {
             return error
         }

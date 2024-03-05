@@ -89,6 +89,9 @@ export class Cronograma extends AbstractEntity {
             return new InvalidPropsException('Atividade não encontrada')
 
         this.atividades.splice(index, 1)
+
+        const validar = this.validarAtividades()
+        if (validar instanceof Error) return validar
     }
 
     validarAtividades(): Error | void {

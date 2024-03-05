@@ -80,7 +80,7 @@ model PerfilProfessor {
   id           String    @id @default(uuid()) @db.Uuid
   descricao    String    @db.VarChar()
   link         String    @db.VarChar()
-  areasAtuacao Json[]    @db.Json
+  areasAtuacao String[]  @db.VarChar()
   projetos     Projeto[]
   usuario      Usuario   @relation(fields: [usuarioId], references: [id])
   usuarioId    String    @unique @db.Uuid
@@ -97,13 +97,13 @@ model CodigoProfessor {
 }
 
 model Projeto {
-  id                String           @id @default(uuid()) @db.Uuid
-  titulo            String           @db.VarChar(255)
-  descricao         String           @db.VarChar()
-  preRequisitos     String           @db.VarChar()
-  disponivel        Boolean          @default(true)
-  perfilProfessor   PerfilProfessor? @relation(fields: [perfilProfessorId], references: [id])
-  perfilProfessorId String?          @db.Uuid
+  id                String          @id @default(uuid()) @db.Uuid
+  titulo            String          @db.VarChar(255)
+  descricao         String          @db.VarChar()
+  preRequisitos     String          @db.VarChar()
+  disponivel        Boolean         @default(true)
+  perfilProfessor   PerfilProfessor @relation(fields: [perfilProfessorId], references: [id])
+  perfilProfessorId String          @db.Uuid
 
   @@map("projetos")
 }

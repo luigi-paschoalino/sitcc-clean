@@ -2,6 +2,7 @@ import { Inject } from '@nestjs/common'
 import { CarregarIndicadorProps } from '../../domain/Indicador'
 import { ListarTfgService } from '../../domain/services/ListarTfg.service'
 import { PrismaService } from '../../../shared/infra/database/prisma/prisma.service'
+import { RepositoryDataNotFoundException } from '../../../shared/domain/exceptions/RepositoryDataNotFound.exception'
 
 export class ListarTfgServiceImpl implements ListarTfgService {
     constructor(
@@ -11,7 +12,10 @@ export class ListarTfgServiceImpl implements ListarTfgService {
     async execute(): Promise<Error | CarregarIndicadorProps> {
         try {
             const tfgs = await this.prismaService.tfg.findMany()
-            if (tfgs.length === 0) return new Error('Nenhum TFG cadastrado')
+            if (tfgs.length === 0)
+                return new RepositoryDataNotFoundException(
+                    'Nenhum TFG cadastrado',
+                )
 
             return {
                 quantidadeTfgs: tfgs.length,
