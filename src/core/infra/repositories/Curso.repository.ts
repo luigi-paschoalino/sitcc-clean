@@ -145,6 +145,27 @@ export class CursoRepositoryImpl implements CursoRepository {
             const model = this.cursoMapper.domainToModel(curso)
             if (model instanceof Error) throw model
 
+            const cronogramasAtuais =
+                await this.prismaService.cronograma.findMany({
+                    where: { cursoId: model.id },
+                    include: { atividades: true },
+                })
+
+            const atividadesAtuais = new Set<string>()
+            cronogramasAtuais.forEach((c) =>
+                c.atividades.forEach((a) => atividadesAtuais.add(a.id)),
+            )
+
+            const atividadesRemovidas: string[] = []
+            Array.from(atividadesAtuais).forEach((a) => {
+                if (
+                    !model.cronogramas?.find((c) =>
+                        c.atividades.find((at) => at.id === a),
+                    )
+                )
+                    atividadesRemovidas.push(a)
+            })
+
             const salvarCurso = await this.prismaService.curso.upsert({
                 where: { id: model.id },
                 create: {
@@ -225,6 +246,14 @@ export class CursoRepositoryImpl implements CursoRepository {
                                       semestre: cronograma.semestre,
                                       atividades: cronograma.atividades
                                           ? {
+                                                deleteMany:
+                                                    atividadesRemovidas.length
+                                                        ? {
+                                                              id: {
+                                                                  in: atividadesRemovidas,
+                                                              },
+                                                          }
+                                                        : undefined,
                                                 upsert: cronograma.atividades.map(
                                                     (atividade) => ({
                                                         where: {

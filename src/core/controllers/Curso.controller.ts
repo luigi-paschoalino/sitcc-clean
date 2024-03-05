@@ -100,7 +100,7 @@ export class CursoController extends AbstractController {
         return this.handleResponse(result)
     }
 
-    // Adição e edição de cronogramas
+    // Adição de cronogramas
     @Put(':id/cronograma')
     @UseGuards(JwtAuthGuard)
     public async adicionarCronograma(
@@ -118,6 +118,7 @@ export class CursoController extends AbstractController {
         return this.handleResponse(result)
     }
 
+    // Atividades do cronograma
     @Put(':id/cronograma/:cronogramaId/atividade')
     @UseGuards(JwtAuthGuard)
     public async adicionarAtividadeCronograma(
