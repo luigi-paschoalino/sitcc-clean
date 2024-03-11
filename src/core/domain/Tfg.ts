@@ -93,28 +93,50 @@ export class Tfg extends AbstractAggregateRoot<string> {
         const tfg = new Tfg()
 
         if (props.coorientador && props.coorientador === props.orientador)
-            throw new InvalidPropsException(
+            return new InvalidPropsException(
                 'O coorientador não pode ser o mesmo que o orientador',
             )
 
         tfg.setStatus(STATUS_TFG.MATRICULA_REALIZADA)
-        tfg.setAluno(props.aluno)
-        tfg.setOrientador(props.orientador)
-        tfg.setCoorientador(props.coorientador)
-        tfg.setTitulo(props.titulo)
-        tfg.setPalavrasChave(props.palavrasChave)
-        tfg.setIntroducao(props.introducao)
-        tfg.setObjetivos(props.objetivos)
-        tfg.setBibliografia(props.bibliografia)
-        tfg.setMetodoPesquisa(props.metodoPesquisa)
-        tfg.setTecnicaPesquisa(props.tecnicaPesquisa)
-        tfg.setDescricaoMetodologia(props.descricaoMetodologia)
-        tfg.setResultados(props.resultadosEsperados)
+        const setAluno = tfg.setAluno(props.aluno)
+        const setOrientador = tfg.setOrientador(props.orientador)
+        const setCoorientador = tfg.setCoorientador(props.coorientador)
+        const setTitulo = tfg.setTitulo(props.titulo)
+        const setPalavrasChave = tfg.setPalavrasChave(props.palavrasChave)
+        const setIntroducao = tfg.setIntroducao(props.introducao)
+        const setObjetivos = tfg.setObjetivos(props.objetivos)
+        const setBibliografia = tfg.setBibliografia(props.bibliografia)
+        const setMetodoPesquisa = tfg.setMetodoPesquisa(props.metodoPesquisa)
+        const setTecnicaPesquisa = tfg.setTecnicaPesquisa(props.tecnicaPesquisa)
+        const setDescricaoMetodologia = tfg.setDescricaoMetodologia(
+            props.descricaoMetodologia,
+        )
+        const setResultados = tfg.setResultados(props.resultadosEsperados)
+
+        if (setAluno instanceof Error) return setAluno
+        if (setOrientador instanceof Error) return setOrientador
+        if (setCoorientador instanceof Error) return setCoorientador
+        if (setTitulo instanceof Error) return setTitulo
+        if (setPalavrasChave instanceof Error) return setPalavrasChave
+        if (setIntroducao instanceof Error) return setIntroducao
+        if (setObjetivos instanceof Error) return setObjetivos
+        if (setBibliografia instanceof Error) return setBibliografia
+        if (setMetodoPesquisa instanceof Error) return setMetodoPesquisa
+        if (setTecnicaPesquisa instanceof Error) return setTecnicaPesquisa
+        if (setDescricaoMetodologia instanceof Error)
+            return setDescricaoMetodologia
+        if (setResultados instanceof Error) return setResultados
 
         tfg.apply(
             new TfgCadastradoEvent({
                 id: tfg.id,
                 titulo: tfg.titulo,
+                alunoEmail: props.aluno.getEmail(),
+                alunoNome: props.aluno.getNome(),
+                orientadorEmail: props.orientador.getEmail(),
+                orientadorNome: props.orientador.getNome(),
+                coorientadorEmail: props.coorientador?.getEmail() ?? undefined,
+                coorientadorNome: props.coorientador?.getNome() ?? undefined,
             }),
         )
         return tfg
@@ -222,39 +244,72 @@ export class Tfg extends AbstractAggregateRoot<string> {
         this.status = status
     }
 
-    private setTitulo(titulo: string): void {
+    private setTitulo(titulo: string): Error | void {
+        if (!titulo?.trim())
+            return new InvalidPropsException('Título não informado')
+
         this.titulo = titulo
     }
 
-    private setPalavrasChave(palavrasChave: string): void {
+    private setPalavrasChave(palavrasChave: string): Error | void {
+        if (!palavrasChave?.trim())
+            return new InvalidPropsException('Palavras-chave não informadas')
+
         this.palavrasChave = palavrasChave
     }
 
-    private setIntroducao(introducao: string): void {
+    private setIntroducao(introducao: string): Error | void {
+        if (!introducao?.trim())
+            return new InvalidPropsException('Introdução não informada')
+
         this.introducao = introducao
     }
 
-    private setObjetivos(objetivos: string): void {
+    private setObjetivos(objetivos: string): Error | void {
+        if (!objetivos?.trim())
+            return new InvalidPropsException('Objetivos não informados')
+
         this.objetivos = objetivos
     }
 
-    private setBibliografia(bibliografia: string): void {
+    private setBibliografia(bibliografia: string): Error | void {
+        if (!bibliografia?.trim())
+            return new InvalidPropsException('Bibliografia não informada')
+
         this.bibliografia = bibliografia
     }
 
-    private setMetodoPesquisa(metodo: string): void {
+    private setMetodoPesquisa(metodo: string): Error | void {
+        if (!metodo?.trim())
+            return new InvalidPropsException('Método de pesquisa não informado')
+
         this.metodoPesquisa = metodo
     }
 
-    private setTecnicaPesquisa(tecnica: string): void {
+    private setTecnicaPesquisa(tecnica: string): Error | void {
+        if (!tecnica?.trim())
+            return new InvalidPropsException(
+                'Técnica de pesquisa não informada',
+            )
+
         this.tecnicaPesquisa = tecnica
     }
 
-    private setDescricaoMetodologia(descricao: string): void {
+    private setDescricaoMetodologia(descricao: string): Error | void {
+        if (!descricao?.trim())
+            return new InvalidPropsException(
+                'Descrição da metodologia não informada',
+            )
+
         this.descricaoMetodologia = descricao
     }
 
-    private setResultados(resultados: string): void {
+    private setResultados(resultados: string): Error | void {
+        if (!resultados?.trim())
+            return new InvalidPropsException(
+                'Resultados esperados não informados',
+            )
+
         this.resultadosEsperados = resultados
     }
 
@@ -310,7 +365,7 @@ export class Tfg extends AbstractAggregateRoot<string> {
         this.notaParcial = nota_parcial
     }
 
-    public atribuirBanca(banca: Banca): void {
+    public atribuirBanca(banca: Banca): Error | void {
         try {
             if (this.banca)
                 throw new UsuarioException(
