@@ -11,7 +11,7 @@ import { TfgEnviadoEvent } from './events/TfgEnviado.event'
 import { TfgNotaFinalAvaliadaEvent } from './events/TfgNotaFinalEvent.event'
 import { TfgNotaParcialAvaliadaEvent } from './events/TfgNotaParcialAvaliada.event'
 import { TfgOrientacaoAprovadaEvent } from './events/TfgOrientacaoAprovada.event'
-import { TfgOrientacaoReprovadaEvent } from './events/TfgOrientacaoReprovada.event'
+import { TfgOrientacaoRecusadaEvent } from './events/TfgOrientacaoRecusada.event'
 
 export enum STATUS_TFG {
     MATRICULA_REALIZADA = 'MATRICULA_REALIZADA', // Aluno matriculado e TFG cadastrado
@@ -442,7 +442,7 @@ export class Tfg extends AbstractAggregateRoot<string> {
                 )
             this.setStatus(STATUS_TFG.ORIENTACAO_RECUSADA)
             this.apply(
-                new TfgOrientacaoReprovadaEvent({
+                new TfgOrientacaoRecusadaEvent({
                     id: this.id,
                     alunoId: this.alunoId,
                     orientadorId: this.orientadorId,

@@ -2,7 +2,7 @@ import { Inject } from '@nestjs/common'
 import { EventsHandler } from '@nestjs/cqrs'
 import { TfgCadastradoEvent } from '../../../core/domain/events/TfgCadastrado.event'
 import { TfgFinalizadoEvent } from '../../../core/domain/events/TfgFinalizado.event'
-import { TfgOrientacaoReprovadaEvent } from '../../../core/domain/events/TfgOrientacaoReprovada.event'
+import { TfgOrientacaoRecusadaEvent } from '../../../core/domain/events/TfgOrientacaoRecusada.event'
 import { IndicadorRepository } from '../../domain/repositories/Indicador.repository'
 import { ListarTfgService } from '../../domain/services/ListarTfg.service'
 import { TfgNotaParcialAvaliadaEvent } from '../../../core/domain/events/TfgNotaParcialAvaliada.event'
@@ -11,7 +11,7 @@ import { TfgEnviadoEvent } from '../../../core/domain/events/TfgEnviado.event'
 
 @EventsHandler(
     TfgCadastradoEvent,
-    TfgOrientacaoReprovadaEvent,
+    TfgOrientacaoRecusadaEvent,
     TfgFinalizadoEvent,
     TfgNotaParcialAvaliadaEvent,
     TfgOrientacaoAprovadaEvent,

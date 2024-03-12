@@ -5,7 +5,6 @@ import {
 } from '../../core/domain/events/TfgCadastrado.event'
 import { Inject } from '@nestjs/common'
 import { EnviarEmailService } from '../domain/services/EnviarEmail.service'
-// import
 
 @EventsHandler(TfgCadastradoEvent)
 export class EnviarEmailOrientacaoSolicitadaHandler {
