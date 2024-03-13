@@ -6,6 +6,8 @@ interface CriarTfgProps {
     aluno: UsuarioProps
     orientador: UsuarioProps
     coorientador?: UsuarioProps
+    notaParcial?: number
+    notaFinal?: number
 }
 
 interface UsuarioProps {
@@ -18,6 +20,8 @@ export class Tfg extends AbstractAggregateRoot<string> {
     private aluno: UsuarioProps
     private orientador: UsuarioProps
     private coorientador?: UsuarioProps
+    private notaParcial: number
+    private notaFinal: number
 
     constructor(id: string) {
         super(id)
@@ -30,6 +34,8 @@ export class Tfg extends AbstractAggregateRoot<string> {
         tfg.aluno = props.aluno
         tfg.orientador = props.orientador
         tfg.coorientador = props.coorientador ?? undefined
+        tfg.notaParcial = props.notaParcial ?? 0
+        tfg.notaFinal = props.notaFinal ?? 0
 
         return tfg
     }
@@ -48,5 +54,13 @@ export class Tfg extends AbstractAggregateRoot<string> {
 
     public getCoorientador(): UsuarioProps | undefined {
         return this.coorientador
+    }
+
+    public getNotaParcial(): number {
+        return this.notaParcial
+    }
+
+    public getNotaFinal(): number {
+        return this.notaFinal
     }
 }

@@ -1,5 +1,4 @@
 import { Inject, Logger } from '@nestjs/common'
-import { InvalidPropsException } from '../../../../shared/domain/exceptions/InvalidProps.exception'
 import { UsuarioException } from '../../../../shared/domain/exceptions/Usuario.exception'
 import { CodigoProfessor } from '../../../domain/CodigoProfessor'
 import { TIPO_USUARIO } from '../../../domain/Usuario'
@@ -10,7 +9,7 @@ import { GerarCodigoService } from '../../../domain/services/GerarCodigo.service
 
 export type GerarCodigoProfessorUsecaseProps = {
     usuarioId: string
-    professorId: string
+    professorEmail: string
 }
 
 export class GerarCodigoProfessorUsecase {
@@ -39,21 +38,13 @@ export class GerarCodigoProfessorUsecase {
             if (usuario.getTipo() !== TIPO_USUARIO.ADMINISTRADOR)
                 return new UsuarioException('Usuário não é um administrador')
 
-            if (!props.professorId)
-                return new InvalidPropsException(
-                    'É necessário informar o ID do professor',
-                )
-
-            const professor = await this.usuarioRepository.buscarPorId(
-                props.professorId,
-            )
-            if (professor instanceof Error) return professor
-
             const codigo = this.gerarCodigoService.gerarCodigo()
 
             const codigoProfessor = CodigoProfessor.criar({
                 codigo,
+                email: props.professorEmail,
             })
+            if (codigoProfessor instanceof Error) throw codigoProfessor
 
             this.logger.debug(JSON.stringify(codigoProfessor, null, 2))
 

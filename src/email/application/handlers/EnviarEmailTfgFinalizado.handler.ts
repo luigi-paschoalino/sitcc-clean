@@ -1,15 +1,13 @@
 import { EventsHandler } from '@nestjs/cqrs'
 import { Inject } from '@nestjs/common'
-import { EnviarEmailService } from '../domain/services/EnviarEmail.service'
-import {
-    TfgOrientacaoAprovadaEvent,
-    TfgOrientacaoAprovadaEventProps,
-} from '../../core/domain/events/TfgOrientacaoAprovada.event'
-import { BuscarTfgService } from '../domain/services/BuscarTfg.service'
-import { Tfg } from '../domain/Tfg'
+import { EnviarEmailService } from '../../domain/services/EnviarEmail.service'
+import { TfgFinalizadoEventProps } from '../../../core/domain/events/TfgFinalizado.event'
+import { BuscarTfgService } from '../../domain/services/BuscarTfg.service'
+import { Tfg } from '../../domain/Tfg'
+import { TfgFinalizadoEvent } from '../../../core/domain/events/TfgFinalizado.event'
 
-@EventsHandler(TfgOrientacaoAprovadaEvent)
-export class EnviarEmailOrientacaoAprovadaHandler {
+@EventsHandler(TfgFinalizadoEvent)
+export class EnviarEmailTfgFinalizadoHandler {
     constructor(
         @Inject('EnviarEmailService')
         private readonly enviarEmailService: EnviarEmailService,
@@ -17,31 +15,30 @@ export class EnviarEmailOrientacaoAprovadaHandler {
         private readonly buscarTfgService: BuscarTfgService,
     ) {}
 
-    async handle(
-        props: TfgOrientacaoAprovadaEventProps,
-    ): Promise<Error | void> {
+    async handle(props: TfgFinalizadoEventProps): Promise<Error | void> {
         try {
             const tfg = await this.buscarTfgService.buscar(props.id)
             if (tfg instanceof Error) throw tfg
 
-            const aluno = await this.enviarEmailService.enviar(
+            // Montando email para o aluno
+            const email = await this.enviarEmailService.enviar(
                 tfg.getAluno().email,
-                'A sua solicitação de TFG foi cadastrada com sucesso!',
-                this.montarMensagem(tfg),
+                'Avaliação final do TFG',
+                this.montarMensagem(tfg, props.status),
             )
-
-            if (aluno instanceof Error) throw aluno
+            if (email instanceof Error) throw email
         } catch (error) {
             return error
         }
     }
 
-    private montarMensagem(tfg: Tfg): string {
+    // TODO: utilizar template do Handlebars
+    private montarMensagem(tfg: Tfg, statusTfg: string): string {
         return `
             <html>
               <body>
                 <p>Saudações, <b>${tfg.getAluno().nome}</b>!</p>
-                <p>A sua solicitação de orientação de TFG foi aprovada com sucesso! 
+                <p>O TFG foi avaliado pela banca com a nota <b><${tfg.getNotaFinal()}/b> e o seu trabalho foi <b>${statusTfg}</b></p>
                 <br><br>
                 <p>Informações sobre o TFG:</p>
                 <ul>
@@ -52,7 +49,7 @@ export class EnviarEmailOrientacaoAprovadaHandler {
                       tfg.getCoorientador().nome ?? 'SEM COORIENTADOR'
                   }</li>
                   <br>
-                <p>Estamos ansiosos para ver suas contribuições e desejamos sucesso em seu projeto!</p>
+                <p>Para mais informações, acesse o sistema.</p>
               </body>
             </html>
         `

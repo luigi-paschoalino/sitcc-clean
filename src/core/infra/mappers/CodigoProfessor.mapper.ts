@@ -11,6 +11,7 @@ export class CodigoProfessorMapper {
             id: domain.getId(),
             codigo: domain.getCodigo(),
             disponivel: domain.getDisponivel(),
+            email: domain.getEmail(),
         }
     }
 
@@ -19,6 +20,7 @@ export class CodigoProfessorMapper {
             {
                 codigo: model.codigo,
                 disponivel: model.disponivel,
+                email: model.email,
             },
             model.id,
         )

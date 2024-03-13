@@ -2,9 +2,9 @@ import { EventsHandler } from '@nestjs/cqrs'
 import {
     TfgCadastradoEvent,
     TfgCadastradoEventProps,
-} from '../../core/domain/events/TfgCadastrado.event'
+} from '../../../core/domain/events/TfgCadastrado.event'
 import { Inject } from '@nestjs/common'
-import { EnviarEmailService } from '../domain/services/EnviarEmail.service'
+import { EnviarEmailService } from '../../domain/services/EnviarEmail.service'
 
 @EventsHandler(TfgCadastradoEvent)
 export class EnviarEmailOrientacaoSolicitadaHandler {
@@ -60,7 +60,7 @@ export class EnviarEmailOrientacaoSolicitadaHandler {
                 <p>Saudações, <b>${props.alunoNome}</b>!</p>
                 <p>Seu Trabalho de Final de Graduação (TFG) "<b>${
                     props.titulo
-                }</b>" foi cadastrado com sucesso. 
+                }</b>" foi cadastrado com sucesso.</p>
                 <br><br>
                 <p>Informações sobre o TFG:</p>
                 <ul>

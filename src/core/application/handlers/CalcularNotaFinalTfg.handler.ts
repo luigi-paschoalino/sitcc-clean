@@ -1,6 +1,6 @@
 import { Inject, Logger } from '@nestjs/common'
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs'
-import { TfgNotaFinalAvaliadaEvent } from '../../domain/events/TfgNotaFinalEvent.event'
+import { TfgNotaFinalAvaliadaEvent } from '../../domain/events/TfgNotaFinalAvaliada.event'
 import { TfgRepository } from '../../domain/repositories/Tfg.repository'
 import { EventPublisherService } from '../../domain/services/EventPublisher.service'
 import { TfgFinalizadoEvent } from '../../domain/events/TfgFinalizado.event'

@@ -1,12 +1,12 @@
 import { EventsHandler } from '@nestjs/cqrs'
 import { Inject } from '@nestjs/common'
-import { EnviarEmailService } from '../domain/services/EnviarEmail.service'
+import { EnviarEmailService } from '../../domain/services/EnviarEmail.service'
 import {
     TfgOrientacaoRecusadaEvent,
     TfgOrientacaoRecusadaEventProps,
-} from '../../core/domain/events/TfgOrientacaoRecusada.event'
-import { BuscarTfgService } from '../domain/services/BuscarTfg.service'
-import { Tfg } from '../domain/Tfg'
+} from '../../../core/domain/events/TfgOrientacaoRecusada.event'
+import { BuscarTfgService } from '../../domain/services/BuscarTfg.service'
+import { Tfg } from '../../domain/Tfg'
 
 @EventsHandler(TfgOrientacaoRecusadaEvent)
 export class EnviarEmailOrientacaoRecusadaHandler {
@@ -42,7 +42,7 @@ export class EnviarEmailOrientacaoRecusadaHandler {
             <html>
               <body>
                 <p>Saudações, <b>${tfg.getAluno().nome}</b>!</p>
-                <p>A sua solicitação de orientação de TFG foi <b>RECUSADA</b>! 
+                <p>A sua solicitação de orientação de TFG foi <b>RECUSADA</b></p>! 
                 <br><br>
                 <p>Informações sobre o TFG:</p>
                 <ul>

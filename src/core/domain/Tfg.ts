@@ -8,7 +8,7 @@ import { BancaAdicionadaEvent } from './events/BancaAdicionada.event'
 import { BancaEditadaEvent } from './events/BancaEditada.event'
 import { TfgCadastradoEvent } from './events/TfgCadastrado.event'
 import { TfgEnviadoEvent } from './events/TfgEnviado.event'
-import { TfgNotaFinalAvaliadaEvent } from './events/TfgNotaFinalEvent.event'
+import { TfgNotaFinalAvaliadaEvent } from './events/TfgNotaFinalAvaliada.event'
 import { TfgNotaParcialAvaliadaEvent } from './events/TfgNotaParcialAvaliada.event'
 import { TfgOrientacaoAprovadaEvent } from './events/TfgOrientacaoAprovada.event'
 import { TfgOrientacaoRecusadaEvent } from './events/TfgOrientacaoRecusada.event'
@@ -433,6 +433,7 @@ export class Tfg extends AbstractAggregateRoot<string> {
                     id: this.id,
                     alunoId: this.alunoId,
                     orientadorId: this.orientadorId,
+                    titulo: this.titulo,
                 }),
             )
         } else {
@@ -468,7 +469,7 @@ export class Tfg extends AbstractAggregateRoot<string> {
 
         this.apply(
             new TfgNotaParcialAvaliadaEvent({
-                tfgId: this.id,
+                id: this.id,
                 nota: nota,
             }),
         )
@@ -549,7 +550,7 @@ export class Tfg extends AbstractAggregateRoot<string> {
 
         this.apply(
             new TfgEnviadoEvent({
-                tfgId: this.id,
+                id: this.id,
                 path: path,
                 tipoEntrega,
             }),

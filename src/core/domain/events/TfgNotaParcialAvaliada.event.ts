@@ -1,7 +1,7 @@
 import { AbstractEvent } from '../../../shared/domain/AbstractEvent'
 
 export interface TfgNotaParcialAvaliadaEventProps {
-    tfgId: string
+    id: string
     nota: number
 }
 

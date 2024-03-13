@@ -43,6 +43,8 @@ export class BuscarTfgServiceImpl implements BuscarTfgService {
                           }
                         : undefined,
                     titulo: tfg.titulo,
+                    notaParcial: Number(tfg.notaParcial),
+                    notaFinal: Number(tfg.notaFinal),
                 },
                 tfg.id,
             )
