@@ -7,8 +7,8 @@ import { EnviarEmailServiceImpl } from './infra/services/EnviarEmail.service'
 import { EnviarEmailTfgEnviadoHandler } from './application/handlers/EnviarEmailTfgEnviado.handler'
 import { EnviarEmailTfgNotaParcialAvaliadaHandler } from './application/handlers/EnviarEmailTfgNotaParcialAvaliada.handler'
 import { EnviarEmailTfgFinalizadoHandler } from './application/handlers/EnviarEmailTfgFinalizado.handler'
-import { EnviarEmailService } from './domain/services/EnviarEmail.service'
 import { EnviarEmailCodigoProfessorGeradoHandler } from './application/handlers/EnviarEmailCodigoProfessorGerado.handler'
+import { PrismaService } from '../shared/infra/database/prisma/prisma.service'
 
 @Module({
     imports: [],
@@ -19,29 +19,21 @@ import { EnviarEmailCodigoProfessorGeradoHandler } from './application/handlers/
         EnviarEmailTfgEnviadoHandler,
         EnviarEmailTfgNotaParcialAvaliadaHandler,
         EnviarEmailTfgFinalizadoHandler,
-
+        EnviarEmailCodigoProfessorGeradoHandler,
         {
             provide: 'BuscarTfgService',
             useClass: BuscarTfgServiceImpl,
         },
         {
             provide: 'EnviarEmailService',
-            useFactory: () => {
-                return new EnviarEmailServiceImpl(
-                    process.env.EMAIL_SERVICE_EMAIL,
-                    process.env.EMAIL_SERVICE_PASS,
-                )
-            },
+            useValue: new EnviarEmailServiceImpl(
+                process.env.EMAIL_SERVICE_EMAIL,
+                process.env.EMAIL_SERVICE_API_KEY,
+            ),
         },
         {
-            provide: 'EnviarEmailCodigoProfessorGeradoHandler',
-            useFactory: (enviarEmailService: EnviarEmailService) => {
-                return new EnviarEmailCodigoProfessorGeradoHandler(
-                    enviarEmailService,
-                    process.env.FRONTEND_URL,
-                )
-            },
-            inject: ['EnviarEmailService'],
+            provide: 'PrismaService',
+            useClass: PrismaService,
         },
     ],
 })

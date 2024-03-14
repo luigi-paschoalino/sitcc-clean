@@ -53,8 +53,7 @@ export class GerarCodigoProfessorUsecase {
             )
             if (salvar instanceof Error) throw salvar
 
-            const publish = await this.publisher.publish(codigoProfessor)
-            if (publish instanceof Error) throw publish
+            await this.publisher.publish(codigoProfessor)
         } catch (error) {
             return error
         }
