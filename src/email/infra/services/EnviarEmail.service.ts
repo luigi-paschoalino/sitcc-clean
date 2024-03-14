@@ -14,7 +14,7 @@ export class EnviarEmailServiceImpl implements EnviarEmailService {
     async enviar(destinatario: string, assunto: string, mensagem: string) {
         try {
             const transport = nodemailer.createTransport({
-                service: 'gmail',
+                service: 'smtp.mailgun.org',
                 auth: {
                     user: this.serviceEmail,
                     pass: this.servicePass,

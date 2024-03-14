@@ -18,7 +18,7 @@ export class AtividadeMapper {
     }
 
     public modelToDomain(model: AtividadeModel): Error | Atividade {
-        const domain = Atividade.criar(
+        const domain = Atividade.carregar(
             {
                 data: model.data,
                 descricao: model.descricao,

@@ -1,15 +1,14 @@
-import { EventsHandler } from '@nestjs/cqrs'
+import { EventsHandler, IEventHandler } from '@nestjs/cqrs'
 import { Inject } from '@nestjs/common'
 import { EnviarEmailService } from '../../domain/services/EnviarEmail.service'
-import {
-    TfgOrientacaoRecusadaEvent,
-    TfgOrientacaoRecusadaEventProps,
-} from '../../../core/domain/events/TfgOrientacaoRecusada.event'
+import { TfgOrientacaoRecusadaEvent } from '../../../core/domain/events/TfgOrientacaoRecusada.event'
 import { BuscarTfgService } from '../../domain/services/BuscarTfg.service'
 import { Tfg } from '../../domain/Tfg'
 
 @EventsHandler(TfgOrientacaoRecusadaEvent)
-export class EnviarEmailOrientacaoRecusadaHandler {
+export class EnviarEmailOrientacaoRecusadaHandler
+    implements IEventHandler<TfgOrientacaoRecusadaEvent>
+{
     constructor(
         @Inject('EnviarEmailService')
         private readonly enviarEmailService: EnviarEmailService,
@@ -17,18 +16,16 @@ export class EnviarEmailOrientacaoRecusadaHandler {
         private readonly buscarTfgService: BuscarTfgService,
     ) {}
 
-    async handle(
-        props: TfgOrientacaoRecusadaEventProps,
-    ): Promise<Error | void> {
+    async handle(props: TfgOrientacaoRecusadaEvent): Promise<Error | void> {
         try {
             // Montando email para o aluno
-            const tfg = await this.buscarTfgService.buscar(props.id)
+            const tfg = await this.buscarTfgService.buscar(props.data.id)
             if (tfg instanceof Error) throw tfg
 
             const email = await this.enviarEmailService.enviar(
                 tfg.getAluno().email,
                 'O seu orientador respondeu à sua solicitação de TFG',
-                this.montarMensagem(tfg, props.justificativa),
+                this.montarMensagem(tfg, props.data.justificativa),
             )
             if (email instanceof Error) throw email
         } catch (error) {

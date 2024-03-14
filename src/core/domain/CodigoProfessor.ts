@@ -33,7 +33,7 @@ export class CodigoProfessor extends AbstractAggregateRoot<string> {
 
         instance.setDisponivel(true)
 
-        this.apply(
+        instance.apply(
             new CodigoProfessorGeradoEvent({
                 id: instance.getId(),
                 codigo: instance.getCodigo(),
@@ -52,6 +52,7 @@ export class CodigoProfessor extends AbstractAggregateRoot<string> {
 
         instance.codigo = props.codigo
         instance.disponivel = props.disponivel
+        instance.email = props.email
 
         return instance
     }

@@ -174,7 +174,7 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
                     ? await this.prismaService.projeto.findMany({
                           where: {
                               perfilProfessorId:
-                                  usuarioModel.perfilProfessor.id,
+                                  usuarioModel.perfilProfessor?.id,
                           },
                       })
                     : undefined

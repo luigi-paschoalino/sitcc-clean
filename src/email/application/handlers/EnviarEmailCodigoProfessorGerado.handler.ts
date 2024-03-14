@@ -1,27 +1,25 @@
-import { EventsHandler } from '@nestjs/cqrs'
+import { EventsHandler, IEventHandler } from '@nestjs/cqrs'
 import { Inject } from '@nestjs/common'
 import { EnviarEmailService } from '../../domain/services/EnviarEmail.service'
-import {
-    CodigoProfessorGeradoEvent,
-    CodigoProfessorGeradoEventProps,
-} from '../../../core/domain/events/CodigoProfessorGerado.event'
+import { CodigoProfessorGeradoEvent } from '../../../core/domain/events/CodigoProfessorGerado.event'
 
 @EventsHandler(CodigoProfessorGeradoEvent)
-export class EnviarEmailCodigoProfessorGeradoHandler {
+export class EnviarEmailCodigoProfessorGeradoHandler
+    implements IEventHandler<CodigoProfessorGeradoEvent>
+{
     constructor(
         @Inject('EnviarEmailService')
         private readonly enviarEmailService: EnviarEmailService,
         private readonly link: string,
     ) {}
 
-    async handle(
-        props: CodigoProfessorGeradoEventProps,
-    ): Promise<Error | void> {
+    async handle(props: CodigoProfessorGeradoEvent): Promise<Error | void> {
         try {
+            console.log('chegou aqui')
             const email = await this.enviarEmailService.enviar(
-                props.email,
+                props.data.email,
                 'SITFG - Código de professor gerado',
-                this.montarMensagem(props.codigo, this.link),
+                this.montarMensagem(props.data.codigo, this.link),
             )
             if (email instanceof Error) throw email
         } catch (error) {

@@ -1,13 +1,14 @@
-import { EventsHandler } from '@nestjs/cqrs'
 import { Inject } from '@nestjs/common'
-import { EnviarEmailService } from '../../domain/services/EnviarEmail.service'
-import { TfgNotaParcialAvaliadaEventProps } from '../../../core/domain/events/TfgNotaParcialAvaliada.event'
-import { BuscarTfgService } from '../../domain/services/BuscarTfg.service'
-import { Tfg } from '../../domain/Tfg'
+import { EventsHandler, IEventHandler } from '@nestjs/cqrs'
 import { TfgNotaParcialAvaliadaEvent } from '../../../core/domain/events/TfgNotaParcialAvaliada.event'
+import { Tfg } from '../../domain/Tfg'
+import { BuscarTfgService } from '../../domain/services/BuscarTfg.service'
+import { EnviarEmailService } from '../../domain/services/EnviarEmail.service'
 
 @EventsHandler(TfgNotaParcialAvaliadaEvent)
-export class EnviarEmailTfgNotaParcialAvaliadaHandler {
+export class EnviarEmailTfgNotaParcialAvaliadaHandler
+    implements IEventHandler<TfgNotaParcialAvaliadaEvent>
+{
     constructor(
         @Inject('EnviarEmailService')
         private readonly enviarEmailService: EnviarEmailService,
@@ -15,11 +16,9 @@ export class EnviarEmailTfgNotaParcialAvaliadaHandler {
         private readonly buscarTfgService: BuscarTfgService,
     ) {}
 
-    async handle(
-        props: TfgNotaParcialAvaliadaEventProps,
-    ): Promise<Error | void> {
+    async handle(props: TfgNotaParcialAvaliadaEvent): Promise<Error | void> {
         try {
-            const tfg = await this.buscarTfgService.buscar(props.id)
+            const tfg = await this.buscarTfgService.buscar(props.data.id)
             if (tfg instanceof Error) throw tfg
 
             // Montando email para o aluno

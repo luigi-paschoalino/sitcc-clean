@@ -36,7 +36,7 @@ export class EditarAtividadeCronogramaUsecase {
             if (!Object.keys(TIPO_ATIVIDADE).includes(props.titulo))
                 throw new InvalidPropsException('Tipo de atividade inválido')
 
-            const atividade = Atividade.criar(
+            const atividade = Atividade.carregar(
                 {
                     titulo: props.titulo as TIPO_ATIVIDADE,
                     descricao: props.descricao,

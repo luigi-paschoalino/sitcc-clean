@@ -1,4 +1,4 @@
-import { EventsHandler } from '@nestjs/cqrs'
+import { EventsHandler, IEventHandler } from '@nestjs/cqrs'
 import { Inject } from '@nestjs/common'
 import { EnviarEmailService } from '../../domain/services/EnviarEmail.service'
 import { TfgEnviadoEventProps } from '../../../core/domain/events/TfgEnviado.event'
@@ -7,7 +7,9 @@ import { Tfg } from '../../domain/Tfg'
 import { TfgEnviadoEvent } from '../../../core/domain/events/TfgEnviado.event'
 
 @EventsHandler(TfgEnviadoEvent)
-export class EnviarEmailTfgEnviadoHandler {
+export class EnviarEmailTfgEnviadoHandler
+    implements IEventHandler<TfgEnviadoEvent>
+{
     constructor(
         @Inject('EnviarEmailService')
         private readonly enviarEmailService: EnviarEmailService,
@@ -15,16 +17,16 @@ export class EnviarEmailTfgEnviadoHandler {
         private readonly buscarTfgService: BuscarTfgService,
     ) {}
 
-    async handle(props: TfgEnviadoEventProps): Promise<Error | void> {
+    async handle(props: TfgEnviadoEvent): Promise<Error | void> {
         try {
-            const tfg = await this.buscarTfgService.buscar(props.id)
+            const tfg = await this.buscarTfgService.buscar(props.data.id)
             if (tfg instanceof Error) throw tfg
 
             // Montando email para o orientador
             const emailOrientador = await this.enviarEmailService.enviar(
                 tfg.getOrientador().email,
                 'Entrega de TFG registrada no sistema',
-                this.montarMensagem(tfg, props, false),
+                this.montarMensagem(tfg, props.data, false),
             )
             if (emailOrientador instanceof Error) throw emailOrientador
 
@@ -32,7 +34,7 @@ export class EnviarEmailTfgEnviadoHandler {
             const emailCoorientador = await this.enviarEmailService.enviar(
                 tfg.getCoorientador().email,
                 'Entrega de TFG registrada no sistema',
-                this.montarMensagem(tfg, props, true),
+                this.montarMensagem(tfg, props.data, true),
             )
             if (emailCoorientador instanceof Error) throw emailCoorientador
         } catch (error) {

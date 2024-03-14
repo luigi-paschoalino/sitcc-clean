@@ -1,4 +1,4 @@
-import { EventsHandler } from '@nestjs/cqrs'
+import { EventsHandler, IEventHandler } from '@nestjs/cqrs'
 import {
     TfgCadastradoEvent,
     TfgCadastradoEventProps,
@@ -7,35 +7,37 @@ import { Inject } from '@nestjs/common'
 import { EnviarEmailService } from '../../domain/services/EnviarEmail.service'
 
 @EventsHandler(TfgCadastradoEvent)
-export class EnviarEmailOrientacaoSolicitadaHandler {
+export class EnviarEmailOrientacaoSolicitadaHandler
+    implements IEventHandler<TfgCadastradoEvent>
+{
     constructor(
         @Inject('EnviarEmailService')
         private readonly enviarEmailService: EnviarEmailService,
     ) {}
 
-    async handle(props: TfgCadastradoEventProps): Promise<Error | void> {
+    async handle(props: TfgCadastradoEvent): Promise<Error | void> {
         try {
             // Montando email para o aluno
             const envioEmailAlunoPromise = this.enviarEmailService.enviar(
-                props.alunoEmail,
+                props.data.alunoEmail,
                 'A sua solicitação de TFG foi cadastrada com sucesso!',
-                this.montarMensagemAluno(props),
+                this.montarMensagemAluno(props.data),
             )
 
             // Montando email para o orientador
             const envioEmailOrientadorPromise = this.enviarEmailService.enviar(
-                props.orientadorEmail,
+                props.data.orientadorEmail,
                 'Solicitação de orientação de TFG',
-                this.montarMensagemOrientador(props),
+                this.montarMensagemOrientador(props.data),
             )
 
             // Montando email para o coorientador
             let envioEmailCoorientadorPromise: void | Promise<Error | void>
-            if (props.coorientadorEmail) {
+            if (props.data.coorientadorEmail) {
                 envioEmailCoorientadorPromise = this.enviarEmailService.enviar(
-                    props.coorientadorEmail,
+                    props.data.coorientadorEmail,
                     'Solicitação de coorientação de TFG',
-                    this.montarMensagemCoorientador(props),
+                    this.montarMensagemCoorientador(props.data),
                 )
             }
 
