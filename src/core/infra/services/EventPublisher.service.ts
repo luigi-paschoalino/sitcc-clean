@@ -16,7 +16,7 @@ export class EventPublisherServiceImpl implements EventPublisherService {
         try {
             const events =
                 aggregate.getUncommittedEvents() as AbstractEvent<any>[]
-            if (!!events.length) {
+            if (events.length) {
                 for (const event of events)
                     await this.eventRepository.save(event)
                 this.eventPublisher.mergeObjectContext(aggregate)

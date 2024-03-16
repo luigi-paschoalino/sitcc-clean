@@ -51,7 +51,7 @@ export class Usuario extends AbstractAggregateRoot<string> {
         super(id)
     }
 
-    static criar(props: CriarUsuarioProps): Usuario {
+    static criar(props: CriarUsuarioProps): Error | Usuario {
         try {
             if (Object.keys(props).length === 0)
                 throw new InvalidPropsException(
@@ -60,13 +60,20 @@ export class Usuario extends AbstractAggregateRoot<string> {
 
             const instance = new Usuario()
 
-            instance.setNome(props.nome)
-            instance.setCurso(props.curso)
-            instance.setEmail(props.email)
-            instance.setSenha(props.senha)
-            instance.setTipo(props.tipo)
-            instance.setNumero(props.numero)
+            const setNome = instance.setNome(props.nome)
+            const setCurso = instance.setCurso(props.curso)
+            const setEmail = instance.setEmail(props.email)
+            const setSenha = instance.setSenha(props.senha)
+            const setTipo = instance.setTipo(props.tipo)
+            const setNumero = instance.setNumero(props.numero)
             instance.matricula = props.matricula
+
+            if (setNome instanceof Error) return setNome
+            if (setCurso instanceof Error) return setCurso
+            if (setEmail instanceof Error) return setEmail
+            if (setSenha instanceof Error) return setSenha
+            if (setTipo instanceof Error) return setTipo
+            if (setNumero instanceof Error) return setNumero
 
             instance.apply(
                 new UsuarioCadastradoEvent({
@@ -90,12 +97,12 @@ export class Usuario extends AbstractAggregateRoot<string> {
     static carregar(props: CarregarUsuarioProps, id: string): Usuario {
         const instance = new Usuario(id)
 
-        instance.setNome(props.nome)
-        instance.setCurso(props.cursoId)
-        instance.setSenha(props.senha)
-        instance.setTipo(props.tipo)
-        instance.setNumero(props.numero)
-        instance.setPerfilProfessor(props.perfilProfessor)
+        instance.nome = props.nome
+        instance.cursoId = props.cursoId
+        instance.senha = props.senha
+        instance.tipo = props.tipo
+        instance.numero = props.numero
+        instance.perfilProfessor = props.perfilProfessor
 
         instance.email = props.email
         instance.matricula = props.matricula

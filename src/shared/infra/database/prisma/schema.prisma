@@ -92,6 +92,7 @@ model CodigoProfessor {
   id         String  @id @default(uuid()) @db.Uuid
   codigo     String  @unique @db.VarChar(12)
   disponivel Boolean @default(true)
+  email      String  @db.VarChar(255)
 
   @@map("codigos_professores")
 }

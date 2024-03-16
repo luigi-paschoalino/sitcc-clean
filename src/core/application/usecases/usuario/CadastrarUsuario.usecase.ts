@@ -45,6 +45,14 @@ export class CadastrarUsuarioUseCase {
                         props.codigo,
                     )
                 if (codigo instanceof Error) throw codigo
+
+                if (
+                    !codigo.getDisponivel() ||
+                    codigo.getEmail() !== props.email
+                )
+                    throw new InvalidPropsException(
+                        'Código do professor inválido',
+                    )
             }
 
             const usuarios = await this.usuarioRepository.listar()

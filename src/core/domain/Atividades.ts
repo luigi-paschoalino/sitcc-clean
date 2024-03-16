@@ -22,8 +22,8 @@ export class Atividade extends AbstractEntity<string> {
         super(id)
     }
 
-    static criar(props: CriarAtividadeProps, id?: string): Error | Atividade {
-        const atividade = new Atividade(id)
+    static criar(props: CriarAtividadeProps): Error | Atividade {
+        const atividade = new Atividade()
 
         const setData = atividade.setData(props.data)
         const setTitulo = atividade.setTitulo(props.titulo)
@@ -32,6 +32,16 @@ export class Atividade extends AbstractEntity<string> {
         if (setData instanceof Error) return setData
         if (setTitulo instanceof Error) return setTitulo
         if (setDescricao instanceof Error) return setDescricao
+
+        return atividade
+    }
+
+    static carregar(props: CriarAtividadeProps, id: string): Atividade {
+        const atividade = new Atividade(id)
+
+        atividade.data = props.data
+        atividade.titulo = props.titulo
+        atividade.descricao = props.descricao
 
         return atividade
     }
