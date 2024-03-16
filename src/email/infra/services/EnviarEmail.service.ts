@@ -10,6 +10,7 @@ export class EnviarEmailServiceImpl implements EnviarEmailService {
     constructor(
         private readonly serviceEmail: string,
         private readonly apiKey: string,
+        private readonly domain: string,
     ) {}
 
     async enviar(destinatario: string, assunto: string, mensagem: string) {
@@ -17,7 +18,7 @@ export class EnviarEmailServiceImpl implements EnviarEmailService {
             const mailgunOptions = {
                 auth: {
                     api_key: this.apiKey,
-                    domain: 'sandbox62d7d1325d864f9a973fa0badece009b.mailgun.org',
+                    domain: this.domain,
                 },
             }
 

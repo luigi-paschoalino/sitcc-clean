@@ -29,6 +29,7 @@ import { PrismaService } from '../shared/infra/database/prisma/prisma.service'
             useValue: new EnviarEmailServiceImpl(
                 process.env.EMAIL_SERVICE_EMAIL,
                 process.env.EMAIL_SERVICE_API_KEY,
+                process.env.EMAIL_SERVICE_DOMAIN,
             ),
         },
         {
