@@ -1,7 +1,8 @@
 import { AbstractEvent } from '../../../shared/domain/AbstractEvent'
 
 export interface SenhaReiniciadaEventProps {
-    usuarioId: string
+    email: string
+    hash: string
     timestamp: Date
 }
 

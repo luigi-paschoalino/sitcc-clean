@@ -48,64 +48,72 @@ export class TfgRepositoryImpl implements TfgRepository {
                 },
                 update: {
                     ...model,
-                    banca: {
-                        upsert: {
-                            where: {
-                                id: model.banca.id,
-                            },
-                            update: {
-                                id: model.banca.id,
-                                professorId: model.banca.professorId,
-                                segundoProfessorId:
-                                    model.banca.segundoProfessorId,
-                                data: model.banca.data,
-                                notaApresentacaoProfessor:
-                                    model.banca.notaApresentacaoProfessor,
-                                notaApresentacaoSegundoProfessor:
-                                    model.banca
-                                        .notaApresentacaoSegundoProfessor,
-                                notaTrabalhoProfessor:
-                                    model.banca.notaTrabalhoProfessor,
-                                notaTrabalhoSegundoProfessor:
-                                    model.banca.notaTrabalhoSegundoProfessor,
-                            },
-                            create: {
-                                id: model.banca.id,
-                                professorId: model.banca.professorId,
-                                segundoProfessorId:
-                                    model.banca.segundoProfessorId,
-                                data: model.banca.data,
-                                notaApresentacaoProfessor:
-                                    model.banca.notaApresentacaoProfessor,
-                                notaApresentacaoSegundoProfessor:
-                                    model.banca
-                                        .notaApresentacaoSegundoProfessor,
-                                notaTrabalhoProfessor:
-                                    model.banca.notaTrabalhoProfessor,
-                                notaTrabalhoSegundoProfessor:
-                                    model.banca.notaTrabalhoSegundoProfessor,
-                            },
-                        },
-                    },
+                    banca: model.banca
+                        ? {
+                              upsert: {
+                                  where: {
+                                      id: model.banca.id,
+                                  },
+                                  update: {
+                                      id: model.banca.id,
+                                      professorId: model.banca.professorId,
+                                      segundoProfessorId:
+                                          model.banca.segundoProfessorId,
+                                      data: model.banca.data,
+                                      notaApresentacaoProfessor:
+                                          model.banca.notaApresentacaoProfessor,
+                                      notaApresentacaoSegundoProfessor:
+                                          model.banca
+                                              .notaApresentacaoSegundoProfessor,
+                                      notaTrabalhoProfessor:
+                                          model.banca.notaTrabalhoProfessor,
+                                      notaTrabalhoSegundoProfessor:
+                                          model.banca
+                                              .notaTrabalhoSegundoProfessor,
+                                  },
+                                  create: {
+                                      id: model.banca.id,
+                                      professorId: model.banca.professorId,
+                                      segundoProfessorId:
+                                          model.banca.segundoProfessorId,
+                                      data: model.banca.data,
+                                      notaApresentacaoProfessor:
+                                          model.banca.notaApresentacaoProfessor,
+                                      notaApresentacaoSegundoProfessor:
+                                          model.banca
+                                              .notaApresentacaoSegundoProfessor,
+                                      notaTrabalhoProfessor:
+                                          model.banca.notaTrabalhoProfessor,
+                                      notaTrabalhoSegundoProfessor:
+                                          model.banca
+                                              .notaTrabalhoSegundoProfessor,
+                                  },
+                              },
+                          }
+                        : undefined,
                 },
                 create: {
                     ...model,
-                    banca: {
-                        create: {
-                            id: model.banca.id,
-                            professorId: model.banca.professorId,
-                            segundoProfessorId: model.banca.segundoProfessorId,
-                            data: model.banca.data,
-                            notaApresentacaoProfessor:
-                                model.banca.notaApresentacaoProfessor,
-                            notaApresentacaoSegundoProfessor:
-                                model.banca.notaApresentacaoSegundoProfessor,
-                            notaTrabalhoProfessor:
-                                model.banca.notaTrabalhoProfessor,
-                            notaTrabalhoSegundoProfessor:
-                                model.banca.notaTrabalhoSegundoProfessor,
-                        },
-                    },
+                    banca: model.banca
+                        ? {
+                              create: {
+                                  id: model.banca.id,
+                                  professorId: model.banca.professorId,
+                                  segundoProfessorId:
+                                      model.banca.segundoProfessorId,
+                                  data: model.banca.data,
+                                  notaApresentacaoProfessor:
+                                      model.banca.notaApresentacaoProfessor,
+                                  notaApresentacaoSegundoProfessor:
+                                      model.banca
+                                          .notaApresentacaoSegundoProfessor,
+                                  notaTrabalhoProfessor:
+                                      model.banca.notaTrabalhoProfessor,
+                                  notaTrabalhoSegundoProfessor:
+                                      model.banca.notaTrabalhoSegundoProfessor,
+                              },
+                          }
+                        : undefined,
                 },
             })
 

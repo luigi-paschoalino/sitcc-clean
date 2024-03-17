@@ -1,4 +1,4 @@
-import { Inject } from '@nestjs/common'
+import { Inject, Logger } from '@nestjs/common'
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs'
 import { TfgFinalizadoEvent } from '../../../core/domain/events/TfgFinalizado.event'
 import { Tfg } from '../../domain/Tfg'
@@ -9,6 +9,8 @@ import { EnviarEmailService } from '../../domain/services/EnviarEmail.service'
 export class EnviarEmailTfgFinalizadoHandler
     implements IEventHandler<TfgFinalizadoEvent>
 {
+    private logger = new Logger(EnviarEmailTfgFinalizadoHandler.name)
+
     constructor(
         @Inject('EnviarEmailService')
         private readonly enviarEmailService: EnviarEmailService,
@@ -29,27 +31,29 @@ export class EnviarEmailTfgFinalizadoHandler
             )
             if (email instanceof Error) throw email
         } catch (error) {
-            return error
+            this.logger.error(
+                `${typeof error}: ${JSON.stringify(error.message, null, 2)}`,
+            )
         }
     }
 
-    // TODO: utilizar template do Handlebars
     private montarMensagem(tfg: Tfg, statusTfg: string): string {
         return `
             <html>
               <body>
                 <p>Saudações, <b>${tfg.getAluno().nome}</b>!</p>
                 <p>O TFG foi avaliado pela banca com a nota <b><${tfg.getNotaFinal()}/b> e o seu trabalho foi <b>${statusTfg}</b></p>
-                <br><br>
+                <br>
                 <p>Informações sobre o TFG:</p>
                 <ul>
                   <li><b>Título:</b> ${tfg.getTitulo()}</li>
                   <li><b>Aluno:</b> ${tfg.getAluno().nome}</li>
                   <li><b>Orientador:</b> ${tfg.getOrientador().nome}</li>
                   <li><b>Coorientador:</b> ${
-                      tfg.getCoorientador().nome ?? 'SEM COORIENTADOR'
+                      tfg.getCoorientador()?.nome ?? 'SEM COORIENTADOR'
                   }</li>
                   <br>
+                </ul>
                 <p>Para mais informações, acesse o sistema.</p>
               </body>
             </html>

@@ -116,7 +116,8 @@ export class Usuario extends AbstractAggregateRoot<string> {
 
         this.apply(
             new SenhaReiniciadaEvent({
-                usuarioId: this.id,
+                email: this.email,
+                hash: this.hashRecuperacaoSenha,
                 timestamp: new Date(),
             }),
         )

@@ -5,6 +5,7 @@ import { RepositoryDataNotFoundException } from '../../../shared/domain/exceptio
 import { PrismaService } from '../../../shared/infra/database/prisma/prisma.service'
 import { Curso } from '../../domain/Curso'
 import { CursoMapper } from '../mappers/Curso.mapper'
+import { InvalidPropsException } from '../../../shared/domain/exceptions/InvalidProps.exception'
 
 @Injectable()
 export class CursoRepositoryImpl implements CursoRepository {
@@ -15,6 +16,8 @@ export class CursoRepositoryImpl implements CursoRepository {
 
     async buscarPorId(id: string): Promise<Error | Curso> {
         try {
+            if (!id) return new InvalidPropsException('ID não pode ser vazio')
+
             const model = await this.prismaService.curso.findUnique({
                 where: { id },
                 include: {

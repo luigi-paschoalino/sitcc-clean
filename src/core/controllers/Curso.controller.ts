@@ -60,7 +60,6 @@ export class CursoController extends AbstractController {
         })
     }
 
-    @UseGuards(JwtAuthGuard)
     @Get()
     public async listCursos() {
         const result = await this.listarCursosQuery.execute()
@@ -68,7 +67,6 @@ export class CursoController extends AbstractController {
         return this.handleResponse(result)
     }
 
-    @UseGuards(JwtAuthGuard)
     @Get(':id')
     public async getCurso(@Param('id') id: string) {
         const result = await this.buscarCursoQuery.execute({

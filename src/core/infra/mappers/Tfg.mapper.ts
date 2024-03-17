@@ -9,10 +9,9 @@ export class TfgMapper {
     constructor(private readonly bancaMapper: BancaMapper) {}
 
     domainToModel(tfg: Tfg): TfgModel {
-        const banca = this.bancaMapper.domainToModel(
-            tfg.getBanca(),
-            tfg.getId(),
-        )
+        const banca = tfg.getBanca()
+            ? this.bancaMapper.domainToModel(tfg.getBanca(), tfg.getId())
+            : undefined
 
         return {
             id: tfg.getId(),
@@ -42,7 +41,10 @@ export class TfgMapper {
     }
 
     modelToDomain(tfgModel: TfgModel): Tfg {
-        const banca = this.bancaMapper.modelToDomain(tfgModel.banca)
+        const banca = tfgModel.banca
+            ? this.bancaMapper.modelToDomain(tfgModel.banca)
+            : undefined
+
         const domain = Tfg.carregar(
             {
                 bibliografia: tfgModel.bibliografia,

@@ -1,5 +1,5 @@
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs'
-import { Inject } from '@nestjs/common'
+import { Inject, Logger } from '@nestjs/common'
 import { EnviarEmailService } from '../../domain/services/EnviarEmail.service'
 import { TfgOrientacaoAprovadaEvent } from '../../../core/domain/events/TfgOrientacaoAprovada.event'
 import { BuscarTfgService } from '../../domain/services/BuscarTfg.service'
@@ -9,6 +9,8 @@ import { Tfg } from '../../domain/Tfg'
 export class EnviarEmailOrientacaoAprovadaHandler
     implements IEventHandler<TfgOrientacaoAprovadaEvent>
 {
+    private logger = new Logger(EnviarEmailOrientacaoAprovadaHandler.name)
+
     constructor(
         @Inject('EnviarEmailService')
         private readonly enviarEmailService: EnviarEmailService,
@@ -26,10 +28,11 @@ export class EnviarEmailOrientacaoAprovadaHandler
                 'A sua solicitação de TFG foi cadastrada com sucesso!',
                 this.montarMensagem(tfg),
             )
-
             if (aluno instanceof Error) throw aluno
         } catch (error) {
-            return error
+            this.logger.error(
+                `${typeof error}: ${JSON.stringify(error.message, null, 2)}`,
+            )
         }
     }
 
@@ -39,16 +42,17 @@ export class EnviarEmailOrientacaoAprovadaHandler
               <body>
                 <p>Saudações, <b>${tfg.getAluno().nome}</b>!</p>
                 <p>A sua solicitação de orientação de TFG foi aprovada com sucesso!</p>
-                <br><br>
+                <br>
                 <p>Informações sobre o TFG:</p>
                 <ul>
                   <li><b>Título:</b> ${tfg.getTitulo()}</li>
                   <li><b>Aluno:</b> ${tfg.getAluno().nome}</li>
                   <li><b>Orientador:</b> ${tfg.getOrientador().nome}</li>
                   <li><b>Coorientador:</b> ${
-                      tfg.getCoorientador().nome ?? 'SEM COORIENTADOR'
+                      tfg.getCoorientador()?.nome ?? 'SEM COORIENTADOR'
                   }</li>
                   <br>
+                </ul>
                 <p>Estamos ansiosos para ver suas contribuições e desejamos sucesso em seu projeto!</p>
               </body>
             </html>

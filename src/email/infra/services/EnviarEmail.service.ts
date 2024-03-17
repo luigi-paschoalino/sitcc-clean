@@ -1,6 +1,9 @@
 import { Logger } from '@nestjs/common'
 import { ServiceException } from '../../../shared/domain/exceptions/Service.exception'
-import { EnviarEmailService } from '../../domain/services/EnviarEmail.service'
+import {
+    ConfigProps,
+    EnviarEmailService,
+} from '../../domain/services/EnviarEmail.service'
 import * as nodemailer from 'nodemailer'
 import mailgunTransport from 'nodemailer-mailgun-transport'
 
@@ -11,9 +14,17 @@ export class EnviarEmailServiceImpl implements EnviarEmailService {
         private readonly serviceEmail: string,
         private readonly apiKey: string,
         private readonly domain: string,
+        private readonly urlFrontend: string,
     ) {}
 
-    async enviar(destinatario: string, assunto: string, mensagem: string) {
+    async enviar(
+        destinatario: string,
+        assunto: string,
+        mensagem: string,
+        config: ConfigProps = {
+            urlFrontend: false,
+        },
+    ): Promise<ServiceException | void> {
         try {
             const mailgunOptions = {
                 auth: {
@@ -32,12 +43,15 @@ export class EnviarEmailServiceImpl implements EnviarEmailService {
                     from: this.serviceEmail,
                     to: destinatario,
                     subject: assunto,
-                    html: mensagem,
+                    html: config.urlFrontend
+                        ? mensagem.replace('{urlFrontend}', this.urlFrontend)
+                        : mensagem,
                 },
                 (err, info) => {
                     if (err) {
-                        this.logger.error(err)
-                        throw new ServiceException('Erro ao enviar email')
+                        throw new ServiceException(
+                            `Erro ao enviar email:\n${err}`,
+                        )
                     }
                     this.logger.log(info)
                 },

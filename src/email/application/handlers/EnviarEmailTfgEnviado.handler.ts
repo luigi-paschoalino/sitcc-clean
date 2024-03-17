@@ -1,5 +1,5 @@
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs'
-import { Inject } from '@nestjs/common'
+import { Inject, Logger } from '@nestjs/common'
 import { EnviarEmailService } from '../../domain/services/EnviarEmail.service'
 import { TfgEnviadoEventProps } from '../../../core/domain/events/TfgEnviado.event'
 import { BuscarTfgService } from '../../domain/services/BuscarTfg.service'
@@ -10,6 +10,8 @@ import { TfgEnviadoEvent } from '../../../core/domain/events/TfgEnviado.event'
 export class EnviarEmailTfgEnviadoHandler
     implements IEventHandler<TfgEnviadoEvent>
 {
+    private logger = new Logger(EnviarEmailTfgEnviadoHandler.name)
+
     constructor(
         @Inject('EnviarEmailService')
         private readonly enviarEmailService: EnviarEmailService,
@@ -38,11 +40,12 @@ export class EnviarEmailTfgEnviadoHandler
             )
             if (emailCoorientador instanceof Error) throw emailCoorientador
         } catch (error) {
-            return error
+            this.logger.error(
+                `${typeof error}: ${JSON.stringify(error.message, null, 2)}`,
+            )
         }
     }
 
-    // TODO: utilizar template do Handlebars
     private montarMensagem(
         tfg: Tfg,
         props: TfgEnviadoEventProps,
@@ -53,20 +56,21 @@ export class EnviarEmailTfgEnviadoHandler
               <body>
                 <p>Saudações, <b>${
                     coorientador
-                        ? tfg.getCoorientador().nome
+                        ? tfg.getCoorientador()?.nome
                         : tfg.getOrientador().nome
                 }</b>!</p>
                 <p>Foi realizada a entrega ${props.tipoEntrega.toLocaleLowerCase()} do TFG de um dos seus orientandos!</p>
-                <br><br>
+                <br>
                 <p>Informações sobre o TFG:</p>
                 <ul>
                   <li><b>Título:</b> ${tfg.getTitulo()}</li>
                   <li><b>Aluno:</b> ${tfg.getAluno().nome}</li>
                   <li><b>Orientador:</b> ${tfg.getOrientador().nome}</li>
                   <li><b>Coorientador:</b> ${
-                      tfg.getCoorientador().nome ?? 'SEM COORIENTADOR'
+                      tfg.getCoorientador()?.nome ?? 'SEM COORIENTADOR'
                   }</li>
                   <br>
+                </ul>
                 <p>Para mais informações, acesse o sistema.</p>
               </body>
             </html>
