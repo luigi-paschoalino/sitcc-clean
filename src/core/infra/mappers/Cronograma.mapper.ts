@@ -66,10 +66,12 @@ export class CronogramaMapper {
                 id: cronograma.getId(),
                 ano: cronograma.getAno(),
                 semestre: cronograma.getSemestre(),
-                atividades: this.atividadeMapper.domainToModelList(
-                    cronograma.getAtividades(),
-                    cronograma.getId(),
-                ),
+                atividades: cronograma.getAtividades()
+                    ? this.atividadeMapper.domainToModelList(
+                          cronograma.getAtividades(),
+                          cronograma.getId(),
+                      )
+                    : undefined,
                 cursoId,
             }
         })

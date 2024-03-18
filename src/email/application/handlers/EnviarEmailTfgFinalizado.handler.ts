@@ -42,7 +42,7 @@ export class EnviarEmailTfgFinalizadoHandler
             <html>
               <body>
                 <p>Saudações, <b>${tfg.getAluno().nome}</b>!</p>
-                <p>O TFG foi avaliado pela banca com a nota <b><${tfg.getNotaFinal()}/b> e o seu trabalho foi <b>${statusTfg}</b></p>
+                <p>O TFG foi avaliado pela banca com a nota <b>${tfg.getNotaFinal()}</b> e o seu trabalho foi <b>${statusTfg}</b></p>
                 <br>
                 <p>Informações sobre o TFG:</p>
                 <ul>

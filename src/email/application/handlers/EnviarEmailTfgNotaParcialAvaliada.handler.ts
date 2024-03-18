@@ -42,7 +42,7 @@ export class EnviarEmailTfgNotaParcialAvaliadaHandler
             <html>
               <body>
                 <p>Saudações, <b>${tfg.getAluno().nome}</b>!</p>
-                <p>O TFG foi avaliado pelo seu orientador com a nota <b><${tfg.getNotaParcial()}/b> </p>
+                <p>O TFG foi avaliado pelo seu orientador com a nota <b>${tfg.getNotaParcial()}</b> </p>
                 <br>
                 <p>Informações sobre o TFG:</p>
                 <ul>

@@ -33,12 +33,14 @@ export class EnviarEmailTfgEnviadoHandler
             if (emailOrientador instanceof Error) throw emailOrientador
 
             // Montando email para o coorientador
-            const emailCoorientador = await this.enviarEmailService.enviar(
-                tfg.getCoorientador().email,
-                'Entrega de TFG registrada no sistema',
-                this.montarMensagem(tfg, props.data, true),
-            )
-            if (emailCoorientador instanceof Error) throw emailCoorientador
+            if (tfg.getCoorientador()) {
+                const emailCoorientador = await this.enviarEmailService.enviar(
+                    tfg.getCoorientador().email,
+                    'Entrega de TFG registrada no sistema',
+                    this.montarMensagem(tfg, props.data, true),
+                )
+                if (emailCoorientador instanceof Error) throw emailCoorientador
+            }
         } catch (error) {
             this.logger.error(
                 `${typeof error}: ${JSON.stringify(error.message, null, 2)}`,

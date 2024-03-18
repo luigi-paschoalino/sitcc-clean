@@ -51,7 +51,8 @@ export class CadastrarBancaUsecase {
             const tfg = await this.tfgRepository.buscarTfg(props.tfgId)
             if (tfg instanceof Error) throw tfg
 
-            tfg.atribuirBanca(banca)
+            const atribuirBanca = tfg.atribuirBanca(banca)
+            if (atribuirBanca instanceof Error) throw atribuirBanca
 
             const salvar = await this.tfgRepository.salvarTfg(tfg)
             if (salvar instanceof Error) throw salvar

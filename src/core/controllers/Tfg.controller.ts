@@ -77,7 +77,10 @@ export class TfgController extends AbstractController {
         return this.handleResponse(result)
     }
 
-    // TODO: revisar a rota, se precisa enviar os dados todos logo de início
+    // TODO: rota para consultar TFGs onde o professor seja membro da banca
+    // TODO: rota para consultar TFGs onde o professor seja orientador
+    // TODO: rota para consultar o TFG ativo do aluno
+
     @Post()
     @UseGuards(JwtAuthGuard)
     public async postTfg(
