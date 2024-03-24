@@ -44,6 +44,68 @@ export class TfgRepositoryImpl implements TfgRepository {
         }
     }
 
+    async buscarTfgBFF(id: string): Promise<Error | TfgDTO> {
+        try {
+            const model = await this.prismaService.tfg.findUnique({
+                where: {
+                    id,
+                },
+                include: {
+                    banca: true,
+                    aluno: {
+                        select: {
+                            id: true,
+                            nome: true,
+                        },
+                    },
+                    orientador: {
+                        select: {
+                            id: true,
+                            nome: true,
+                        },
+                    },
+                    coorientador: {
+                        select: {
+                            id: true,
+                            nome: true,
+                        },
+                    },
+                },
+            })
+
+            if (model instanceof Error) return model
+            else if (!model)
+                return new RepositoryDataNotFoundException(
+                    `TFG com ID ${id} não existe!`,
+                )
+
+            const dto: TfgDTO = {
+                id: model.id,
+                titulo: model.titulo,
+                palavrasChave: model.palavrasChave,
+                objetivos: model.objetivos,
+                bibliografia: model.bibliografia,
+                introducao: model.introducao,
+                descricaoMetodologia: model.descricaoMetodologia,
+                tecnicaPesquisa: model.tecnicaPesquisa,
+                metodoPesquisa: model.metodoPesquisa,
+                resultadosEsperados: model.resultados,
+                notaParcial: Number(model.notaParcial),
+                notaFinal: Number(model.notaFinal),
+                aluno: model.aluno.nome,
+                status: model.status as STATUS_TFG_DOMAIN,
+                orientador: model.orientador.nome,
+                coorientador: model.coorientador
+                    ? model.coorientador.nome
+                    : undefined,
+            }
+
+            return dto
+        } catch (error) {
+            return error
+        }
+    }
+
     async listarTfgs(
         apenasAtivos: boolean,
         filtro?: TfgFiltroProps,

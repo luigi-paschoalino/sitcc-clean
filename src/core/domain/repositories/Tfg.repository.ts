@@ -8,6 +8,7 @@ export interface TfgFiltroProps {
 
 export interface TfgRepository {
     buscarTfg(id: string): Promise<Error | Tfg>
+    buscarTfgBFF(id: string): Promise<Error | TfgDTO>
     listarTfgs(
         apenasAtivos: boolean,
         filtro?: TfgFiltroProps,

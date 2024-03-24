@@ -11,26 +11,10 @@ export class BuscarTfgQuery {
 
     async execute(id: string): Promise<Error | TfgDTO> {
         try {
-            const tfg = await this.tfgRepository.buscarTfg(id)
+            const tfg = await this.tfgRepository.buscarTfgBFF(id)
             if (tfg instanceof Error) throw tfg
 
-            const tfgResult: TfgDTO = {
-                id: tfg.getId(),
-                titulo: tfg.getTitulo(),
-                palavrasChave: tfg.getPalavrasChave(),
-                introducao: tfg.getIntroducao(),
-                objetivos: tfg.getObjetivos(),
-                bibliografia: tfg.getBibliografia(),
-                descricaoMetodologia: tfg.getDescricaoMetodologia(),
-                tecnicaPesquisa: tfg.getTecnicaPesquisa(),
-                metodoPesquisa: tfg.getMetodoPesquisa(),
-                resultadosEsperados: tfg.getResultados(),
-                status: tfg.getStatus(),
-                notaParcial: tfg.getNotaParcial(),
-                notaFinal: tfg.getNotaFinal(),
-            }
-
-            return tfgResult
+            return tfg
         } catch (error) {
             return error
         }
