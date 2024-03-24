@@ -21,8 +21,11 @@ export class BuscarTfgQuery {
                 introducao: tfg.getIntroducao(),
                 objetivos: tfg.getObjetivos(),
                 bibliografia: tfg.getBibliografia(),
-                metodologia: tfg.getDescricaoMetodologia(),
-                resultados: tfg.getResultados(),
+                descricaoMetodologia: tfg.getDescricaoMetodologia(),
+                tecnicaPesquisa: tfg.getTecnicaPesquisa(),
+                metodoPesquisa: tfg.getMetodoPesquisa(),
+                resultadosEsperados: tfg.getResultados(),
+                status: tfg.getStatus(),
                 notaParcial: tfg.getNotaParcial(),
                 notaFinal: tfg.getNotaFinal(),
             }

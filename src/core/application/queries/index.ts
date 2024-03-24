@@ -4,6 +4,7 @@ import { BuscarUsuarioQuery } from './BuscarUsuario.query'
 import { BuscarUsuarioHashQuery } from './BuscarUsuarioHash.query'
 import { ListarCursosQuery } from './ListarCursos.query'
 import { ListarProfessoresQuery } from './ListarProfessores.query'
+import { ListarTfgsPorUsuarioQuery } from './ListarTfgsPorOrientador.query'
 
 const Queries = [
     BuscarTfgQuery,
@@ -12,6 +13,7 @@ const Queries = [
     ListarProfessoresQuery,
     ListarCursosQuery,
     BuscarUsuarioHashQuery,
+    ListarTfgsPorUsuarioQuery,
 ]
 
 export default Queries

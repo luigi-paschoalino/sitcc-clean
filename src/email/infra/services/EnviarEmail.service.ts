@@ -37,10 +37,12 @@ export class EnviarEmailServiceImpl implements EnviarEmailService {
                 mailgunTransport(mailgunOptions),
             )
 
-            // TODO: verificar se há como adicionar nome personalizado no remetente
             transporter.sendMail(
                 {
-                    from: this.serviceEmail,
+                    from: {
+                        address: this.serviceEmail,
+                        name: 'Não responda - SITFG',
+                    },
                     to: destinatario,
                     subject: assunto,
                     html: config.urlFrontend

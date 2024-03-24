@@ -45,6 +45,7 @@ import {
 import { EnviarTfgFinalUsecase } from '../application/usecases/tfg/EnviarTfgFinal.usecase'
 import { EnviarTfgParcialUsecase } from '../application/usecases/tfg/EnviarTfgParcial.usecase'
 import { TIPO_ENTREGA, Tfg } from '../domain/Tfg'
+import { ListarTfgsPorUsuarioQuery } from '../application/queries/ListarTfgsPorOrientador.query'
 
 @Controller('tfg')
 export class TfgController extends AbstractController {
@@ -59,6 +60,7 @@ export class TfgController extends AbstractController {
         private readonly avaliarNotaParcial: AvaliarNotaParcialUsecase,
         private readonly avaliarNotaFinal: AvaliarNotaFinalUsecase,
         private readonly enviarTfgFinalUsecase: EnviarTfgFinalUsecase,
+        private readonly listarTfgsPorUsuarioQuery: ListarTfgsPorUsuarioQuery,
     ) {
         super({
             RepositoryException: 500,
@@ -69,6 +71,18 @@ export class TfgController extends AbstractController {
             BancaException: 400,
         })
     }
+
+    @Get()
+    @UseGuards(JwtAuthGuard)
+    public async getTfgs(@Req() req: any): Promise<Tfg[]> {
+        const result = await this.listarTfgsPorUsuarioQuery.execute({
+            tipoUsuario: req.user.tipo,
+            usuarioId: req.user.id,
+        })
+
+        return this.handleResponse(result)
+    }
+
     @Get(':id')
     @UseGuards(JwtAuthGuard)
     public async getTfg(@Param('id') id: string): Promise<Tfg> {
