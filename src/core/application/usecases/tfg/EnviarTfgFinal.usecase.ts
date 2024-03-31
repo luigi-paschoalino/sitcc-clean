@@ -36,7 +36,9 @@ export class EnviarTfgFinalUsecase {
                 )
 
             if (tfg.getStatus() !== STATUS_TFG.ENTREGA_PARCIAL_APROVADA)
-                throw new TfgException('A entrega parcial não foi avaliada!')
+                throw new TfgException(
+                    'O atual status de TFG não permite o upload da entrega final!',
+                )
 
             const service = await this.moverTfgService.execute({
                 tfgId: props.tfgId,

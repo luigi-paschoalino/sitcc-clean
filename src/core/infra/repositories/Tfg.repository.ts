@@ -121,6 +121,7 @@ export class TfgRepositoryImpl implements TfgRepository {
                                         notIn: [
                                             STATUS_TFG.APROVADO,
                                             STATUS_TFG.REPROVADO,
+                                            STATUS_TFG.ORIENTACAO_RECUSADA,
                                         ],
                                     }
                                   : undefined,

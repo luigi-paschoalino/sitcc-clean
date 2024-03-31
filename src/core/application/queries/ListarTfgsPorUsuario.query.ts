@@ -22,7 +22,7 @@ export class ListarTfgsPorUsuarioQuery {
             orientador busca todos os TFGs que ele orienta e
             coordenador/administrador busca todos os TFGs */
             const tfgs = await this.tfgRepository.listarTfgsBFF(
-                true,
+                props.tipoUsuario === TIPO_USUARIO.PROFESSOR ? true : false,
                 props.tipoUsuario === TIPO_USUARIO.ALUNO
                     ? { alunoId: props.usuarioId }
                     : props.tipoUsuario === TIPO_USUARIO.PROFESSOR

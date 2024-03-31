@@ -8,15 +8,19 @@ import {
     Put,
     Req,
     Res,
+    StreamableFile,
     UploadedFile,
     UseGuards,
     UseInterceptors,
 } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { Response } from 'express'
+import fs from 'fs'
+import path from 'path'
 import { JwtAuthGuard } from 'src/shared/middlewares/AuthenticationMiddleware'
 import { AbstractController } from '../../shared/controllers/AbstractController'
 import { BuscarTfgQuery } from '../application/queries/BuscarTfg.query'
+import { ListarTfgsPorUsuarioQuery } from '../application/queries/ListarTfgsPorUsuario.query'
 import {
     AvaliarNotaFinalUsecase,
     AvaliarNotaFinalUsecaseProps,
@@ -45,7 +49,6 @@ import {
 import { EnviarTfgFinalUsecase } from '../application/usecases/tfg/EnviarTfgFinal.usecase'
 import { EnviarTfgParcialUsecase } from '../application/usecases/tfg/EnviarTfgParcial.usecase'
 import { TIPO_ENTREGA, Tfg } from '../domain/Tfg'
-import { ListarTfgsPorUsuarioQuery } from '../application/queries/ListarTfgsPorOrientador.query'
 
 @Controller('tfg')
 export class TfgController extends AbstractController {
@@ -225,35 +228,27 @@ export class TfgController extends AbstractController {
         return this.handleResponse(result)
     }
 
-    @Get(':id/download/parcial')
-    @UseGuards(JwtAuthGuard)
+    @Get(':id/download/:tipo')
     public async downloadTfgParcial(
         @Param('id') id: string,
-        @Res() res: Response,
+        @Param('tipo') tipoEntrega: string,
+        @Res({ passthrough: true }) res: Response,
     ) {
         const result = await this.baixarTfgUsecase.execute({
             id,
-            tipoEntrega: TIPO_ENTREGA.PARCIAL,
+            tipoEntrega: tipoEntrega.toLocaleUpperCase() as TIPO_ENTREGA,
         })
 
-        if (!(result instanceof Error)) res.download(result)
+        if (result instanceof Error) return this.handleResponse(result)
 
-        return this.handleResponse(result)
-    }
+        const file = fs.createReadStream(result)
 
-    @Get(':id/download/final')
-    @UseGuards(JwtAuthGuard)
-    public async downloadTfgFinal(
-        @Param('id') id: string,
-        @Res() res: Response,
-    ) {
-        const result = await this.baixarTfgUsecase.execute({
-            id,
-            tipoEntrega: TIPO_ENTREGA.FINAL,
-        })
+        res.setHeader('Content-Type', 'application/pdf')
+        res.setHeader(
+            'Content-Disposition',
+            `attachment; filename=${path.basename(result)}`,
+        )
 
-        if (!(result instanceof Error)) res.download(result)
-
-        return this.handleResponse(result)
+        return new StreamableFile(file)
     }
 }

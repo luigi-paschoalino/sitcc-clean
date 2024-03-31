@@ -1,9 +1,11 @@
 import { Inject } from '@nestjs/common'
-import { Usuario } from 'src/core/domain/Usuario'
+import { TIPO_USUARIO, Usuario } from '../../../domain/Usuario'
 import { Tfg } from '../../../domain/Tfg'
 import { TfgRepository } from '../../../domain/repositories/Tfg.repository'
 import { UsuarioRepository } from '../../../domain/repositories/Usuario.repository'
 import { EventPublisherService } from '../../../domain/services/EventPublisher.service'
+import { UsuarioException } from '../../../../shared/domain/exceptions/Usuario.exception'
+import { InvalidPropsException } from '../../../../shared/domain/exceptions/InvalidProps.exception'
 
 export interface CadastrarTfgUsecaseProps {
     aluno: string
@@ -34,11 +36,26 @@ export class CadastrarTfgUsecase {
         try {
             const aluno = await this.usuarioRepository.buscarPorId(props.aluno)
             if (aluno instanceof Error) throw aluno
+            if (aluno.getTipo() !== TIPO_USUARIO.ALUNO)
+                throw new UsuarioException('Usuário não é um aluno')
+
+            const tfgAtivo = await this.tfgRepository.listarTfgs(true, {
+                alunoId: aluno.getId(),
+            })
+            if (tfgAtivo instanceof Error) throw tfgAtivo
+            if (tfgAtivo.length > 0)
+                throw new UsuarioException(
+                    'O aluno já possui um TFG ativo cadastrado',
+                )
 
             const orientador = await this.usuarioRepository.buscarPorId(
                 props.orientador,
             )
             if (orientador instanceof Error) throw orientador
+            if (orientador.getTipo() !== TIPO_USUARIO.PROFESSOR)
+                throw new InvalidPropsException(
+                    'O orientador selecionado não é um professor',
+                )
 
             let coorientador: Usuario
 
@@ -47,6 +64,10 @@ export class CadastrarTfgUsecase {
                     props.coorientador,
                 )
                 if (busca instanceof Error) throw busca
+                if (busca.getTipo() !== TIPO_USUARIO.PROFESSOR)
+                    throw new InvalidPropsException(
+                        'O coorientador selecionado não é um professor',
+                    )
                 coorientador = busca
             }
 
