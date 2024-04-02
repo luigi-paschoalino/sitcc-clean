@@ -1,4 +1,5 @@
 import { AtividadeDTOMapper } from './AtividadeDTO.mapper'
+import { BancaDTOMapper } from './BancaDTO.mapper'
 import { CronogramaDTOMapper } from './CronogramaDTO.mapper'
 import { CursoDTOMapper } from './CursoDTO.mapper'
 import { NormaDTOMapper } from './NormaDTO.mapper'
@@ -14,6 +15,7 @@ const DTOMappers = [
     NormaDTOMapper,
     PerfilProfessorDTOMapper,
     ProjetoDTOMapper,
+    BancaDTOMapper,
 ]
 
 export default DTOMappers

@@ -49,6 +49,7 @@ import {
 import { EnviarTfgFinalUsecase } from '../application/usecases/tfg/EnviarTfgFinal.usecase'
 import { EnviarTfgParcialUsecase } from '../application/usecases/tfg/EnviarTfgParcial.usecase'
 import { TIPO_ENTREGA, Tfg } from '../domain/Tfg'
+import { ListarBancasPorUsuarioQuery } from '../application/queries/ListarBancasPorUsuario.query'
 
 @Controller('tfg')
 export class TfgController extends AbstractController {
@@ -64,6 +65,7 @@ export class TfgController extends AbstractController {
         private readonly avaliarNotaFinal: AvaliarNotaFinalUsecase,
         private readonly enviarTfgFinalUsecase: EnviarTfgFinalUsecase,
         private readonly listarTfgsPorUsuarioQuery: ListarTfgsPorUsuarioQuery,
+        private readonly listarBancasPorUsuarioQuery: ListarBancasPorUsuarioQuery,
     ) {
         super({
             RepositoryException: 500,
@@ -86,6 +88,16 @@ export class TfgController extends AbstractController {
         return this.handleResponse(result)
     }
 
+    @Get('bancas')
+    @UseGuards(JwtAuthGuard)
+    public async getBancas(@Req() req: any) {
+        const result = await this.listarBancasPorUsuarioQuery.execute({
+            usuarioId: req.user.id,
+        })
+
+        return this.handleResponse(result)
+    }
+
     @Get(':id')
     @UseGuards(JwtAuthGuard)
     public async getTfg(@Param('id') id: string): Promise<Tfg> {
@@ -93,10 +105,6 @@ export class TfgController extends AbstractController {
 
         return this.handleResponse(result)
     }
-
-    // TODO: rota para consultar TFGs onde o professor seja membro da banca
-    // TODO: rota para consultar TFGs onde o professor seja orientador
-    // TODO: rota para consultar o TFG ativo do aluno
 
     @Post()
     @UseGuards(JwtAuthGuard)

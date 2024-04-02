@@ -4,6 +4,7 @@ import { Tfg } from '../Tfg'
 export interface TfgFiltroProps {
     alunoId?: string
     orientadorId?: string
+    bancaProfessorId?: string
 }
 
 export interface TfgRepository {

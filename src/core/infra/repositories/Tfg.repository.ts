@@ -115,7 +115,27 @@ export class TfgRepositoryImpl implements TfgRepository {
                 filtro
                     ? {
                           where: {
-                              ...filtro,
+                              OR: filtro.orientadorId
+                                  ? [
+                                        { orientadorId: filtro.orientadorId },
+                                        { coorientadorId: filtro.orientadorId },
+                                    ]
+                                  : undefined,
+                              alunoId: filtro.alunoId ?? undefined,
+                              banca: filtro.bancaProfessorId
+                                  ? {
+                                        OR: [
+                                            {
+                                                professorId:
+                                                    filtro.bancaProfessorId,
+                                            },
+                                            {
+                                                segundoProfessorId:
+                                                    filtro.bancaProfessorId,
+                                            },
+                                        ],
+                                    }
+                                  : undefined,
                               status: apenasAtivos
                                   ? {
                                         notIn: [
