@@ -2,9 +2,10 @@ import { Banca } from '../../domain/Banca'
 import { BancaDTO } from '../../domain/dtos/Banca.dto'
 
 export class BancaDTOMapper {
-    toDTO(banca: Banca, tfgId?: string): BancaDTO {
+    toDTO(banca: Banca, tfgId: string, tfgNome: string): BancaDTO {
         return {
-            tfgId: tfgId,
+            tfgId,
+            tfgNome,
             professorId: banca.getProfessorId(),
             segundoProfessorId: banca.getSegundoProfessorId(),
             data: banca.getDiaHora(),

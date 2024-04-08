@@ -49,10 +49,17 @@ export class AuthServiceImpl implements AuthService {
                     token: token,
                     nome: usuario.getNome(),
                     tipo: usuario.getTipo(),
+                    id: usuario.getId(),
                 }
             }
 
-            return { auth: false, token: null, nome: null, tipo: null }
+            return {
+                auth: false,
+                token: null,
+                nome: null,
+                tipo: null,
+                id: null,
+            }
         } catch (error) {
             return error
         }

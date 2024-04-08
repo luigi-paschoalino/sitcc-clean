@@ -4,6 +4,7 @@ import { BancaDTOMapper } from '../mappers/BancaDTO.mapper'
 import { BancaDTO } from '../../domain/dtos/Banca.dto'
 import { UsuarioRepository } from '../../domain/repositories/Usuario.repository'
 import { TIPO_USUARIO } from '../../domain/Usuario'
+import { UsuarioException } from '../../../shared/domain/exceptions/Usuario.exception'
 
 export interface ListarBancasPorUsuarioQueryProps {
     usuarioId: string
@@ -27,7 +28,7 @@ export class ListarBancasPorUsuarioQuery {
             )
             if (usuario instanceof Error) throw usuario
             if (usuario.getTipo() !== TIPO_USUARIO.PROFESSOR)
-                throw new Error('Usuário não é um professor')
+                throw new UsuarioException('Usuário não é um professor')
 
             const tfgs = await this.tfgRepository.listarTfgs(true, {
                 bancaProfessorId: props.usuarioId,
@@ -36,7 +37,11 @@ export class ListarBancasPorUsuarioQuery {
             if (tfgs instanceof Error) throw tfgs
 
             const bancasDTO = tfgs.map((tfg) =>
-                this.bancaMapper.toDTO(tfg.getBanca(), tfg.getId()),
+                this.bancaMapper.toDTO(
+                    tfg.getBanca(),
+                    tfg.getId(),
+                    tfg.getTitulo(),
+                ),
             )
             return bancasDTO
         } catch (error) {

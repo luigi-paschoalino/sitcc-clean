@@ -16,12 +16,16 @@ export class BuscarCursoQuery {
 
     async execute(props: BuscarCursoQueryProps): Promise<Error | BancaDTO> {
         try {
-            const curso = await this.tfgRepository.buscarTfg(props.id)
+            const tfg = await this.tfgRepository.buscarTfg(props.id)
 
-            if (curso instanceof Error) throw curso
+            if (tfg instanceof Error) throw tfg
 
-            const cursoDTO = this.bancaMapper.toDTO(curso.getBanca())
-            return cursoDTO
+            const bancaDTO = this.bancaMapper.toDTO(
+                tfg.getBanca(),
+                tfg.getId(),
+                tfg.getTitulo(),
+            )
+            return bancaDTO
         } catch (error) {
             return error
         }

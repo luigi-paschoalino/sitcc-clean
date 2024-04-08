@@ -1,5 +1,6 @@
 export interface BancaDTO {
-    tfgId?: string
+    tfgId: string
+    tfgNome: string
     professorId: string
     segundoProfessorId: string
     data: Date
