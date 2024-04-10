@@ -111,47 +111,52 @@ export class TfgRepositoryImpl implements TfgRepository {
         filtro?: TfgFiltroProps,
     ): Promise<Error | Tfg[]> {
         try {
-            const models = await this.prismaService.tfg.findMany(
-                filtro
-                    ? {
-                          where: {
-                              OR: filtro.orientadorId
-                                  ? [
-                                        { orientadorId: filtro.orientadorId },
-                                        { coorientadorId: filtro.orientadorId },
-                                    ]
-                                  : undefined,
-                              alunoId: filtro.alunoId ?? undefined,
-                              banca: filtro.bancaProfessorId
-                                  ? {
-                                        OR: [
-                                            {
-                                                professorId:
-                                                    filtro.bancaProfessorId,
-                                            },
-                                            {
-                                                segundoProfessorId:
-                                                    filtro.bancaProfessorId,
-                                            },
-                                        ],
-                                    }
-                                  : undefined,
-                              status: apenasAtivos
-                                  ? {
-                                        notIn: [
-                                            STATUS_TFG.APROVADO,
-                                            STATUS_TFG.REPROVADO,
-                                            STATUS_TFG.ORIENTACAO_RECUSADA,
-                                        ],
-                                    }
-                                  : undefined,
-                          },
-                          include: {
-                              banca: true,
-                          },
-                      }
-                    : undefined,
-            )
+            const customFilter = filtro
+                ? {
+                      where: {
+                          OR: filtro.orientadorId
+                              ? [
+                                    { orientadorId: filtro.orientadorId },
+                                    { coorientadorId: filtro.orientadorId },
+                                ]
+                              : undefined,
+                          alunoId: filtro.alunoId ?? undefined,
+                          banca: filtro.bancaProfessorId
+                              ? {
+                                    OR: [
+                                        {
+                                            professorId:
+                                                filtro.bancaProfessorId,
+                                        },
+                                        {
+                                            segundoProfessorId:
+                                                filtro.bancaProfessorId,
+                                        },
+                                    ],
+                                }
+                              : undefined,
+                      },
+                  }
+                : undefined
+
+            const models = await this.prismaService.tfg.findMany({
+                ...customFilter,
+                where: {
+                    ...customFilter?.where,
+                    status: apenasAtivos
+                        ? {
+                              notIn: [
+                                  STATUS_TFG.APROVADO,
+                                  STATUS_TFG.REPROVADO,
+                                  STATUS_TFG.ORIENTACAO_RECUSADA,
+                              ],
+                          }
+                        : undefined,
+                },
+                include: {
+                    banca: true,
+                },
+            })
 
             const domainArray: Tfg[] = []
 

@@ -27,12 +27,19 @@ export class ListarBancasPorUsuarioQuery {
                 props.usuarioId,
             )
             if (usuario instanceof Error) throw usuario
-            if (usuario.getTipo() !== TIPO_USUARIO.PROFESSOR)
-                throw new UsuarioException('Usuário não é um professor')
+            if (usuario.getTipo() === TIPO_USUARIO.ALUNO)
+                throw new UsuarioException(
+                    'Usuário não pode visualizar as bancas',
+                )
 
-            const tfgs = await this.tfgRepository.listarTfgs(true, {
-                bancaProfessorId: props.usuarioId,
-            })
+            const tfgs = await this.tfgRepository.listarTfgs(
+                true,
+                usuario.getTipo() === TIPO_USUARIO.PROFESSOR
+                    ? {
+                          bancaProfessorId: props.usuarioId,
+                      }
+                    : undefined,
+            )
 
             if (tfgs instanceof Error) throw tfgs
 
