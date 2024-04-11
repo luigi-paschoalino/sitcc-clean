@@ -37,6 +37,8 @@ import {
     AtualizarNormaUsecase,
     AtualizarNormaUsecaseProps,
 } from '../application/usecases/curso/AtualizarNorma.usecase'
+import { BuscarCronogramasQuery } from '../application/queries/BuscarCronogramas.query'
+import { BuscarCronogramaVigenteQuery } from '../application/queries/BuscarCronogramaVigente.query'
 
 @Controller('cursos')
 export class CursoController extends AbstractController {
@@ -50,6 +52,8 @@ export class CursoController extends AbstractController {
         private readonly editarAtividadeCronogramaUsecase: EditarAtividadeCronogramaUsecase,
         private readonly removerAtividadeCronogramaUsecase: RemoverAtividadeCronogramaUsecase,
         private readonly atualizarNormaUsecase: AtualizarNormaUsecase,
+        private readonly buscarCronogramasQuery: BuscarCronogramasQuery,
+        private readonly buscarCronogramaVigenteQuery: BuscarCronogramaVigenteQuery,
     ) {
         super({
             RepositoryException: 500,
@@ -93,6 +97,35 @@ export class CursoController extends AbstractController {
         const result = await this.editarCursoUsecase.execute({
             id,
             ...body,
+        })
+
+        return this.handleResponse(result)
+    }
+
+    // Buscar cronogramas
+    @Get(':id/cronogramas')
+    public async buscarCronogramas(@Param('id') id: string) {
+        const result = await this.buscarCronogramasQuery.execute({
+            id,
+        })
+
+        return this.handleResponse(result)
+    }
+
+    // @Get(':id/cronograma/:cronogramaId')
+    // public async buscarCronograma(
+    //     @Param('id') id: string,
+    //     @Param('cronogramaId') cronogramaId: string,
+    // ) {
+    //     const result = await this.buscarCursoQuery.buscarCronograma(id, cronogramaId)
+
+    //     return this.handleResponse(result)
+    // }
+
+    @Get(':id/cronogramas/vigente')
+    public async buscarCronogramaVigente(@Param('id') id: string) {
+        const result = await this.buscarCronogramaVigenteQuery.execute({
+            id,
         })
 
         return this.handleResponse(result)

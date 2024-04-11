@@ -173,4 +173,16 @@ export class Curso extends AbstractAggregateRoot<string> {
     getCronogramas(): Cronograma[] {
         return this.cronogramas
     }
+
+    getCronogramaVigente(): Cronograma {
+        return this.cronogramas?.sort((a, b) => {
+            const ano = b.getAno() - a.getAno()
+            if (ano !== 0) {
+                return ano
+            }
+
+            const semestre = a.getSemestre() === 'SEGUNDO' ? -1 : 1
+            return semestre
+        })[0]
+    }
 }

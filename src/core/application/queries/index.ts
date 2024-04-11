@@ -1,3 +1,5 @@
+import { BuscarCronogramasQuery } from './BuscarCronogramas.query'
+import { BuscarCronogramaVigenteQuery } from './BuscarCronogramaVigente.query'
 import { BuscarCursoQuery } from './BuscarCurso.query'
 import { BuscarTfgQuery } from './BuscarTfg.query'
 import { BuscarUsuarioQuery } from './BuscarUsuario.query'
@@ -16,6 +18,8 @@ const Queries = [
     BuscarUsuarioHashQuery,
     ListarTfgsPorUsuarioQuery,
     ListarBancasPorUsuarioQuery,
+    BuscarCronogramasQuery,
+    BuscarCronogramaVigenteQuery,
 ]
 
 export default Queries
