@@ -132,7 +132,7 @@ export class CursoController extends AbstractController {
     }
 
     // Adição de cronogramas
-    @Put(':id/cronograma')
+    @Put(':id/cronogramas')
     @UseGuards(JwtAuthGuard)
     public async adicionarCronograma(
         @Param('id') id: string,
@@ -150,7 +150,7 @@ export class CursoController extends AbstractController {
     }
 
     // Atividades do cronograma
-    @Put(':id/cronograma/:cronogramaId/atividade')
+    @Put(':id/cronogramas/:cronogramaId/atividades')
     @UseGuards(JwtAuthGuard)
     public async adicionarAtividadeCronograma(
         @Param('id') id: string,
@@ -168,7 +168,7 @@ export class CursoController extends AbstractController {
         return this.handleResponse(result)
     }
 
-    @Patch(':id/cronograma/:cronogramaId/atividade/:atividadeId')
+    @Patch(':id/cronogramas/:cronogramaId/atividades/:atividadeId')
     @UseGuards(JwtAuthGuard)
     public async editarAtividadeCronograma(
         @Param('id') id: string,
@@ -188,7 +188,7 @@ export class CursoController extends AbstractController {
         return this.handleResponse(result)
     }
 
-    @Delete(':id/cronograma/:cronogramaId/atividade/:atividadeId')
+    @Delete(':id/cronogramas/:cronogramaId/atividades/:atividadeId')
     @UseGuards(JwtAuthGuard)
     public async removerAtividadeCronograma(
         @Param('id') id: string,

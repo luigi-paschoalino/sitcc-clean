@@ -1,3 +1,4 @@
+import { ListarCodigosProfessorQuery } from '../usecases/codigoProfessor/ListarCodigosProfessor.query'
 import { BuscarCronogramasQuery } from './BuscarCronogramas.query'
 import { BuscarCronogramaVigenteQuery } from './BuscarCronogramaVigente.query'
 import { BuscarCursoQuery } from './BuscarCurso.query'
@@ -20,6 +21,7 @@ const Queries = [
     ListarBancasPorUsuarioQuery,
     BuscarCronogramasQuery,
     BuscarCronogramaVigenteQuery,
+    ListarCodigosProfessorQuery,
 ]
 
 export default Queries

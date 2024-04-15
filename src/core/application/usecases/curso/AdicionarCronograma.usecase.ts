@@ -30,7 +30,8 @@ export class AdicionarCronogramaUsecase {
                 semestre: props.semestre,
             })
 
-            curso.adicionarCronograma(cronograma)
+            const adicionar = curso.adicionarCronograma(cronograma)
+            if (adicionar instanceof Error) throw adicionar
 
             const salvar = await this.cursoRepository.salvarCurso(curso)
             if (salvar instanceof Error) throw salvar

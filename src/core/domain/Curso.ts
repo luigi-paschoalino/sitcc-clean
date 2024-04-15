@@ -7,6 +7,7 @@ import { AtividadeAdicionadaEvent } from './events/AtividadeAdicionada.event'
 import { AtividadeEditadaEvent } from './events/AtividadeEditada.event'
 import { AtividadeRemovidaEvent } from './events/AtividadeRemovida.event'
 import { NormaAdicionadaEvent } from './events/NormaAdicionada.event'
+import { CursoException } from '../../shared/domain/exceptions/Curso.exception'
 
 export interface CriarCursoProps {
     nome: string
@@ -85,7 +86,17 @@ export class Curso extends AbstractAggregateRoot<string> {
         )
     }
 
-    adicionarCronograma(cronograma: Cronograma) {
+    adicionarCronograma(cronograma: Cronograma): Error | void {
+        if (!this.cronogramas) this.cronogramas = []
+        if (
+            this.cronogramas.find(
+                (c) =>
+                    c.getAno() === cronograma.getAno() &&
+                    c.getSemestre() === cronograma.getSemestre(),
+            )
+        ) {
+            return new CursoException('Cronograma já existe')
+        }
         this.cronogramas.push(cronograma)
     }
 

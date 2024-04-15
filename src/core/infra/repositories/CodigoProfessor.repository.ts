@@ -33,6 +33,24 @@ export class CodigoProfessorRepositoryImpl
         }
     }
 
+    async listarCodigos(): Promise<Error | CodigoProfessor[]> {
+        try {
+            const models = await this.prismaService.codigoProfessor.findMany()
+            if (!models.length)
+                return new RepositoryDataNotFoundException(
+                    'Não foi encontrado nenhum código!',
+                )
+
+            const codigos = models.map((model) =>
+                this.codigoProfessorMapper.modelToDomain(model),
+            )
+
+            return codigos
+        } catch (error) {
+            return error
+        }
+    }
+
     async salvarCodigo(codigo: CodigoProfessor): Promise<Error | void> {
         try {
             const model = this.codigoProfessorMapper.domainToModel(codigo)
