@@ -27,7 +27,6 @@ export class AdicionarProjetoUsecase {
                 titulo: props.titulo,
                 descricao: props.descricao,
                 preRequisitos: props.preRequisitos,
-                disponivel: props.disponivel,
             })
             if (projeto instanceof Error) throw projeto
 

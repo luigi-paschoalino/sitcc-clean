@@ -9,6 +9,7 @@ export class PerfilProfessorDTOMapper {
 
     toDTO(perfilProfessor: PerfilProfessor): PerfilProfessorDTO {
         return {
+            id: perfilProfessor.getId(),
             areasAtuacao: perfilProfessor.getAreasAtuacao(),
             descricao: perfilProfessor.getDescricao(),
             link: perfilProfessor.getLink(),

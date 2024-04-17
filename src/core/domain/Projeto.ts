@@ -5,7 +5,7 @@ export interface CriarProjetoProps {
     titulo: string
     descricao: string
     preRequisitos: string
-    disponivel: boolean
+    disponivel?: boolean
 }
 
 export class Projeto extends AbstractEntity<string> {
@@ -32,12 +32,11 @@ export class Projeto extends AbstractEntity<string> {
             const setPreRequisitos = instance.setPreRequisitos(
                 props.preRequisitos,
             )
-            const setDisponivel = instance.setDisponivel(props.disponivel)
+            instance.disponivel = true
 
             if (setTitulo instanceof Error) return setTitulo
             if (setDescricao instanceof Error) return setDescricao
             if (setPreRequisitos instanceof Error) return setPreRequisitos
-            if (setDisponivel instanceof Error) return setDisponivel
 
             return instance
         } catch (error) {
@@ -74,15 +73,6 @@ export class Projeto extends AbstractEntity<string> {
             return new InvalidPropsException('Pré-requisitos não informados')
 
         this.preRequisitos = preRequisitos
-    }
-
-    private setDisponivel(disponivel: boolean): Error | void {
-        if (typeof disponivel !== 'boolean')
-            return new InvalidPropsException(
-                'Valor de disponibilidade inválido',
-            )
-
-        this.disponivel = disponivel
     }
 
     getTitulo(): string {
