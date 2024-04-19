@@ -372,6 +372,14 @@ export class Tfg extends AbstractAggregateRoot<string> {
                     'A banca já foi atribuída a este TFG',
                 )
 
+            if (
+                banca.getProfessorId() === this.getOrientador() ||
+                banca.getSegundoProfessorId() === this.getOrientador()
+            )
+                throw new InvalidPropsException(
+                    'A banca deve ser integrada por professores diferentes do orientador',
+                )
+
             this.banca = banca
 
             this.apply(
@@ -522,11 +530,12 @@ export class Tfg extends AbstractAggregateRoot<string> {
             )
 
         this.notaFinal =
-            0.3 *
+            0.3 * this.notaParcial +
+            0.4 *
                 ((this.banca.getNotaApresentacaoProfessor() +
                     this.banca.getNotaApresentacaoSegundoProfessor()) /
                     2) +
-            0.7 *
+            0.3 *
                 ((this.banca.getNotaTrabalhoProfessor() +
                     this.banca.getNotaTrabalhoSegundoProfessor()) /
                     2)

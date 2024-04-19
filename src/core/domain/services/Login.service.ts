@@ -6,6 +6,7 @@ export interface LoginToken {
     token?: string
     nome: string
     tipo: string
+    id: string
 }
 
 export interface Validation {

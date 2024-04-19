@@ -1,4 +1,5 @@
 export interface ProjetoDTO {
+    id: string
     titulo: string
     descricao: string
     preRequisitos: string

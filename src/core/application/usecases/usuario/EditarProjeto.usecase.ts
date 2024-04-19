@@ -24,12 +24,15 @@ export class EditarProjetoUsecase {
             )
             if (usuario instanceof Error) throw usuario
 
-            const projeto = Projeto.criar({
-                titulo: props.titulo,
-                descricao: props.descricao,
-                preRequisitos: props.preRequisitos,
-                disponivel: props.disponivel,
-            })
+            const projeto = Projeto.carregar(
+                {
+                    titulo: props.titulo,
+                    descricao: props.descricao,
+                    preRequisitos: props.preRequisitos,
+                    disponivel: props.disponivel,
+                },
+                props.projetoId,
+            )
             if (projeto instanceof Error) throw projeto
 
             const editar = usuario.editarProjeto(projeto, props.projetoId)

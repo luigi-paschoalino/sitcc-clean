@@ -34,10 +34,12 @@ export class PerfilProfessor extends AbstractEntity<string> {
         if (Object.keys(props).length === 0)
             return new InvalidPropsException('Dados do perfil não informados')
 
-        this.descricao = props.descricao ? props.descricao : this.descricao
-        this.link = props.link ? props.link : this.link
+        this.descricao = props.descricao
+            ? props.descricao.trim()
+            : this.descricao
+        this.link = props.link ? props.link.trim() : this.link
         this.areasAtuacao = props.areasAtuacao
-            ? props.areasAtuacao
+            ? props.areasAtuacao.map((area) => area.trim())
             : this.areasAtuacao
     }
 

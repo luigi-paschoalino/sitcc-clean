@@ -9,6 +9,7 @@ import { EnviarEmailTfgNotaParcialAvaliadaHandler } from './application/handlers
 import { EnviarEmailTfgFinalizadoHandler } from './application/handlers/EnviarEmailTfgFinalizado.handler'
 import { EnviarEmailCodigoProfessorGeradoHandler } from './application/handlers/EnviarEmailCodigoProfessorGerado.handler'
 import { PrismaService } from '../shared/infra/database/prisma/prisma.service'
+import { EnviarEmailRecuperarSenhaHandler } from './application/handlers/EnviarEmailRecuperarSenha.handler'
 
 @Module({
     imports: [],
@@ -20,6 +21,7 @@ import { PrismaService } from '../shared/infra/database/prisma/prisma.service'
         EnviarEmailTfgNotaParcialAvaliadaHandler,
         EnviarEmailTfgFinalizadoHandler,
         EnviarEmailCodigoProfessorGeradoHandler,
+        EnviarEmailRecuperarSenhaHandler,
         {
             provide: 'BuscarTfgService',
             useClass: BuscarTfgServiceImpl,
@@ -30,6 +32,7 @@ import { PrismaService } from '../shared/infra/database/prisma/prisma.service'
                 process.env.EMAIL_SERVICE_EMAIL,
                 process.env.EMAIL_SERVICE_API_KEY,
                 process.env.EMAIL_SERVICE_DOMAIN,
+                process.env.FRONTEND_URL,
             ),
         },
         {

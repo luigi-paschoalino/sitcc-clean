@@ -63,7 +63,7 @@ export class EnviarEmailOrientacaoSolicitadaHandler
                 <p>Seu Trabalho de Final de Graduação (TFG) "<b>${
                     props.titulo
                 }</b>" foi cadastrado com sucesso.</p>
-                <br><br>
+                <br>
                 <p>Informações sobre o TFG:</p>
                 <ul>
                   <li><b>Aluno:</b> ${props.alunoNome}</li>
@@ -72,6 +72,7 @@ export class EnviarEmailOrientacaoSolicitadaHandler
                       props.coorientadorNome ?? 'SEM COORIENTADOR'
                   }</li>
                   <br>
+                </ul>
                 <p>Estamos ansiosos para ver suas contribuições e desejamos sucesso em seu projeto!</p>
               </body>
             </html>
@@ -86,7 +87,7 @@ export class EnviarEmailOrientacaoSolicitadaHandler
                 <p>O aluno <b>${props.alunoNome}</b> cadastrou o TFG "<b>${
             props.titulo
         }</b>" e o indicou como orientador. 
-                <br><br>
+                <br>
                 <p>Informações sobre o TFG:</p>
                 <ul>
                   <li><b>Aluno:</b> ${props.alunoNome}</li>
@@ -95,7 +96,8 @@ export class EnviarEmailOrientacaoSolicitadaHandler
                       props.coorientadorNome ?? 'SEM COORIENTADOR'
                   }</li>
                   <br>
-                <p>Faça login no Sistema Integrado de TFGs para aceitar/recusar a orientação</p>
+                </ul>
+                <p>Faça login no Sistema de Integração de TFGs para aceitar/recusar a orientação</p>
               </body>
             </html>
         `
@@ -107,13 +109,14 @@ export class EnviarEmailOrientacaoSolicitadaHandler
               <body>
                 <p>Saudações, <b>${props.coorientadorNome}</b>!</p>
                 <p>O aluno <b>${props.alunoNome}</b> cadastrou o TFG "<b>${props.titulo}</b>" e o indicou como coorientador. 
-                <br><br>
+                <br>
                 <p>Informações sobre o TFG:</p>
                 <ul>
                   <li><b>Aluno:</b> ${props.alunoNome}</li>
                   <li><b>Orientador:</b> ${props.orientadorNome}</li>
                   <li><b>Coorientador:</b> ${props.coorientadorNome}</li>
                   <br>
+                </ul>
                 <p>Converse com o orientador indicado para discutirem a aceitação/recusa da orientação</p>
               </body>
             </html>

@@ -1,5 +1,5 @@
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs'
-import { Inject } from '@nestjs/common'
+import { Inject, Logger } from '@nestjs/common'
 import { EnviarEmailService } from '../../domain/services/EnviarEmail.service'
 import { CodigoProfessorGeradoEvent } from '../../../core/domain/events/CodigoProfessorGerado.event'
 
@@ -7,6 +7,8 @@ import { CodigoProfessorGeradoEvent } from '../../../core/domain/events/CodigoPr
 export class EnviarEmailCodigoProfessorGeradoHandler
     implements IEventHandler<CodigoProfessorGeradoEvent>
 {
+    private logger = new Logger(EnviarEmailCodigoProfessorGeradoHandler.name)
+
     constructor(
         @Inject('EnviarEmailService')
         private readonly enviarEmailService: EnviarEmailService,
@@ -18,15 +20,16 @@ export class EnviarEmailCodigoProfessorGeradoHandler
                 props.data.email,
                 'SITFG - Código de professor gerado',
                 this.montarMensagem(props.data.codigo),
+                { urlFrontend: true },
             )
             if (email instanceof Error) throw email
         } catch (error) {
-            return error
+            this.logger.error(
+                `${typeof error}: ${JSON.stringify(error.message, null, 2)}`,
+            )
         }
     }
 
-    // TODO: utilizar template do Handlebars
-    // TODO: rever como adicionar o link para o sistema
     private montarMensagem(codigo: string): string {
         return `
             <html>
@@ -36,7 +39,7 @@ export class EnviarEmailCodigoProfessorGeradoHandler
                 <br>
                 <p>Código: <b>${codigo}</b></p>
                 <br>
-                <p>Para mais informações, acesse o sistema neste <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">link</a></p>
+                <p>Para mais informações, acesse o sistema neste <a href="{urlFrontend}">link</a></p>
               </body>
             </html>
         `

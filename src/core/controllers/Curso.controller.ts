@@ -37,6 +37,8 @@ import {
     AtualizarNormaUsecase,
     AtualizarNormaUsecaseProps,
 } from '../application/usecases/curso/AtualizarNorma.usecase'
+import { BuscarCronogramasQuery } from '../application/queries/BuscarCronogramas.query'
+import { BuscarCronogramaVigenteQuery } from '../application/queries/BuscarCronogramaVigente.query'
 
 @Controller('cursos')
 export class CursoController extends AbstractController {
@@ -50,6 +52,8 @@ export class CursoController extends AbstractController {
         private readonly editarAtividadeCronogramaUsecase: EditarAtividadeCronogramaUsecase,
         private readonly removerAtividadeCronogramaUsecase: RemoverAtividadeCronogramaUsecase,
         private readonly atualizarNormaUsecase: AtualizarNormaUsecase,
+        private readonly buscarCronogramasQuery: BuscarCronogramasQuery,
+        private readonly buscarCronogramaVigenteQuery: BuscarCronogramaVigenteQuery,
     ) {
         super({
             RepositoryException: 500,
@@ -60,7 +64,6 @@ export class CursoController extends AbstractController {
         })
     }
 
-    @UseGuards(JwtAuthGuard)
     @Get()
     public async listCursos() {
         const result = await this.listarCursosQuery.execute()
@@ -68,7 +71,6 @@ export class CursoController extends AbstractController {
         return this.handleResponse(result)
     }
 
-    @UseGuards(JwtAuthGuard)
     @Get(':id')
     public async getCurso(@Param('id') id: string) {
         const result = await this.buscarCursoQuery.execute({
@@ -100,8 +102,37 @@ export class CursoController extends AbstractController {
         return this.handleResponse(result)
     }
 
+    // Buscar cronogramas
+    @Get(':id/cronogramas')
+    public async buscarCronogramas(@Param('id') id: string) {
+        const result = await this.buscarCronogramasQuery.execute({
+            id,
+        })
+
+        return this.handleResponse(result)
+    }
+
+    // @Get(':id/cronograma/:cronogramaId')
+    // public async buscarCronograma(
+    //     @Param('id') id: string,
+    //     @Param('cronogramaId') cronogramaId: string,
+    // ) {
+    //     const result = await this.buscarCursoQuery.buscarCronograma(id, cronogramaId)
+
+    //     return this.handleResponse(result)
+    // }
+
+    @Get(':id/cronogramas/vigente')
+    public async buscarCronogramaVigente(@Param('id') id: string) {
+        const result = await this.buscarCronogramaVigenteQuery.execute({
+            id,
+        })
+
+        return this.handleResponse(result)
+    }
+
     // Adição de cronogramas
-    @Put(':id/cronograma')
+    @Put(':id/cronogramas')
     @UseGuards(JwtAuthGuard)
     public async adicionarCronograma(
         @Param('id') id: string,
@@ -119,7 +150,7 @@ export class CursoController extends AbstractController {
     }
 
     // Atividades do cronograma
-    @Put(':id/cronograma/:cronogramaId/atividade')
+    @Put(':id/cronogramas/:cronogramaId/atividades')
     @UseGuards(JwtAuthGuard)
     public async adicionarAtividadeCronograma(
         @Param('id') id: string,
@@ -137,7 +168,7 @@ export class CursoController extends AbstractController {
         return this.handleResponse(result)
     }
 
-    @Patch(':id/cronograma/:cronogramaId/atividade/:atividadeId')
+    @Patch(':id/cronogramas/:cronogramaId/atividades/:atividadeId')
     @UseGuards(JwtAuthGuard)
     public async editarAtividadeCronograma(
         @Param('id') id: string,
@@ -157,7 +188,7 @@ export class CursoController extends AbstractController {
         return this.handleResponse(result)
     }
 
-    @Delete(':id/cronograma/:cronogramaId/atividade/:atividadeId')
+    @Delete(':id/cronogramas/:cronogramaId/atividades/:atividadeId')
     @UseGuards(JwtAuthGuard)
     public async removerAtividadeCronograma(
         @Param('id') id: string,
