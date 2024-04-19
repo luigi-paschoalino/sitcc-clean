@@ -27,7 +27,7 @@ export class ListarTfgsPorUsuarioQuery {
                     ? { alunoId: props.usuarioId }
                     : props.tipoUsuario === TIPO_USUARIO.PROFESSOR
                     ? { orientadorId: props.usuarioId }
-                    : undefined,
+                    : {},
             )
             if (tfgs instanceof Error) throw tfgs
 

@@ -1,4 +1,5 @@
 import { STATUS_TFG } from '../Tfg'
+import { BancaDTO } from './Banca.dto'
 
 export interface TfgDTO {
     id: string
@@ -17,4 +18,5 @@ export interface TfgDTO {
     status: STATUS_TFG
     notaParcial: number
     notaFinal: number
+    banca?: BancaDTO
 }

@@ -40,16 +40,17 @@ export class ListarBancasPorUsuarioQuery {
                       }
                     : undefined,
             )
-
             if (tfgs instanceof Error) throw tfgs
 
-            const bancasDTO = tfgs.map((tfg) =>
-                this.bancaMapper.toDTO(
-                    tfg.getBanca(),
-                    tfg.getId(),
-                    tfg.getTitulo(),
-                ),
-            )
+            const bancasDTO = tfgs
+                .filter((t) => t.getBanca())
+                .map((tfg) =>
+                    this.bancaMapper.toDTO(
+                        tfg.getBanca(),
+                        tfg.getId(),
+                        tfg.getTitulo(),
+                    ),
+                )
             return bancasDTO
         } catch (error) {
             return error

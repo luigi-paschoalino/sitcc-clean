@@ -175,48 +175,44 @@ export class TfgRepositoryImpl implements TfgRepository {
 
     async listarTfgsBFF(
         apenasAtivos: boolean,
-        filtro?: TfgFiltroProps,
+        filtro: TfgFiltroProps,
     ): Promise<Error | TfgDTO[]> {
         try {
-            const models = await this.prismaService.tfg.findMany(
-                filtro
-                    ? {
-                          where: {
-                              ...filtro,
-                              status: apenasAtivos
-                                  ? {
-                                        notIn: [
-                                            STATUS_TFG.APROVADO,
-                                            STATUS_TFG.REPROVADO,
-                                            STATUS_TFG.ORIENTACAO_RECUSADA,
-                                        ],
-                                    }
-                                  : undefined,
-                          },
-                          include: {
-                              banca: true,
-                              aluno: {
-                                  select: {
-                                      id: true,
-                                      nome: true,
-                                  },
-                              },
-                              orientador: {
-                                  select: {
-                                      id: true,
-                                      nome: true,
-                                  },
-                              },
-                              coorientador: {
-                                  select: {
-                                      id: true,
-                                      nome: true,
-                                  },
-                              },
-                          },
-                      }
-                    : undefined,
-            )
+            const models = await this.prismaService.tfg.findMany({
+                where: {
+                    ...filtro,
+                    status: apenasAtivos
+                        ? {
+                              notIn: [
+                                  STATUS_TFG.APROVADO,
+                                  STATUS_TFG.REPROVADO,
+                                  STATUS_TFG.ORIENTACAO_RECUSADA,
+                              ],
+                          }
+                        : undefined,
+                },
+                include: {
+                    banca: true,
+                    aluno: {
+                        select: {
+                            id: true,
+                            nome: true,
+                        },
+                    },
+                    orientador: {
+                        select: {
+                            id: true,
+                            nome: true,
+                        },
+                    },
+                    coorientador: {
+                        select: {
+                            id: true,
+                            nome: true,
+                        },
+                    },
+                },
+            })
 
             const dtoArray: TfgDTO[] = []
 
@@ -239,6 +235,28 @@ export class TfgRepositoryImpl implements TfgRepository {
                     orientador: model.orientador.nome,
                     coorientador: model.coorientador
                         ? model.coorientador.nome
+                        : undefined,
+                    banca: model.banca
+                        ? {
+                              data: model.banca.data,
+                              professorId: model.banca.professorId,
+                              segundoProfessorId:
+                                  model.banca.segundoProfessorId,
+                              tfgId: model.id,
+                              tfgNome: model.titulo,
+                              notaApresentacaoProfessor: Number(
+                                  model.banca.notaApresentacaoProfessor,
+                              ),
+                              notaApresentacaoSegundoProfessor: Number(
+                                  model.banca.notaApresentacaoSegundoProfessor,
+                              ),
+                              notaTrabalhoProfessor: Number(
+                                  model.banca.notaTrabalhoProfessor,
+                              ),
+                              notaTrabalhoSegundoProfessor: Number(
+                                  model.banca.notaTrabalhoSegundoProfessor,
+                              ),
+                          }
                         : undefined,
                 })
             }
