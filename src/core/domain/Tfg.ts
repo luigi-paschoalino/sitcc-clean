@@ -315,11 +315,11 @@ export class Tfg extends AbstractAggregateRoot<string> {
 
     private setAluno(aluno: Usuario): Error | void {
         if (!aluno) {
-            throw new InvalidPropsException('Aluno não informado')
+            return new InvalidPropsException('Aluno não informado')
         }
 
         if (aluno.getTipo() !== TIPO_USUARIO.ALUNO) {
-            throw new InvalidPropsException('Usuário informado não é um aluno')
+            return new InvalidPropsException('Usuário informado não é um aluno')
         }
 
         this.alunoId = aluno.getId()
@@ -327,11 +327,11 @@ export class Tfg extends AbstractAggregateRoot<string> {
 
     private setOrientador(orientador: Usuario): Error | void {
         if (!orientador) {
-            throw new InvalidPropsException('Orientador não informado')
+            return new InvalidPropsException('Orientador não informado')
         }
 
         if (orientador.getTipo() !== TIPO_USUARIO.PROFESSOR) {
-            throw new InvalidPropsException(
+            return new InvalidPropsException(
                 'Usuário informado não é um professor',
             )
         }
@@ -345,7 +345,7 @@ export class Tfg extends AbstractAggregateRoot<string> {
             return
         }
         if (coorientador.getTipo() !== TIPO_USUARIO.PROFESSOR) {
-            throw new InvalidPropsException(
+            return new InvalidPropsException(
                 'Usuário informado não é um professor',
             )
         }
@@ -353,13 +353,13 @@ export class Tfg extends AbstractAggregateRoot<string> {
         this.coorientadorId = coorientador.getId()
     }
 
-    private setNotaParcial(nota_parcial: number): void {
+    private setNotaParcial(nota_parcial: number): Error | void {
         if (!nota_parcial) {
-            throw new InvalidPropsException('Nota não informada')
+            return new InvalidPropsException('Nota não informada')
         }
 
         if (nota_parcial < 0 || nota_parcial > 10) {
-            throw new InvalidPropsException('Nota deve ser entre 0 e 10')
+            return new InvalidPropsException('Nota deve ser entre 0 e 10')
         }
 
         this.notaParcial = nota_parcial
@@ -368,7 +368,7 @@ export class Tfg extends AbstractAggregateRoot<string> {
     public atribuirBanca(banca: Banca): Error | void {
         try {
             if (this.banca)
-                throw new UsuarioException(
+                return new UsuarioException(
                     'A banca já foi atribuída a este TFG',
                 )
 
@@ -376,7 +376,7 @@ export class Tfg extends AbstractAggregateRoot<string> {
                 banca.getProfessorId() === this.getOrientador() ||
                 banca.getSegundoProfessorId() === this.getOrientador()
             )
-                throw new InvalidPropsException(
+                return new InvalidPropsException(
                     'A banca deve ser integrada por professores diferentes do orientador',
                 )
 
@@ -399,18 +399,18 @@ export class Tfg extends AbstractAggregateRoot<string> {
         data?: Date
     }): Error | void {
         if (!this.banca)
-            throw new TfgException('A banca deste TFG ainda não foi atribuída')
+            return new TfgException('A banca deste TFG ainda não foi atribuída')
 
         if (
             this.status !== STATUS_TFG.ENTREGA_PARCIAL_APROVADA &&
             this.status !== STATUS_TFG.ENTREGA_FINAL
         )
-            throw new TfgException(
+            return new TfgException(
                 'A banca só pode ser editada após a aprovação da entrega parcial e antes da entrega final',
             )
 
         const editar = this.banca.editarBanca(props)
-        if (editar instanceof Error) throw editar
+        if (editar instanceof Error) return editar
 
         this.apply(
             new BancaEditadaEvent({
@@ -426,13 +426,13 @@ export class Tfg extends AbstractAggregateRoot<string> {
         justificativa?: string,
     ): Error | void {
         if (professorId !== this.orientadorId)
-            throw new UsuarioException(
+            return new UsuarioException(
                 'O professor que está avaliando não é orientador deste TFG',
             )
 
         if (status) {
             if (justificativa?.trim())
-                throw new InvalidPropsException(
+                return new InvalidPropsException(
                     'A justificativa não deve ser informada em caso de aprovação',
                 )
             this.setStatus(STATUS_TFG.ORIENTACAO_ACEITA)
@@ -446,7 +446,7 @@ export class Tfg extends AbstractAggregateRoot<string> {
             )
         } else {
             if (!justificativa?.trim())
-                throw new InvalidPropsException(
+                return new InvalidPropsException(
                     'A justificativa deve ser informada em caso de reprovação',
                 )
             this.setStatus(STATUS_TFG.ORIENTACAO_RECUSADA)
@@ -463,7 +463,7 @@ export class Tfg extends AbstractAggregateRoot<string> {
 
     public avaliarNotaParcial(professorId: string, nota: number): Error | void {
         if (professorId !== this.orientadorId)
-            throw new UsuarioException(
+            return new UsuarioException(
                 'O professor que está avaliando não é orientador deste TFG',
             )
 
@@ -489,12 +489,12 @@ export class Tfg extends AbstractAggregateRoot<string> {
         notaTrabalho: number,
     ): Error | void {
         if (this.status !== STATUS_TFG.ENTREGA_FINAL)
-            throw new TfgException(
+            return new TfgException(
                 'O atual estado do TFG não permite a avaliação final',
             )
 
         if (!this.banca)
-            throw new TfgException('A banca deste TFG ainda não foi atribuída')
+            return new TfgException('A banca deste TFG ainda não foi atribuída')
 
         if (
             ![
@@ -502,7 +502,7 @@ export class Tfg extends AbstractAggregateRoot<string> {
                 this.banca.getSegundoProfessorId(),
             ].includes(professorId)
         )
-            throw new UsuarioException(
+            return new UsuarioException(
                 'O professor que está avaliando não faz parte da banca deste TFG',
             )
 
@@ -517,7 +517,7 @@ export class Tfg extends AbstractAggregateRoot<string> {
 
     public calcularNotaFinal(): Error | void {
         if (!this.banca)
-            throw new TfgException('A banca deste TFG ainda não foi atribuída')
+            return new TfgException('A banca deste TFG ainda não foi atribuída')
 
         if (
             !this.banca.getNotaApresentacaoProfessor() ||
@@ -525,7 +525,7 @@ export class Tfg extends AbstractAggregateRoot<string> {
             !this.banca.getNotaTrabalhoProfessor() ||
             !this.banca.getNotaTrabalhoSegundoProfessor()
         )
-            throw new TfgException(
+            return new TfgException(
                 'A nota final não pode ser calculada sem que todas as notas da banca estejam atribuídas',
             )
 
@@ -545,7 +545,7 @@ export class Tfg extends AbstractAggregateRoot<string> {
 
     public enviarTfg(path: string, tipoEntrega: TIPO_ENTREGA): Error | void {
         if (!path?.trim()) {
-            throw new InvalidPropsException('Caminho do arquivo não informado')
+            return new InvalidPropsException('Caminho do arquivo não informado')
         }
 
         tipoEntrega === TIPO_ENTREGA.PARCIAL
@@ -568,25 +568,25 @@ export class Tfg extends AbstractAggregateRoot<string> {
 
     public toDTO() {
         return {
-            id: this.id,
-            aluno: this.alunoId,
-            orientador: this.orientadorId,
-            coorientador: this.coorientadorId,
-            status: this.status,
-            titulo: this.titulo,
-            palavrasChave: this.palavrasChave,
-            introducao: this.introducao,
-            objetivos: this.objetivos,
-            bibliografia: this.bibliografia,
-            metodoPesquisa: this.metodoPesquisa,
-            tecnicaPesquisa: this.tecnicaPesquisa,
-            descricaoMetodologia: this.descricaoMetodologia,
-            resultados: this.resultadosEsperados,
-            notaParcial: this.notaParcial,
-            notaFinal: this.notaFinal,
-            banca: this.banca,
-            pathParcial: this.pathParcial,
-            pathFinal: this.pathFinal,
+            id: this.getId(),
+            aluno: this.getAluno(),
+            orientador: this.getOrientador(),
+            coorientador: this.getCoorientador(),
+            status: this.getStatus(),
+            titulo: this.getTitulo(),
+            palavrasChave: this.getPalavrasChave(),
+            introducao: this.getIntroducao(),
+            objetivos: this.getObjetivos(),
+            bibliografia: this.getBibliografia(),
+            metodoPesquisa: this.getMetodoPesquisa(),
+            tecnicaPesquisa: this.getTecnicaPesquisa(),
+            descricaoMetodologia: this.getDescricaoMetodologia(),
+            resultados: this.getResultados(),
+            notaParcial: this.getNotaParcial(),
+            notaFinal: this.getNotaFinal(),
+            banca: this.getBanca(),
+            pathParcial: this.getPathParcial(),
+            pathFinal: this.getPathFinal(),
         }
     }
 }
