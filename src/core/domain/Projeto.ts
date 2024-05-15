@@ -1,36 +1,42 @@
-import { InvalidPropsException } from './exceptions/InvalidProps.exception'
+import { AbstractEntity } from '../../shared/domain/AbstractEntity'
+import { InvalidPropsException } from '../../shared/domain/exceptions/InvalidProps.exception'
 
 export interface CriarProjetoProps {
     titulo: string
     descricao: string
     preRequisitos: string
-    disponivel: boolean
+    disponivel?: boolean
 }
 
-export class Projeto {
-    private id: string
+export class Projeto extends AbstractEntity<string> {
     private titulo: string
     private descricao: string
     private preRequisitos: string
     private disponivel: boolean
 
-    private constructor(id: string) {
-        this.id = id
+    private constructor(id?: string) {
+        super(id)
     }
 
-    static criar(props: CriarProjetoProps, id: string): Projeto {
+    static criar(props: CriarProjetoProps): Error | Projeto {
         try {
             if (Object.keys(props).length === 0)
                 throw new InvalidPropsException(
                     'Dados do projeto não informados',
                 )
 
-            const instance = new Projeto(id)
+            const instance = new Projeto()
 
-            instance.setTitulo(props.titulo)
-            instance.setDescricao(props.descricao)
-            instance.setPreRequisitos(props.preRequisitos)
-            instance.setDisponivel(props.disponivel)
+            const setTitulo = instance.setTitulo(props.titulo)
+            const setDescricao = instance.setDescricao(props.descricao)
+            const setPreRequisitos = instance.setPreRequisitos(
+                props.preRequisitos,
+            )
+            instance.disponivel = true
+
+            if (setTitulo instanceof Error) return setTitulo
+            if (setDescricao instanceof Error) return setDescricao
+            if (setPreRequisitos instanceof Error) return setPreRequisitos
 
             return instance
         } catch (error) {
@@ -38,31 +44,35 @@ export class Projeto {
         }
     }
 
-    private setTitulo(titulo: string) {
-        if (!titulo) throw new InvalidPropsException('Titulo não informado')
+    static carregar(props: CriarProjetoProps, id: string) {
+        const instance = new Projeto(id)
+
+        instance.titulo = props.titulo
+        instance.descricao = props.descricao
+        instance.preRequisitos = props.preRequisitos
+        instance.disponivel = props.disponivel
+
+        return instance
+    }
+
+    private setTitulo(titulo: string): Error | void {
+        if (!titulo) return new InvalidPropsException('Titulo não informado')
+
         this.titulo = titulo
     }
 
-    private setDescricao(descricao: string) {
+    private setDescricao(descricao: string): Error | void {
         if (!descricao)
-            throw new InvalidPropsException('Descrição não informada')
+            return new InvalidPropsException('Descrição não informada')
+
         this.descricao = descricao
     }
 
-    private setPreRequisitos(preRequisitos: string) {
+    private setPreRequisitos(preRequisitos: string): Error | void {
         if (!preRequisitos)
-            throw new InvalidPropsException('Pré-requisitos não informados')
+            return new InvalidPropsException('Pré-requisitos não informados')
+
         this.preRequisitos = preRequisitos
-    }
-
-    private setDisponivel(disponivel: boolean) {
-        if (!disponivel)
-            throw new InvalidPropsException('Disponibilidade não informada')
-        this.disponivel = disponivel
-    }
-
-    getId(): string {
-        return this.id
     }
 
     getTitulo(): string {

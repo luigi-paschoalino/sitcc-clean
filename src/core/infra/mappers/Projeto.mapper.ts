@@ -1,32 +1,33 @@
 import { Injectable } from '@nestjs/common'
-import { ProjetoModel } from '../models/Projeto.model'
 import { Projeto } from '../../domain/Projeto'
+import { Projeto as ProjetoModel } from '@prisma/client'
 
 @Injectable()
 export class ProjetoMapper {
     constructor() {}
 
-    domainToModel(projeto: Projeto): ProjetoModel {
-        const model = ProjetoModel.create({
-            titulo: projeto.getTitulo(),
-            descricao: projeto.getDescricao(),
-            preRequisitos: projeto.getPreRequisitos(),
-            disponivel: projeto.getDisponivel(),
-        })
-
-        return model
+    domainToModel(domain: Projeto, perfilProfessorId: string): ProjetoModel {
+        return {
+            id: domain.getId(),
+            titulo: domain.getTitulo(),
+            descricao: domain.getDescricao(),
+            preRequisitos: domain.getPreRequisitos(),
+            disponivel: domain.getDisponivel(),
+            perfilProfessorId,
+        }
     }
 
-    modelToDomain(projetoModel: ProjetoModel): Projeto {
-        const domain = Projeto.criar(
+    modelToDomain(model: ProjetoModel): Error | Projeto {
+        const domain = Projeto.carregar(
             {
-                titulo: projetoModel.titulo,
-                descricao: projetoModel.descricao,
-                preRequisitos: projetoModel.preRequisitos,
-                disponivel: projetoModel.disponivel,
+                titulo: model.titulo,
+                descricao: model.descricao,
+                preRequisitos: model.preRequisitos,
+                disponivel: model.disponivel,
             },
-            projetoModel.id,
+            model.id,
         )
+        if (domain instanceof Error) throw domain
 
         return domain
     }

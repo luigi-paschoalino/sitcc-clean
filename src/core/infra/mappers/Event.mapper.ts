@@ -1,14 +1,14 @@
-import { Injectable } from '@nestjs/common'
-import { AbstractEvent } from '../../domain/events/AbstractEvent'
-import { EventModel } from '../models/Event.model'
+import { AbstractEvent } from '../../../shared/domain/AbstractEvent'
+import { EventLog as EventModel } from '@prisma/client'
 
 export class EventMapper {
     constructor() {}
 
     domainToModel(event: AbstractEvent<any>): EventModel {
-        const model = new EventModel()
-        model.eventName = event.name
-        model.eventData = event.data
-        return model
+        return {
+            id: event.id,
+            eventData: event.data,
+            eventName: event.name,
+        }
     }
 }

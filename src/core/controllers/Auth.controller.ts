@@ -2,13 +2,13 @@ import { Controller, Post, Body, Delete } from '@nestjs/common'
 import {
     AutenticarUsecase,
     AutenticarUsecaseProps,
-} from '../application/usecases/Autenticar.usecase'
-import { AbstractController } from './AbstractController'
+} from '../application/usecases/auth/Autenticar.usecase'
+import { AbstractController } from '../../shared/controllers/AbstractController'
 import { Response } from 'express'
 import {
     ValidarTokenUsecase,
     ValidarTokenUsecaseProps,
-} from '../application/usecases/ValidarToken.usecase'
+} from '../application/usecases/auth/ValidarToken.usecase'
 
 @Controller('login')
 export class AuthController extends AbstractController {

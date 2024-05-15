@@ -1,6 +1,6 @@
-import { Injectable, Inject, Logger } from '@nestjs/common'
+import { Injectable, Inject } from '@nestjs/common'
 import * as jwt from 'jsonwebtoken'
-import { LoginDTO } from '../../application/dtos/login.dto'
+import { LoginDTO } from '../../domain/dtos/login.dto'
 import { UsuarioRepository } from '../../domain/repositories/Usuario.repository'
 import {
     AuthService,
@@ -14,8 +14,6 @@ const secretToken = 'sdaFsadasdaGasdCMySecretKey'
 
 @Injectable()
 export class AuthServiceImpl implements AuthService {
-    private logger = new Logger(AuthServiceImpl.name)
-
     constructor(
         @Inject('UsuarioRepository')
         private readonly usuarioRepository: UsuarioRepository,
@@ -30,8 +28,6 @@ export class AuthServiceImpl implements AuthService {
             )
             if (usuario instanceof Error) throw usuario
 
-            this.logger.debug(JSON.stringify(usuario, null, 2))
-
             if (
                 await this.encriptarSenhaService.comparar(
                     body.senha,
@@ -41,7 +37,7 @@ export class AuthServiceImpl implements AuthService {
                 const token = jwt.sign(
                     {
                         id: usuario.getId(),
-                        perfil: usuario.getTipo(),
+                        tipo: usuario.getTipo(),
                     },
                     secretToken,
                     {
@@ -53,10 +49,17 @@ export class AuthServiceImpl implements AuthService {
                     token: token,
                     nome: usuario.getNome(),
                     tipo: usuario.getTipo(),
+                    id: usuario.getId(),
                 }
             }
 
-            return { auth: false, token: null, nome: null, tipo: null }
+            return {
+                auth: false,
+                token: null,
+                nome: null,
+                tipo: null,
+                id: null,
+            }
         } catch (error) {
             return error
         }

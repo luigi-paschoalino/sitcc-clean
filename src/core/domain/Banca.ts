@@ -1,35 +1,47 @@
-import { InvalidPropsException } from './exceptions/InvalidProps.exception'
+import { AbstractEntity } from '../../shared/domain/AbstractEntity'
+import { BancaException } from '../../shared/domain/exceptions/Banca.exception'
+import { InvalidPropsException } from '../../shared/domain/exceptions/InvalidProps.exception'
 
 export interface CriarBancaProps {
     professorId: string
-    dia_hora: Date
+    segundoProfessorId: string
+    data: Date
 }
 
 export interface CarregarBancaProps {
     professorId: string
-    dia_hora: Date
-    nota_final: number
-    nota_apresentacao: number
-    nota_trabalho: number
+    segundoProfessorId: string
+    data: Date
+    notaApresentacaoProfessor: number
+    notaApresentacaoSegundoProfessor: number
+    notaTrabalhoProfessor: number
+    notaTrabalhoSegundoProfessor: number
 }
 
-export class Banca {
-    private id: string
-    private id_professor: string
-    private dia_hora: Date
-    private nota_final: number
-    private nota_apresentacao: number
-    private nota_trabalho: number
+export class Banca extends AbstractEntity<string> {
+    private professorId: string
+    private segundoProfessorId: string
+    private data: Date
+    private notaApresentacaoProfessor: number
+    private notaApresentacaoSegundoProfessor: number
+    private notaTrabalhoProfessor: number
+    private notaTrabalhoSegundoProfessor: number
 
-    private constructor(id: string) {
-        this.id = id
+    private constructor(id?: string) {
+        super(id)
     }
 
-    static criar(props: CriarBancaProps, id: string): Banca {
-        const banca = new Banca(id)
+    static criar(props: CriarBancaProps): Banca {
+        const banca = new Banca()
 
-        banca.setIdProfessor(props.professorId)
-        banca.setDiaHora(props.dia_hora)
+        if (props.segundoProfessorId === props.professorId)
+            throw new InvalidPropsException(
+                'O segundo professor não pode ser o mesmo que o primeiro',
+            )
+
+        banca.setProfessorId(props.professorId)
+        banca.setSegundoProfessorId(props.segundoProfessorId)
+        banca.setData(props.data)
 
         return banca
     }
@@ -37,68 +49,142 @@ export class Banca {
     static carregar(props: CarregarBancaProps, id: string): Banca {
         const banca = new Banca(id)
 
-        banca.setIdProfessor(props.professorId)
-        banca.setDiaHora(props.dia_hora)
+        banca.professorId = props.professorId
+        banca.segundoProfessorId = props.segundoProfessorId
+        banca.data = props.data
 
-        banca.nota_apresentacao = props.nota_apresentacao
-        banca.nota_trabalho = props.nota_trabalho
-        banca.nota_final = props.nota_final
+        banca.notaApresentacaoProfessor = props.notaApresentacaoProfessor
+        banca.notaApresentacaoSegundoProfessor =
+            props.notaApresentacaoSegundoProfessor
+        banca.notaTrabalhoProfessor = props.notaTrabalhoProfessor
+        banca.notaTrabalhoSegundoProfessor = props.notaTrabalhoSegundoProfessor
 
         return banca
     }
 
-    private setIdProfessor(id: string): Error | void {
+    private setProfessorId(id: string): Error | void {
         if (!id)
             throw new InvalidPropsException(
-                'Id do Professor não pode ser vazio',
+                'ID do professor não pode ser vazio',
             )
-        this.id_professor = id
+        if (id === this.segundoProfessorId)
+            throw new InvalidPropsException(
+                'O segundo professor não pode ser o mesmo que o primeiro',
+            )
+
+        this.professorId = id
     }
 
-    private setDiaHora(dia: Date): Error | void {
-        //TODO: fazer validação de data
-        if (!dia) throw new InvalidPropsException('A data não pode ser vazio')
-        this.dia_hora = dia
+    private setSegundoProfessorId(id: string): Error | void {
+        if (!id)
+            throw new InvalidPropsException(
+                'ID do segundo professor não pode ser vazio',
+            )
+        if (id === this.professorId)
+            throw new InvalidPropsException(
+                'O segundo professor não pode ser o mesmo que o primeiro',
+            )
+
+        this.segundoProfessorId = id
     }
 
-    getId(): string {
-        return this.id
+    private setData(data: Date): Error | void {
+        if (!data) throw new InvalidPropsException('A data não pode ser vazia')
+        if (new Date(data) < new Date())
+            throw new InvalidPropsException('A data não pode ser no passado')
+
+        this.data = data
     }
 
-    getIdProfessor(): string {
-        return this.id_professor
+    getProfessorId(): string {
+        return this.professorId
+    }
+
+    getSegundoProfessorId(): string {
+        return this.segundoProfessorId
     }
 
     getDiaHora(): Date {
-        return this.dia_hora
+        return this.data
     }
 
-    getNotaFinal(): number {
-        return this.nota_final
+    getNotaApresentacaoProfessor(): number {
+        return this.notaApresentacaoProfessor
     }
 
-    getNotaApresentacao(): number {
-        return this.nota_apresentacao
+    getNotaApresentacaoSegundoProfessor(): number {
+        return this.notaApresentacaoSegundoProfessor
     }
 
-    getNotaTrabalho(): number {
-        return this.nota_trabalho
+    getNotaTrabalhoProfessor(): number {
+        return this.notaTrabalhoProfessor
     }
 
-    avaliarNotaTcc(
+    getNotaTrabalhoSegundoProfessor(): number {
+        return this.notaTrabalhoSegundoProfessor
+    }
+
+    editarBanca(props: {
+        professorId?: string
+        segundoProfessorId?: string
+        data?: Date
+    }): Error | void {
+        if (props.professorId) this.setProfessorId(props.professorId)
+        if (props.segundoProfessorId)
+            this.setSegundoProfessorId(props.segundoProfessorId)
+        if (props.data) this.setData(props.data)
+    }
+
+    avaliarNotaTfg(
+        professorId: string,
         notaApresentacao: number,
         notaTrabalho: number,
     ): Error | void {
+        if (
+            professorId !== this.professorId &&
+            professorId !== this.segundoProfessorId
+        )
+            throw new InvalidPropsException('Professor não pertence à banca')
         if (!notaApresentacao || notaApresentacao < 0 || notaApresentacao > 10)
             throw new InvalidPropsException('Nota de apresentação inválida')
         if (!notaTrabalho || notaTrabalho < 0 || notaTrabalho > 10)
             throw new InvalidPropsException('Nota de trabalho inválida')
 
-        this.nota_apresentacao = notaApresentacao
-        this.nota_trabalho = notaTrabalho
+        professorId === this.professorId
+            ? (this.notaApresentacaoProfessor = notaApresentacao)
+            : (this.notaApresentacaoSegundoProfessor = notaApresentacao)
+        professorId === this.professorId
+            ? (this.notaTrabalhoProfessor = notaTrabalho)
+            : (this.notaTrabalhoSegundoProfessor = notaTrabalho)
+    }
 
-        this.nota_final = Number(
-            (notaTrabalho * 0.7 + notaApresentacao * 0.3).toFixed(2),
+    validarPreenchimentoNotas(): boolean {
+        if (
+            !this.notaApresentacaoProfessor ||
+            !this.notaApresentacaoSegundoProfessor ||
+            !this.notaTrabalhoProfessor ||
+            !this.notaTrabalhoSegundoProfessor
+        )
+            return false
+
+        return true
+    }
+
+    calcularNotaFinal(): Error | number {
+        if (!this.validarPreenchimentoNotas())
+            throw new BancaException(
+                'As notas da banca não foram totalmente preenchidas',
+            )
+        // 30% média das notas de apresentação + 70% média das notas de trabalho
+        return (
+            (0.3 *
+                (this.notaApresentacaoProfessor +
+                    this.notaApresentacaoSegundoProfessor)) /
+                2 +
+            (0.7 *
+                (this.notaTrabalhoProfessor +
+                    this.notaTrabalhoSegundoProfessor)) /
+                2
         )
     }
 }

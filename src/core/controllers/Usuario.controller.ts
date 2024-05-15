@@ -1,28 +1,45 @@
 import {
-    CadastrarUsuarioUseCase,
-    CadastrarUsuarioUsecaseProps,
-} from '../application/usecases/CadastrarUsuario.usecase'
-import {
-    Controller,
-    Get,
     Body,
+    Controller,
+    Delete,
+    Get,
     Param,
-    Post,
-    UseGuards,
     Patch,
+    Post,
+    Put,
+    Req,
+    UseGuards,
 } from '@nestjs/common'
-import { AbstractController } from './AbstractController'
+import { JwtAuthGuard } from 'src/shared/middlewares/AuthenticationMiddleware'
+import { AbstractController } from '../../shared/controllers/AbstractController'
 import { BuscarUsuarioQuery } from '../application/queries/BuscarUsuario.query'
-import {
-    RecuperarSenhaUsecase,
-    RecuperarSenhaUsecaseProps,
-} from '../application/usecases/RecuperarSenha.usecase'
+import { BuscarUsuarioHashQuery } from '../application/queries/BuscarUsuarioHash.query'
+import { ListarProfessoresQuery } from '../application/queries/ListarProfessores.query'
 import {
     AlterarSenhaUsecase,
     AlterarSenhaUsecaseProps,
-} from '../application/usecases/AlterarSenha.usecase'
-import { JwtAuthGuard } from 'src/middlewares/AuthenticationMiddleware'
-import { ListarProfessoresQuery } from '../application/queries/ListarProfessores.query'
+} from '../application/usecases/usuario/AlterarSenha.usecase'
+import {
+    CadastrarUsuarioUseCase,
+    CadastrarUsuarioUsecaseProps,
+} from '../application/usecases/usuario/CadastrarUsuario.usecase'
+import {
+    RecuperarSenhaUsecase,
+    RecuperarSenhaUsecaseProps,
+} from '../application/usecases/usuario/RecuperarSenha.usecase'
+import {
+    AtualizarPerfilProfessorUsecase,
+    AtualizarPerfilProfessorUsecaseProps,
+} from '../application/usecases/usuario/AtualizarPerfilProfessor.usecase'
+import {
+    AdicionarProjetoUsecase,
+    AdicionarProjetoUsecaseProps,
+} from '../application/usecases/usuario/AdicionarProjeto.usecase'
+import {
+    EditarProjetoUsecase,
+    EditarProjetoUsecaseProps,
+} from '../application/usecases/usuario/EditarProjeto.usecase'
+import { ExcluirProjetoUsecase } from '../application/usecases/usuario/ExcluirProjeto.usecase'
 
 @Controller('usuarios')
 export class UsuarioController extends AbstractController {
@@ -32,9 +49,14 @@ export class UsuarioController extends AbstractController {
         private readonly recuperarSenhaUsecase: RecuperarSenhaUsecase,
         private readonly alterarSenhaUsecase: AlterarSenhaUsecase,
         private readonly listarProfessores: ListarProfessoresQuery,
+        private readonly buscarUsuarioHashQuery: BuscarUsuarioHashQuery,
+        private readonly atualizarPerfilProfessorUsecase: AtualizarPerfilProfessorUsecase,
+        private readonly adicionarProjetoUsecase: AdicionarProjetoUsecase,
+        private readonly editarProjetoUsecase: EditarProjetoUsecase,
+        private readonly excluirProjetoUsecase: ExcluirProjetoUsecase,
     ) {
         super({
-            UsuarioException: 400,
+            UsuarioException: 401,
             RepositoryException: 500,
             RepositoryDataNotFoundException: 404,
             InvalidPropsException: 400,
@@ -73,7 +95,7 @@ export class UsuarioController extends AbstractController {
 
     @Get('recuperar/:hash')
     async buscarUsuarioPorHashSenha(@Param('hash') hash: string) {
-        const result = await this.buscarUsuarioQuery.execute(hash)
+        const result = await this.buscarUsuarioHashQuery.execute(hash)
 
         return this.handleResponse(result)
     }
@@ -86,6 +108,64 @@ export class UsuarioController extends AbstractController {
         const result = await this.alterarSenhaUsecase.execute({
             ...body,
             hashRecuperacaoSenha: hash,
+        })
+
+        return this.handleResponse(result)
+    }
+
+    // Professor
+
+    // Usecase para editar o perfil professor
+    @Patch('perfil-professor')
+    @UseGuards(JwtAuthGuard)
+    async atualizarPerfilProfessor(
+        @Body() body: AtualizarPerfilProfessorUsecaseProps,
+        @Req() req: any,
+    ) {
+        const result = await this.atualizarPerfilProfessorUsecase.execute({
+            ...body,
+            usuarioId: req.user.id,
+        })
+
+        return this.handleResponse(result)
+    }
+
+    @Put('perfil-professor/projetos')
+    @UseGuards(JwtAuthGuard)
+    async adicionarProjeto(
+        @Body() body: AdicionarProjetoUsecaseProps,
+        @Req() req: any,
+    ) {
+        const result = await this.adicionarProjetoUsecase.execute({
+            ...body,
+            usuarioId: req.user.id,
+        })
+
+        return this.handleResponse(result)
+    }
+
+    @Patch('perfil-professor/projetos/:id')
+    @UseGuards(JwtAuthGuard)
+    async editarProjeto(
+        @Param('id') id: string,
+        @Body() body: EditarProjetoUsecaseProps,
+        @Req() req: any,
+    ) {
+        const result = await this.editarProjetoUsecase.execute({
+            ...body,
+            usuarioId: req.user.id,
+            projetoId: id,
+        })
+
+        return this.handleResponse(result)
+    }
+
+    @Delete('perfil-professor/projetos/:id')
+    @UseGuards(JwtAuthGuard)
+    async excluirProjeto(@Param('id') id: string, @Req() req: any) {
+        const result = await this.excluirProjetoUsecase.execute({
+            usuarioId: req.user.id,
+            projetoId: id,
         })
 
         return this.handleResponse(result)

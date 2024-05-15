@@ -1,9 +1,8 @@
-import { Norma } from '../Norma'
-import { AbstractEvent } from './AbstractEvent'
+import { AbstractEvent } from '../../../shared/domain/AbstractEvent'
 
 export interface NormaAdicionadaEventProps {
     cursoId: string
-    norma: Norma
+    normaId: string
 }
 
 export class NormaAdicionadaEvent extends AbstractEvent<NormaAdicionadaEventProps> {

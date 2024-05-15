@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@nestjs/common'
-import { AbstractEvent } from '../../domain/events/AbstractEvent'
+import { AbstractEvent } from '../../../shared/domain/AbstractEvent'
 import { EventPublisherService } from './../../domain/services/EventPublisher.service'
 import { AggregateRoot, EventPublisher } from '@nestjs/cqrs'
 import { EventRepository } from '../../domain/repositories/Event.repository'
@@ -16,7 +16,7 @@ export class EventPublisherServiceImpl implements EventPublisherService {
         try {
             const events =
                 aggregate.getUncommittedEvents() as AbstractEvent<any>[]
-            if (!!events.length) {
+            if (events.length) {
                 for (const event of events)
                     await this.eventRepository.save(event)
                 this.eventPublisher.mergeObjectContext(aggregate)

@@ -1,7 +1,7 @@
-import { AbstractEvent } from './AbstractEvent'
+import { AbstractEvent } from '../../../shared/domain/AbstractEvent'
 
 export interface BancaAdicionadaEventProps {
-    tccId: string
+    tfgId: string
     bancaId: string
 }
 

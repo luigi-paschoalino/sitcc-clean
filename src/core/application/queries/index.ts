@@ -1,19 +1,27 @@
+import { ListarCodigosProfessorQuery } from '../usecases/codigoProfessor/ListarCodigosProfessor.query'
+import { BuscarCronogramasQuery } from './BuscarCronogramas.query'
+import { BuscarCronogramaVigenteQuery } from './BuscarCronogramaVigente.query'
 import { BuscarCursoQuery } from './BuscarCurso.query'
-import { BuscarInstitutoQuery } from './BuscarInstituto.query'
-import { BuscarTccQuery } from './BuscarTcc.query'
-import { BuscarUniversidadeQuery } from './BuscarUniversidade.query'
+import { BuscarTfgQuery } from './BuscarTfg.query'
 import { BuscarUsuarioQuery } from './BuscarUsuario.query'
+import { BuscarUsuarioHashQuery } from './BuscarUsuarioHash.query'
+import { ListarBancasPorUsuarioQuery } from './ListarBancasPorUsuario.query'
+import { ListarCursosQuery } from './ListarCursos.query'
 import { ListarProfessoresQuery } from './ListarProfessores.query'
-import { ListarUniversidadesQuery } from './ListarUniversidades.query'
+import { ListarTfgsPorUsuarioQuery } from './ListarTfgsPorUsuario.query'
 
 const Queries = [
-    BuscarTccQuery,
+    BuscarTfgQuery,
     BuscarUsuarioQuery,
-    BuscarUniversidadeQuery,
-    ListarUniversidadesQuery,
-    BuscarInstitutoQuery,
     BuscarCursoQuery,
     ListarProfessoresQuery,
+    ListarCursosQuery,
+    BuscarUsuarioHashQuery,
+    ListarTfgsPorUsuarioQuery,
+    ListarBancasPorUsuarioQuery,
+    BuscarCronogramasQuery,
+    BuscarCronogramaVigenteQuery,
+    ListarCodigosProfessorQuery,
 ]
 
 export default Queries

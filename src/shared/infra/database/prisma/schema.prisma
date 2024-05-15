@@ -1,0 +1,218 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Curso {
+  id          String       @id @default(uuid()) @db.Uuid
+  nome        String       @unique @db.VarChar(100)
+  codigo      String       @unique @db.Char(3)
+  usuarios    Usuario[]
+  cronogramas Cronograma[]
+  normas      Norma[]
+
+  @@map("cursos")
+}
+
+model Usuario {
+  id                   String           @id @default(uuid()) @db.Uuid
+  nome                 String           @db.VarChar(255)
+  email                String           @unique @db.VarChar(255)
+  senha                String           @db.VarChar(100)
+  hashRecuperacaoSenha String?          @db.Uuid
+  numero               String?          @db.VarChar(15)
+  matricula            String?          @db.VarChar(10)
+  curso                Curso            @relation(fields: [cursoId], references: [id])
+  tipo                 TIPO_USUARIO
+  cursoId              String           @db.Uuid
+  perfilProfessor      PerfilProfessor?
+  tfgAluno             Tfg[]            @relation(name: "AlunoRelation")
+  tfgOrientador        Tfg[]            @relation(name: "OrientadorRelation")
+  tfgCoorientador      Tfg[]            @relation(name: "CoorientadorRelation")
+  bancaPrimeiroProf    Banca[]          @relation(name: "PrimeiroProfessorRelation")
+  bancaSegundoProf     Banca[]          @relation(name: "SegundoProfessorRelation")
+
+  @@map("usuarios")
+}
+
+model Cronograma {
+  id         String      @id @default(uuid()) @db.Uuid
+  ano        Int
+  semestre   SEMESTRE
+  curso      Curso?      @relation(fields: [cursoId], references: [id])
+  cursoId    String?     @db.Uuid
+  atividades Atividade[]
+
+  @@map("cronogramas")
+}
+
+model Atividade {
+  id           String         @id @default(uuid()) @db.Uuid
+  data         DateTime
+  titulo       TIPO_ATIVIDADE
+  descricao    String         @db.VarChar()
+  cronograma   Cronograma     @relation(fields: [cronogramaId], references: [id])
+  cronogramaId String         @db.Uuid
+
+  @@map("atividades")
+}
+
+model Norma {
+  id             String   @id @default(uuid()) @db.Uuid
+  titulo         String   @db.VarChar(100)
+  descricao      String   @db.VarChar()
+  link           String   @db.VarChar(255)
+  dataPublicacao DateTime @default(now()) @db.Timestamp()
+  curso          Curso?   @relation(fields: [cursoId], references: [id])
+  cursoId        String?  @db.Uuid
+
+  @@map("normas")
+}
+
+model PerfilProfessor {
+  id           String    @id @default(uuid()) @db.Uuid
+  descricao    String    @db.VarChar()
+  link         String    @db.VarChar()
+  areasAtuacao String[]  @db.VarChar()
+  projetos     Projeto[]
+  usuario      Usuario   @relation(fields: [usuarioId], references: [id])
+  usuarioId    String    @unique @db.Uuid
+
+  @@map("perfis_professores")
+}
+
+model CodigoProfessor {
+  id         String  @id @default(uuid()) @db.Uuid
+  codigo     String  @unique @db.VarChar(12)
+  disponivel Boolean @default(true)
+  email      String  @db.VarChar(255)
+
+  @@map("codigos_professores")
+}
+
+model Projeto {
+  id                String          @id @default(uuid()) @db.Uuid
+  titulo            String          @db.VarChar(255)
+  descricao         String          @db.VarChar()
+  preRequisitos     String          @db.VarChar()
+  disponivel        Boolean         @default(true)
+  perfilProfessor   PerfilProfessor @relation(fields: [perfilProfessorId], references: [id])
+  perfilProfessorId String          @db.Uuid
+
+  @@map("projetos")
+}
+
+model Banca {
+  id                               String   @id @default(uuid()) @db.Uuid
+  data                             DateTime
+  professorId                      String   @db.Uuid
+  segundoProfessorId               String   @db.Uuid // Adiciona um segundo professor
+  tccId                            String   @unique @db.Uuid
+  professor                        Usuario  @relation(name: "PrimeiroProfessorRelation", fields: [professorId], references: [id])
+  segundoProfessor                 Usuario  @relation(name: "SegundoProfessorRelation", fields: [segundoProfessorId], references: [id])
+  tcc                              Tfg      @relation(fields: [tccId], references: [id])
+  notaApresentacaoProfessor        Decimal? @db.Decimal(4, 2)
+  notaApresentacaoSegundoProfessor Decimal? @db.Decimal(4, 2)
+  notaTrabalhoProfessor            Decimal? @db.Decimal(4, 2)
+  notaTrabalhoSegundoProfessor     Decimal? @db.Decimal(4, 2)
+
+  @@map("bancas")
+}
+
+model Tfg {
+  id                   String     @id @default(uuid()) @db.Uuid
+  status               STATUS_TFG
+  titulo               String     @db.VarChar(255)
+  palavrasChave        String     @db.VarChar()
+  introducao           String     @db.VarChar()
+  objetivos            String     @db.VarChar()
+  bibliografia         String     @db.VarChar()
+  metodoPesquisa       String     @db.VarChar()
+  tecnicaPesquisa      String     @db.VarChar()
+  descricaoMetodologia String     @db.VarChar()
+  resultados           String     @db.VarChar()
+  notaParcial          Decimal?   @db.Decimal(4, 2)
+  notaFinal            Decimal?   @db.Decimal(4, 2)
+  pathParcial          String?    @db.VarChar()
+  pathFinal            String?    @db.VarChar()
+  aluno                Usuario    @relation(name: "AlunoRelation", fields: [alunoId], references: [id])
+  alunoId              String     @db.Uuid
+  orientador           Usuario    @relation(name: "OrientadorRelation", fields: [orientadorId], references: [id])
+  orientadorId         String     @db.Uuid
+  coorientador         Usuario?   @relation(name: "CoorientadorRelation", fields: [coorientadorId], references: [id])
+  coorientadorId       String?    @db.Uuid
+  banca                Banca?
+
+  @@map("tfgs")
+}
+
+// Indicador
+
+model Indicador {
+  id                         String @id @default(uuid()) @db.Uuid
+  quantidadeTfgs             Int    @default(0)
+  quantidadeAprovacoes       Int    @default(0)
+  quantidadeReprovacoes      Int    @default(0)
+  orientacoesRecusadas       Int    @default(0)
+  orientacoesAceitas         Int    @default(0)
+  entregasParciaisRealizadas Int    @default(0)
+  entregasParciaisAprovadas  Int    @default(0)
+  entregasFinais             Int    @default(0)
+  orientacaoPendente         Int    @default(0)
+
+  @@map("indicadores")
+}
+
+// Enums
+
+enum TIPO_ATIVIDADE {
+  ENTREGA_PARCIAL
+  ENTREGA_FINAL
+  DATA_DEFESA
+}
+
+enum TIPO_USUARIO {
+  ALUNO
+  PROFESSOR
+  COORDENADOR
+  ADMINISTRADOR
+
+  @@map("TipoUsuario")
+}
+
+enum SEMESTRE {
+  PRIMEIRO
+  SEGUNDO
+
+  @@map("Semestre")
+}
+
+enum STATUS_TFG {
+  MATRICULA_REALIZADA
+  ORIENTACAO_ACEITA
+  ORIENTACAO_RECUSADA
+  ENTREGA_PARCIAL_REALIZADA
+  ENTREGA_PARCIAL_APROVADA
+  ENTREGA_FINAL
+  APROVADO
+  REPROVADO
+
+  @@map("StatusTfg")
+}
+
+// Event log model
+
+model EventLog {
+  id        String @id @default(uuid()) @db.Uuid
+  eventName String @db.VarChar(100)
+  eventData Json   @db.Json
+
+  @@map("event_logs")
+}

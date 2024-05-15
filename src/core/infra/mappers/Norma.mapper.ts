@@ -1,26 +1,27 @@
 import { Norma } from '../../domain/Norma'
-import { NormaModel } from '../models/Norma.model'
+import { Norma as NormaModel } from '@prisma/client'
 
 export class NormaMapper {
     constructor() {}
 
-    public domainToModel(norma: Norma): NormaModel {
-        const model = NormaModel.create({
-            titulo: norma.getTitulo(),
+    public domainToModel(norma: Norma, cursoId: string): NormaModel {
+        return {
+            id: norma.getId(),
             descricao: norma.getDescricao(),
             link: norma.getLink(),
-            id: norma.getId(),
-        })
-
-        return model
+            titulo: norma.getTitulo(),
+            dataPublicacao: norma.getDataPublicacao(),
+            cursoId,
+        }
     }
 
     public modelToDomain(norma: NormaModel): Norma {
-        const domain = Norma.criar(
+        const domain = Norma.carregar(
             {
                 titulo: norma.titulo,
                 descricao: norma.descricao,
                 link: norma.link,
+                dataPublicacao: norma.dataPublicacao,
             },
             norma.id,
         )

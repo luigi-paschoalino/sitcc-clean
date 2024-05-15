@@ -1,9 +1,10 @@
-import { InvalidPropsException } from './exceptions/InvalidProps.exception'
+import { AbstractEntity } from '../../shared/domain/AbstractEntity'
+import { InvalidPropsException } from '../../shared/domain/exceptions/InvalidProps.exception'
 
 export enum TIPO_ATIVIDADE {
-    ENTREGA_PARCIAL = 'ENTREGA PARCIAL',
-    ENTREGA_FINAL = 'ENTREGA FINAL',
-    DATA_DEFESA = 'DATA DEFESA',
+    ENTREGA_PARCIAL = 'ENTREGA_PARCIAL',
+    ENTREGA_FINAL = 'ENTREGA_FINAL',
+    DATA_DEFESA = 'DATA_DEFESA',
 }
 
 export interface CriarAtividadeProps {
@@ -12,48 +13,58 @@ export interface CriarAtividadeProps {
     descricao: string
 }
 
-export class Atividade {
-    private id: string
+export class Atividade extends AbstractEntity<string> {
     private data: Date
     private titulo: TIPO_ATIVIDADE
     private descricao: string
 
-    private constructor(id: string) {
-        this.id = id
+    private constructor(id?: string) {
+        super(id)
     }
 
-    static criar(props: CriarAtividadeProps, id: string): Atividade {
-        const atividade = new Atividade(id)
+    static criar(props: CriarAtividadeProps): Error | Atividade {
+        const atividade = new Atividade()
 
-        atividade.setData(props.data)
-        atividade.setTitulo(props.titulo)
-        atividade.setDescricao(props.descricao)
+        const setData = atividade.setData(props.data)
+        const setTitulo = atividade.setTitulo(props.titulo)
+        const setDescricao = atividade.setDescricao(props.descricao)
+
+        if (setData instanceof Error) return setData
+        if (setTitulo instanceof Error) return setTitulo
+        if (setDescricao instanceof Error) return setDescricao
 
         return atividade
     }
 
-    private setData(data: Date) {
-        //TODO: validar data
-        this.data = data
+    static carregar(props: CriarAtividadeProps, id: string): Atividade {
+        const atividade = new Atividade(id)
+
+        atividade.data = props.data
+        atividade.titulo = props.titulo
+        atividade.descricao = props.descricao
+
+        return atividade
     }
 
-    private setTitulo(titulo: TIPO_ATIVIDADE) {
-        if (!titulo) throw new InvalidPropsException('Titulo não informado')
+    private setData(data: Date): Error | void {
+        if (new Date(data) < new Date())
+            return new InvalidPropsException('Data inválida')
+        this.data = new Date(data)
+    }
+
+    private setTitulo(titulo: TIPO_ATIVIDADE): Error | void {
+        if (!titulo) return new InvalidPropsException('Titulo não informado')
         if (!Object.values(TIPO_ATIVIDADE).includes(titulo))
-            throw new InvalidPropsException('Titulo inválido')
+            return new InvalidPropsException('Titulo inválido')
         this.titulo = titulo
     }
 
-    private setDescricao(descricao: string) {
+    private setDescricao(descricao: string): Error | void {
         if (!descricao)
-            throw new InvalidPropsException(
-                'Descrição da Atividade não pode ser vazio',
+            return new InvalidPropsException(
+                'Descrição da atividade não pode ser vazia',
             )
         this.descricao = descricao
-    }
-
-    getId() {
-        return this.id
     }
 
     getTitulo() {

@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common'
-import { TccController } from './controllers/Tcc.controller'
-import { UniversidadeController } from './controllers/Universidade.controller'
+import { TfgController } from './controllers/Tfg.controller'
+import { CursoController } from './controllers/Curso.controller'
 import { UsuarioController } from './controllers/Usuario.controller'
 import { CqrsModule } from '@nestjs/cqrs'
 import { MulterModule } from '@nestjs/platform-express'
@@ -11,8 +11,8 @@ import Queries from './application/queries'
 import { UniqueIdServiceImpl } from './infra/services/UniqueID.service'
 import { UsuarioRepositoryImpl } from './infra/repositories/Usuario.repository'
 import Mappers from './infra/mappers'
-import { UniversidadeRepositoryImpl } from './infra/repositories/Universidade.repository'
-import { TccRepositoryImpl } from './infra/repositories/Tcc.repository'
+import { CursoRepositoryImpl } from './infra/repositories/Curso.repository'
+import { TfgRepositoryImpl } from './infra/repositories/Tfg.repository'
 import { AuthServiceImpl } from './infra/services/Login.service'
 import { AuthController } from './controllers/Auth.controller'
 import { EventRepositoryImpl } from './infra/repositories/Event.repository'
@@ -21,9 +21,11 @@ import { EncriptarSenhaServiceImpl } from './infra/services/EncriptarSenha.servi
 import { CodigoProfessorController } from './controllers/CodigoProfessor.controller'
 import { CodigoProfessorRepositoryImpl } from './infra/repositories/CodigoProfessor.repository'
 import { GerarCodigoServiceImpl } from './infra/services/GerarCodigo.service'
-import { MoverTccServiceImpl } from './infra/services/MoverTcc.service'
+import { MoverTfgServiceImpl } from './infra/services/MoverTfg.service'
 import { Handlers } from './application/handlers'
 import { HttpModule } from '@nestjs/axios'
+import { PrismaService } from '../shared/infra/database/prisma/prisma.service'
+import DTOMappers from './application/mappers'
 
 @Module({
     imports: [
@@ -50,8 +52,8 @@ import { HttpModule } from '@nestjs/axios'
         }),
     ],
     controllers: [
-        TccController,
-        UniversidadeController,
+        TfgController,
+        CursoController,
         UsuarioController,
         AuthController,
         CodigoProfessorController,
@@ -60,7 +62,12 @@ import { HttpModule } from '@nestjs/axios'
         ...UseCases,
         ...Queries,
         ...Mappers,
+        ...DTOMappers,
         ...Handlers,
+        {
+            provide: 'PrismaService',
+            useClass: PrismaService,
+        },
         {
             provide: 'UniqueIdService',
             useClass: UniqueIdServiceImpl,
@@ -70,12 +77,12 @@ import { HttpModule } from '@nestjs/axios'
             useClass: UsuarioRepositoryImpl,
         },
         {
-            provide: 'UniversidadeRepository',
-            useClass: UniversidadeRepositoryImpl,
+            provide: 'CursoRepository',
+            useClass: CursoRepositoryImpl,
         },
         {
-            provide: 'TccRepository',
-            useClass: TccRepositoryImpl,
+            provide: 'TfgRepository',
+            useClass: TfgRepositoryImpl,
         },
         {
             provide: 'CodigoProfessorRepository',
@@ -102,9 +109,9 @@ import { HttpModule } from '@nestjs/axios'
             useClass: GerarCodigoServiceImpl,
         },
         {
-            provide: 'MoverTccService',
+            provide: 'MoverTfgService',
             useFactory: () => {
-                return new MoverTccServiceImpl(process.env.TCC_FINAL_PATH)
+                return new MoverTfgServiceImpl(process.env.TCC_FINAL_PATH)
             },
         },
     ],

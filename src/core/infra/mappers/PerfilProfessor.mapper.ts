@@ -1,44 +1,51 @@
-import { PerfilProfessorModel } from '../models/PerfilProfessor.model'
 import { PerfilProfessor } from './../../domain/PerfilProfessor'
-import { AreasAtuacaoMapper } from './AreasAtuacao.mapper'
 import { ProjetoMapper } from './Projeto.mapper'
-export class PerfilProfessorMapper {
-    constructor(
-        private readonly projetoMapper: ProjetoMapper,
-        private readonly areaAtuacaoMapper: AreasAtuacaoMapper,
-    ) {}
+import { PerfilProfessorInfraDTO as PerfilProfessorModel } from '../../../shared/infra/database/prisma/dtos/PerfilProfessor.dto'
+import { Injectable } from '@nestjs/common'
 
-    domainToModel(domain: PerfilProfessor): PerfilProfessorModel {
-        const model = PerfilProfessorModel.create({
+@Injectable()
+export class PerfilProfessorMapper {
+    constructor(private readonly projetoMapper: ProjetoMapper) {}
+
+    domainToModel(
+        domain: PerfilProfessor,
+        usuarioId: string,
+    ): PerfilProfessorModel {
+        const projetos = domain
+            .getProjetos()
+            ?.map((projeto) =>
+                this.projetoMapper.domainToModel(projeto, domain.getId()),
+            )
+
+        return {
             id: domain.getId(),
             descricao: domain.getDescricao(),
+            areasAtuacao: domain.getAreasAtuacao(),
             link: domain.getLink(),
-            areasAtuacao: domain
-                .getAreasAtuacao()
-                ?.map((area) => this.areaAtuacaoMapper.domainToModel(area)),
-            projetos: domain
-                .getProjetos()
-                ?.map((projeto) => this.projetoMapper.domainToModel(projeto)),
-        })
-
-        return model
+            projetos,
+            usuarioId,
+        }
     }
 
-    modelToDomain(model: PerfilProfessorModel): PerfilProfessor {
-        const domain = PerfilProfessor.criar(
-            {
-                descricao: model.descricao,
-                link: model.link,
-                areasAtuacao: model.areasAtuacao?.map((area) =>
-                    this.areaAtuacaoMapper.modelToDomain(area),
-                ),
-                projetos: model.projetos?.map((projeto) =>
-                    this.projetoMapper.modelToDomain(projeto),
-                ),
-            },
-            model.id,
-        )
+    modelToDomain(model: PerfilProfessorModel): Error | PerfilProfessor {
+        try {
+            const domain = PerfilProfessor.criar(
+                {
+                    descricao: model.descricao,
+                    link: model.link,
+                    areasAtuacao: model.areasAtuacao,
+                    projetos: model.projetos.map((projeto) => {
+                        const domain = this.projetoMapper.modelToDomain(projeto)
+                        if (domain instanceof Error) throw domain
+                        return domain
+                    }),
+                },
+                model.id,
+            )
 
-        return domain
+            return domain
+        } catch (error) {
+            return error
+        }
     }
 }

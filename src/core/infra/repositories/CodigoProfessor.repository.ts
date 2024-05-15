@@ -1,25 +1,26 @@
-import { Injectable } from '@nestjs/common'
+import { Inject, Injectable } from '@nestjs/common'
 import { CodigoProfessor } from '../../domain/CodigoProfessor'
-import { RepositoryDataNotFoundException } from '../../domain/exceptions/RepositoryDataNotFound.exception'
+import { RepositoryDataNotFoundException } from '../../../shared/domain/exceptions/RepositoryDataNotFound.exception'
 import { CodigoProfessorRepository } from '../../domain/repositories/CodigoProfessor.repository'
 import { CodigoProfessorMapper } from '../mappers/CodigoProfessor.mapper'
-import { CodigoProfessorModel } from '../models/CodigoProfessor.model'
+import { PrismaService } from '../../../shared/infra/database/prisma/prisma.service'
 
 @Injectable()
 export class CodigoProfessorRepositoryImpl
     implements CodigoProfessorRepository
 {
     constructor(
+        @Inject('PrismaService') private readonly prismaService: PrismaService,
         private readonly codigoProfessorMapper: CodigoProfessorMapper,
     ) {}
 
     async buscarCodigo(codigo: string): Promise<Error | CodigoProfessor> {
         try {
-            const model = await CodigoProfessorModel.findOne({
+            const model = await this.prismaService.codigoProfessor.findUnique({
                 where: { codigo },
             })
             if (!model)
-                throw new RepositoryDataNotFoundException(
+                return new RepositoryDataNotFoundException(
                     'Não foi encontrado nenhum código com esse valor!',
                 )
 
@@ -32,11 +33,33 @@ export class CodigoProfessorRepositoryImpl
         }
     }
 
+    async listarCodigos(): Promise<Error | CodigoProfessor[]> {
+        try {
+            const models = await this.prismaService.codigoProfessor.findMany()
+            if (!models.length)
+                return new RepositoryDataNotFoundException(
+                    'Não foi encontrado nenhum código!',
+                )
+
+            const codigos = models.map((model) =>
+                this.codigoProfessorMapper.modelToDomain(model),
+            )
+
+            return codigos
+        } catch (error) {
+            return error
+        }
+    }
+
     async salvarCodigo(codigo: CodigoProfessor): Promise<Error | void> {
         try {
             const model = this.codigoProfessorMapper.domainToModel(codigo)
 
-            await CodigoProfessorModel.save(model)
+            await this.prismaService.codigoProfessor.upsert({
+                where: { codigo: model.codigo },
+                update: model,
+                create: model,
+            })
         } catch (error) {
             return error
         }

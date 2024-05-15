@@ -17,7 +17,14 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "noUnusedLocals": true,
+    "resolveJsonModule": true,
   },
+  "include": [
+    "./src/**/*.ts"
+  ],
   "exclude": [
     "node_modules",
     "dist"]
